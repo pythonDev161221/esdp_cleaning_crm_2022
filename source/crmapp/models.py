@@ -180,3 +180,33 @@ class Order(models.Model): #Таблица самого заказа
     )
     payment_type = models.CharField(max_length=100, null=False, blank=False, default=1, choices=PAYMENT, verbose_name=_('Вид оплаты'))             #вид оплаты
     total_cost = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Общая сумма заказа'))
+
+
+class Inventory(models.Model):
+    name = models.CharField(max_length=255, verbose_name='название инвентаря')
+    datetime = models.DateTimeField(verbose_name='дата и время')
+    storage = models.CharField(max_length=255, verbose_name='склад')
+
+    def __str__(self):
+        return f"{self.name}"
+
+    class Meta:
+        db_table = "inventory"
+        verbose_name = "инвентарь"
+        verbose_name_plural = "инвентари"
+
+
+class Cleansear(models.Model):
+    name = models.CharField(max_length=255, verbose_name='название', null=False, blank=False)
+    description = models.TextField(max_length=510, verbose_name='описание товара', null=False, blank=False)
+    price = models.PositiveIntegerField(verbose_name='цена')
+    balance = models.IntegerField(verbose_name='остаток')
+
+    def __str__(self):
+        return f"{self.name}:{self.balance}"
+
+    class Meta:
+        db_table = "cleansear"
+        verbose_name = "моющее средство"
+        verbose_name_plural = "моющие средства"
+
