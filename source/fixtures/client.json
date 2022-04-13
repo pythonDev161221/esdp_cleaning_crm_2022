@@ -1,0 +1,29 @@
+[
+{
+  "model": "crmapp.client",
+  "pk": 1,
+  "fields": {
+    "first_name": "Азамат",
+    "last_name": "Кожобеков",
+    "phone": "[\"996505999999\"]"
+  }
+},
+{
+  "model": "crmapp.client",
+  "pk": 2,
+  "fields": {
+    "first_name": "Бакыт",
+    "last_name": "Иванович",
+    "phone": "[\"996770555555\"]"
+  }
+},
+{
+  "model": "crmapp.client",
+  "pk": 3,
+  "fields": {
+    "first_name": "Махмуд",
+    "last_name": "Эрбатыров",
+    "phone": "[\"996708234311\", \"996506888888\"]"
+  }
+}
+]
