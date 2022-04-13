@@ -16,6 +16,20 @@ class ExtraService(models.Model):
         verbose_name_plural = 'extra_services'
 
 
+class ComplexityFactor(models.Model):
+    name = models.CharField(max_length=100, null=False, blank=False, verbose_name="Коэффициент сложности")
+    description = models.TextField(max_length=400, null=True, blank=True, verbose_name="Описание")
+    factor = models.DecimalField(max_digits=5, decimal_places=2)
+
+    def __str__(self):
+        return f'{self.name}-{self.factor}'
+
+    class Meta:
+        db_table = 'complexity_factor'
+        verbose_name = 'complexity_factor'
+        verbose_name_plural = 'complexity_factors'
+
+
 class TypeOfCleaning(models.Model):
     cleaning_type = models.CharField(max_length=200, null=False, blank=False)
 
