@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
-from crmapp.models import ExtraService
+
+from crmapp.models import ExtraService, TypeOfCleaning, TypeOfObjectAndClean, TypeOfObject
 
 
 class ExtraServiceAdmin(admin.ModelAdmin):
@@ -11,3 +11,7 @@ class ExtraServiceAdmin(admin.ModelAdmin):
 
 
 admin.site.register(ExtraService, ExtraServiceAdmin)
+
+admin.site.register(TypeOfCleaning)
+admin.site.register(TypeOfObjectAndClean)
+admin.site.register(TypeOfObject)
