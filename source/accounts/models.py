@@ -10,3 +10,11 @@ class Staff(models.Model):
     email = models.EmailField(null=False, blank=False, verbose_name='Электронная почта')
     avatar = models.ImageField(upload_to="avatars/", null=True, blank=True, verbose_name='Фото профиля')
     schedule = models.CharField(max_length=20, null=True, blank=True, verbose_name='График работы')#Нужно переделать
+
+    def __str__(self):
+        return f'{self.full_name} --- {self.phone}'
+
+    class Meta:
+        db_table = 'Staff'
+        verbose_name = 'Сотрудник'
+        verbose_name_plural = 'Сотрудники'
