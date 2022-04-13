@@ -1,7 +1,16 @@
 from django.contrib import admin
 
-# Register your models here.
-from crmapp.models import TypeOfCleaning, TypeOfObjectAndClean, TypeOfObject
+
+from crmapp.models import ExtraService, TypeOfCleaning, TypeOfObjectAndClean, TypeOfObject
+
+
+class ExtraServiceAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name']
+    list_display_links = ['id', 'name']
+    fields = ['name', 'unit', 'price', 'cleaning_time']
+
+
+admin.site.register(ExtraService, ExtraServiceAdmin)
 
 admin.site.register(TypeOfCleaning)
 admin.site.register(TypeOfObjectAndClean)
