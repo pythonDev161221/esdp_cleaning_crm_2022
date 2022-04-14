@@ -1,34 +1,35 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
+from django.utils.translation import gettext as _
 
 
 class ExtraService(models.Model):
-    name = models.CharField(max_length=300, null=False, blank=False, verbose_name="Дополнительная услуга")
-    unit = models.CharField(max_length=350, null=True, blank=True, verbose_name="Единица измерения")
-    price = models.PositiveIntegerField(verbose_name="Цена", null=False, blank=False)
-    cleaning_time = models.CharField(max_length=255, verbose_name="Время уборки", null=True, blank=True)
+    name = models.CharField(max_length=300, null=False, blank=False, verbose_name=_('Дополнительная услуга'))
+    unit = models.CharField(max_length=350, null=True, blank=True, verbose_name=_('Единица измерения'))
+    price = models.PositiveIntegerField(verbose_name=_('Цена'), null=False, blank=False)
+    cleaning_time = models.IntegerField(verbose_name=_('Время уборки'), null=True, blank=True)
 
     def __str__(self):
         return f'{self.name}'
 
     class Meta:
         db_table = 'extra_services'
-        verbose_name = 'extra_service'
-        verbose_name_plural = 'extra_services'
+        verbose_name = _('Дополнительная услуга')
+        verbose_name_plural = _('Дополнительные услуги')
 
 
 class ComplexityFactor(models.Model):
-    name = models.CharField(max_length=100, null=False, blank=False, verbose_name="Коэффициент сложности")
-    description = models.TextField(max_length=400, null=True, blank=True, verbose_name="Описание")
-    factor = models.DecimalField(max_digits=5, decimal_places=2)
+    name = models.CharField(max_length=100, null=False, blank=False, verbose_name=_('Название коэффициента'))
+    description = models.TextField(max_length=400, null=True, blank=True, verbose_name=_('Описание'))
+    factor = models.DecimalField(max_digits=5, decimal_places=2, verbose_name=_('Значение коэффициента'))
 
     def __str__(self):
         return f'{self.name}-{self.factor}'
 
     class Meta:
         db_table = 'complexity_factor'
-        verbose_name = 'complexity_factor'
-        verbose_name_plural = 'complexity_factors'
+        verbose_name = _('Коэффициент сложности')
+        verbose_name_plural = _('Коэффициенты сложности')
 
 
 class TypeOfCleaning(models.Model):
@@ -57,12 +58,12 @@ class TypeOfObject(models.Model):
 
 
 class Client(models.Model):
-    first_name = models.CharField(verbose_name='Имя', max_length=75, blank=False, null=False)
-    last_name = models.CharField(verbose_name='Фамилия', max_length=75, blank=False, null=False)
+    first_name = models.CharField(verbose_name=_('Имя'), max_length=75, blank=False, null=False)
+    last_name = models.CharField(verbose_name=_('Фамилия'), max_length=75, blank=False, null=False)
     # поле phone CharField требуется валидатор для проверки минимального количества символов в номере
-    phone = ArrayField(models.CharField(max_length=20, verbose_name='Номер телефона'))
+    phone = ArrayField(models.CharField(max_length=20, verbose_name=_('Номер телефона'), null=False, blank=False))
     # поле is_constant требуется уточнение у заказчика
-    #is_constant = models.BooleanField(default=False, verbose_name='Статус клиента',)
+    #is_constant = models.BooleanField(default=False, verbose_name=_('Статус клиента'),)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} {self.phone}"
@@ -72,7 +73,7 @@ class Client(models.Model):
         return f"{self.first_name} {self.last_name}"
 
     class Meta:
-        db_table = "client"
-        verbose_name = "Клиент"
-        verbose_name_plural = "Клиенты"
+        db_table = 'client'
+        verbose_name = _('Клиент')
+        verbose_name_plural = _('Клиенты')
 
