@@ -32,29 +32,57 @@ class ComplexityFactor(models.Model):
         verbose_name_plural = _('Коэффициенты сложности')
 
 
-class TypeOfCleaning(models.Model):
-    cleaning_type = models.CharField(max_length=200, null=False, blank=False)
+class CleaningSort(models.Model):
+    name = models.CharField(max_length=200, verbose_name=_('Тип уборки'),
+                            null=False, blank=False)
 
     def __str__(self):
-        return f"{self.cleaning_type}"
+        return f"{self.name}"
+
+    class Meta:
+        db_table = 'cleaning_sort'
+        verbose_name = _('Тип уборки')
+        verbose_name_plural = _('Типы уборок')
 
 
-class TypeOfObjectAndClean(models.Model):
-    object_to_clean = models.ForeignKey('crmapp.TypeOfObject', on_delete=models.CASCADE)
-    cleaning = models.ForeignKey(TypeOfCleaning, on_delete=models.CASCADE)
-    price = models.PositiveIntegerField()
+UNIT_CHOICE = (
+    ('Square meter', 'м²'),
+    ('Piece', 'шт.')
+)
+
+
+class Service(models.Model):
+    cleaning_sort = models.ForeignKey('crmapp.ClearnichSort', on_delete=models.CASCADE,
+                                      verbose_name=_('Тип уборки'),
+                                      null=False, blank=False)
+    property_sort = models.ForeignKey('crmapp.PropertySort', on_delete=models.CASCADE,
+                                       verbose_name=_('Тип объекта'),
+                                      null=False, blank=False)
+    unit = models.CharField(max_length=125, verbose_name=_('Единица измерения'),
+                            choices=UNIT_CHOICE, default='Square meter',
+                            null=False, blank=False)
+    price = models.PositiveIntegerField(verbose_name=_('Цена'), null=False, blank=False)
 
     def __str__(self):
-        return f"{self.cleaning} {self.object_to_clean} {self.price}"
+        return f"{self.property_sort} {self.cleaning_sort} {self.price}"
+
+    class Meta:
+        db_table = 'service'
+        verbose_name = _('Услуга')
+        verbose_name_plural = _('Услуги')
 
 
-class TypeOfObject(models.Model):
-    object_type = models.CharField(max_length=200, null=False, blank=False)
-    cleanings = models.ManyToManyField(TypeOfCleaning, through=TypeOfObjectAndClean,
-                                       related_name='type_of_objects')
+class PropertySort(models.Model):
+    name = models.CharField(max_length=255, verbose_name=_('Тип объекта'),
+                            null=False, blank=False)
 
     def __str__(self):
-        return f"{self.object_type}"
+        return f"{self.name}"
+
+    class Meta:
+        db_table = 'property_sort'
+        verbose_name = _('Тип объекта')
+        verbose_name_plural = _('Типы объектов')
 
 
 class Client(models.Model):
