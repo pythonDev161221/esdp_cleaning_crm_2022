@@ -52,10 +52,10 @@ UNIT_CHOICE = (
 
 
 class Service(models.Model):
-    cleaning_sort = models.ForeignKey('crmapp.ClearnichSort', on_delete=models.CASCADE,
+    cleaning_sort = models.ForeignKey('crmapp.ClearnichSort', on_delete=models.PROTECT,
                                       verbose_name=_('Тип уборки'),
                                       null=False, blank=False)
-    property_sort = models.ForeignKey('crmapp.PropertySort', on_delete=models.CASCADE,
+    property_sort = models.ForeignKey('crmapp.PropertySort', on_delete=models.PROTECT,
                                        verbose_name=_('Тип объекта'),
                                       null=False, blank=False)
     unit = models.CharField(max_length=125, verbose_name=_('Единица измерения'),
