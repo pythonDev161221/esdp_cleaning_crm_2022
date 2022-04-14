@@ -3,14 +3,23 @@ from django.db import models
 from django.utils.translation import gettext as _
 
 class Staff(AbstractUser):
-    inn_passport = models.CharField(max_length=20, null=False, blank=False, verbose_name=_('ИНН'))
-    num_passport = models.CharField(max_length=20, null=False, blank=False, verbose_name=_('Номер паспорта'))
+    CATEGORY_CHOICES = [
+        ('Trainee', 'Стажер'),
+        ('Skilled', 'C опытом'),
+        ('Expert', 'Профессионал'),
+    ]
+
+    inn_passport = models.CharField(max_length=20, unique=True, null=False, blank=False, verbose_name=_('ИНН'))
     phone = models.CharField(max_length=20, null=False, blank=False, verbose_name=_('Номер телефона'))
     avatar = models.ImageField(upload_to="avatars/", null=True, blank=True, verbose_name=_('Фото профиля'))
-    schedule = models.ManyToManyField('accounts.WorkDay', null=True, blank=True, verbose_name=_('График работы'))#Нужно переделать
+    schedule = models.ManyToManyField('accounts.WorkDay', null=True, blank=True, verbose_name=_('График работы'))
+    experience = models.CharField(max_length=256, choices=CATEGORY_CHOICES, null=False, blank=False,
+                                  default='Trainee', verbose_name=_('Опыт работы'))
+    black_list = models.BooleanField(default=False, verbose_name=_('В черном списке'))
+
 
     def __str__(self):
-        return f'{self.first_name} --- {self.last_name} --- {self.phone}'
+        return f'{self.first_name} --- {self.last_name} --- {self.experience} --- {self.phone} '
 
     class Meta:
         db_table = 'Staff'
@@ -20,13 +29,13 @@ class Staff(AbstractUser):
 
 class WorkDay(models.Model):
     DAYS_OF_WEEK = (
-        (0, _('Monday')),
-        (1, _('Tuesday')),
-        (2, _('Wednesday')),
-        (3, _('Thursday')),
-        (4, _('Friday')),
-        (5, _('Saturday')),
-        (6, _('Sunday')),
+        (1, _('Monday')),
+        (2, _('Tuesday')),
+        (3, _('Wednesday')),
+        (4, _('Thursday')),
+        (5, _('Friday')),
+        (6, _('Saturday')),
+        (0, _('Sunday')),
     )
     day_of_the_week = models.IntegerField(
         verbose_name=_('day of the week'),

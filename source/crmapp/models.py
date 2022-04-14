@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 from django.utils.translation import gettext as _
@@ -53,7 +54,7 @@ UNIT_CHOICE = (
 
 
 class Service(models.Model):
-    cleaning_sort = models.ForeignKey('crmapp.ClearnichSort', on_delete=models.PROTECT,
+    cleaning_sort = models.ForeignKey('crmapp.CleaningSort', on_delete=models.PROTECT,
                                       verbose_name=_('Тип уборки'),
                                       null=False, blank=False)
     property_sort = models.ForeignKey('crmapp.PropertySort', on_delete=models.PROTECT,
@@ -107,7 +108,8 @@ class Client(models.Model):
         verbose_name_plural = _('Клиенты')
 
 
-class ForemanReport(models.Model): #доп расходы и фото
+class ForemanReport(models.Model):
+    # Таблица для отчёта бригадира имеет связь FK с таблицей Order
     expenses = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Расходы'))
     start_at = models.DateTimeField(verbose_name=_('Дата и время начала работы'))
     end_at = models.DateTimeField(verbose_name=_('Дата и время окончания работы'))
@@ -115,26 +117,46 @@ class ForemanReport(models.Model): #доп расходы и фото
     photo_after = models.ManyToManyField('crmapp.ForemanPhoto', null=True, blank=True, related_name='foreman_photo_after', verbose_name=_('Фото после окончания работ'))
 
 class ForemanPhoto(models.Model):
+    # Таблица для хранения фотографий, имеет связь m2m с таблицей ForemanReport
     image = models.ImageField(upload_to='photo_obj', verbose_name=_('Фото'))
 
 class ForemanOrderUpdate(models.Model):
-    service = models.ManyToManyField('crmapp.TypeOfObjectAndClean', null=True, blank=True, related_name='foreman_service', verbose_name=_('Услуга'))
+    # Таблица для редактирования услуг и доп услуг в заказе для бригадира, имеет связь FK с таблицей Order
+    service = models.ManyToManyField('crmapp.Service', null=True, blank=True, related_name='foreman_service', verbose_name=_('Услуга'))
     extra_service = models.ForeignKey('crmapp.ExtraService', on_delete=models.PROTECT, null=True, blank=True,
                                       related_name='foreman_extra', verbose_name=_('Дополнительная услуга'))
 
-class Order(models.Model):
-    is_finished = models.BooleanField(default=False, verbose_name=_('Завершённая работа')) #Поле для сортировки незавершённых работ
+class Foreman(models.Model):
+    # Таблица для выбора бригади в заказе, в которой указываем денежные моменты, имеет связь FK с таблицей Order
+    staff = models.OneToOneField('accounts.Staff', related_name='foreman', on_delete=models.PROTECT, verbose_name=_('Бригадир'))
+    bonus = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Бонус бригадира'))
+    forfeit = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Штраф бригадира'))
+    salary = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Зарплата'))
+
+class Cleaners(models.Model):
+    # Таблица для выбора клинеров в заказе, имеет связь m2m с таблицей order
+    staff = models.OneToOneField('accounts.Staff', related_name='cleaner', on_delete=models.PROTECT,
+                                 verbose_name=_('Клинер'))
+    forfeit = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Штраф клинера'))
+    salary = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Зарплата'))
+
+
+class Order(models.Model): #Таблица самого заказа
+    # Поле для сортировки незавершённых работ
+    is_finished = models.BooleanField(default=False, verbose_name=_('Завершённая работа'))
+
     #Поля связанные со временем
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата и время создания заказа'))
-    worked_at = models.DateTimeField(verbose_name=_('Дата и время выполнения уборки'))
+    work_start = models.DateTimeField(verbose_name=_('Дата и время выполнения уборки'))
     work_time = models.TimeField(verbose_name=_('Время выполнения работ'))
+    work_time_end = models.TimeField(verbose_name=_('Фактическое время выполнения работ'))
 
     #Информация о клиенте
     client_info = models.ForeignKey('crmapp.Client', on_delete=models.PROTECT, related_name='order_client', verbose_name=_('Информация клиента'))
-    # address = models.
+    address = models.CharField(max_length=256, null=False, blank=False, verbose_name=_('Адрес'))
 
     #Уборки
-    service = models.ManyToManyField('crmapp.TypeOfObjectAndClean',null=True, blank=True, related_name='order_service', verbose_name=_('Услуга'))
+    service = models.ManyToManyField('crmapp.Service',null=True, blank=True, related_name='order_service', verbose_name=_('Услуга'))
     extra_service = models.ForeignKey('crmapp.ExtraService', on_delete=models.PROTECT, null=True, blank=True,
                                       related_name='order_extra', verbose_name=_('Дополнительная услуга'))
 
@@ -143,16 +165,21 @@ class Order(models.Model):
     # soap_washer = models.ForeignKey()
 
     #Поля для Staff
-    manager = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='manager_order', verbose_name=_('Менеджер'))
-    # foreman = models.
-    cleaners = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='cleaners_order', verbose_name=_('Клинеры'))
+    manager = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='manager_order', verbose_name=_('Менеджер'))
+    foreman = models.ForeignKey('crmapp.Foreman', on_delete=models.PROTECT, related_name='foreman_order', null=False,
+                                blank=False, verbose_name=_('Бригадир заказа'))
+    cleaners = models.ManyToManyField('crmapp.Cleaners', related_name='cleaners_order', verbose_name=_('Клинеры'))
     foremen_order = models.ForeignKey('crmapp.ForemanReport', on_delete=models.PROTECT, null=True, blank=True,
                                       verbose_name=_('Отчёт бригадира'))  #таблица для фото и доп расходов
 
     foreman_order_update = models.ForeignKey('crmapp.ForemanOrderUpdate', on_delete=models.PROTECT, null=True, blank=True,
                                              verbose_name=_('Редактирование услуг для бригадира')) #таблица для редактирования услуг для бригадира
 
-
+    review = models.PositiveIntegerField(null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(5)], verbose_name=_('Отзыв'))
     #Финансовая часть
-    # payment_type = models.Choices             #вид оплаты
-    # total_cost = models.PositiveIntegerField()
+    PAYMENT = (
+        (0, _('Наличная оплата')),
+        (1, _('Безналичная оплата'))
+    )
+    payment_type = models.CharField(max_length=100, null=False, blank=False, default=1, choices=PAYMENT, verbose_name=_('Вид оплаты'))             #вид оплаты
+    total_cost = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Общая сумма заказа'))
