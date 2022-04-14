@@ -7,7 +7,7 @@ class Staff(AbstractUser):
     num_passport = models.CharField(max_length=20, null=False, blank=False, verbose_name=_('Номер паспорта'))
     phone = models.CharField(max_length=20, null=False, blank=False, verbose_name=_('Номер телефона'))
     avatar = models.ImageField(upload_to="avatars/", null=True, blank=True, verbose_name=_('Фото профиля'))
-    schedule = models.ManyToManyField('accounts.WorkDay', on_delete=models.PROTECT, null=True, blank=True, verbose_name=_('График работы'))#Нужно переделать
+    schedule = models.ManyToManyField('accounts.WorkDay', null=True, blank=True, verbose_name=_('График работы'))#Нужно переделать
 
     def __str__(self):
         return f'{self.first_name} --- {self.last_name} --- {self.phone}'
