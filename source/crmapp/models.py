@@ -183,30 +183,37 @@ class Order(models.Model): #Таблица самого заказа
 
 
 class Inventory(models.Model):
-    name = models.CharField(max_length=255, verbose_name='название инвентаря')
-    datetime = models.DateTimeField(verbose_name='дата и время')
-    storage = models.CharField(max_length=255, verbose_name='склад')
+    name = models.CharField(max_length=255, verbose_name=_('Инвентарь'), null=False, blank=False)
+    # datetime = models.DateTimeField(verbose_name=_('Дата и время'))
+    # storage = models.CharField(max_length=255, verbose_name=_('Склад'))
 
     def __str__(self):
         return f"{self.name}"
 
     class Meta:
         db_table = "inventory"
-        verbose_name = "инвентарь"
-        verbose_name_plural = "инвентари"
+        verbose_name = _("Инвентарь")
+        verbose_name_plural = _("Инвентари")
+
+
+UNIT_CLEANSEARS_CHOICE = [
+    ('Piece', 'штука'),
+    ('Liter', 'литр'),
+    ('kg', 'килограмм')
+]
 
 
 class Cleansear(models.Model):
-    name = models.CharField(max_length=255, verbose_name='название', null=False, blank=False)
-    description = models.TextField(max_length=510, verbose_name='описание товара', null=False, blank=False)
-    price = models.PositiveIntegerField(verbose_name='цена')
-    balance = models.IntegerField(verbose_name='остаток')
+    name = models.CharField(max_length=255, verbose_name=_('Моющее средство'), null=False, blank=False)
+    description = models.TextField(max_length=510, verbose_name=_('Описание товара'), null=False, blank=False)
+    unit = models.CharField(max_length=126, choices=UNIT_CLEANSEARS_CHOICE, default='Piece',
+                            null=False, blank=False, verbose_name=_('Единица измерения'))
+    price = models.PositiveIntegerField(verbose_name=_('Цена'), null=False, blank=False)
 
     def __str__(self):
-        return f"{self.name}:{self.balance}"
+        return f"{self.name}:{self.price}"
 
     class Meta:
         db_table = "cleansear"
-        verbose_name = "моющее средство"
-        verbose_name_plural = "моющие средства"
-
+        verbose_name = _("Моющее средство")
+        verbose_name_plural = _("Моющие средства")
