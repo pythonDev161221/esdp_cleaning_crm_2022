@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
+from phonenumber_field.modelfields import PhoneNumberField
 from django.utils.translation import gettext as _
 
 
@@ -90,10 +90,7 @@ class PropertySort(models.Model):
 class Client(models.Model):
     first_name = models.CharField(verbose_name=_('Имя'), max_length=75, blank=False, null=False)
     last_name = models.CharField(verbose_name=_('Фамилия'), max_length=75, blank=False, null=False)
-    # поле phone CharField требуется валидатор для проверки минимального количества символов в номере
-    phone = ArrayField(models.CharField(max_length=20, verbose_name=_('Номер телефона'), null=False, blank=False))
-    # поле is_constant требуется уточнение у заказчика
-    #is_constant = models.BooleanField(default=False, verbose_name=_('Статус клиента'),)
+    phone = PhoneNumberField(unique=True, region="KG", max_length=15, verbose_name=_('Номер телефона'))
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} {self.phone}"
