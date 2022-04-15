@@ -41,7 +41,10 @@ INSTALLED_APPS = [
 
     #custom
     'crmapp',
-    'accounts'
+    'accounts',
+
+    #lib app
+    'phonenumber_field'
 ]
 
 MIDDLEWARE = [
