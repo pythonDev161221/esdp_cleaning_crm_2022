@@ -181,6 +181,7 @@ class Order(models.Model): #Таблица самого заказа
     payment_type = models.CharField(max_length=100, null=False, blank=False, default=1, choices=PAYMENT, verbose_name=_('Вид оплаты'))             #вид оплаты
     total_cost = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Общая сумма заказа'))
     
+    
 
 
 class Inventory(models.Model):
