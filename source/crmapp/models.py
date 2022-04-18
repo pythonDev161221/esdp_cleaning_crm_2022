@@ -232,7 +232,7 @@ class Cleansear(models.Model):
 
 
 class ServiceOrder(models.Model):
-    order = models.ForeignKey('crmapp.Order', related_name='services_order', verbose_name=_('Услуга'),
+    order = models.ForeignKey('crmapp.Order', related_name='services_order', verbose_name=_('Заказ'),
                               null=False, blank=False)
     service = models.ForeignKey('crmapp.Service', related_name='services_order', verbose_name=_('Доп. услуга'),
                                 null=False, blank=False)
@@ -251,7 +251,7 @@ class ServiceOrder(models.Model):
 
 
 class ExtraServiceOrder(models.Model):
-    order = models.ForeignKey('crmapp.Order', related_name='services_order', verbose_name=_('Услуга'),
+    order = models.ForeignKey('crmapp.Order', related_name='services_order', verbose_name=_('Заказ'),
                               null=False, blank=False)
     extra_service = models.ForeignKey('crmapp.Service', related_name='extra_services_order', verbose_name=_('Доп. услуга'),
                                 null=False, blank=False)
