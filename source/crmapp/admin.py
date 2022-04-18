@@ -2,8 +2,8 @@ from django.contrib import admin
 
 
 from crmapp.models import ExtraService, CleaningSort, Service, PropertySort, \
-    ComplexityFactor, Client, Inventory, Cleansear
-
+    ComplexityFactor, Client, Inventory, Cleansear, Fine, Bonus, \
+    FineCategory
 
 
 class ExtraServiceAdmin(admin.ModelAdmin):
@@ -17,11 +17,16 @@ class ComplexityFactorAdmin(admin.ModelAdmin):
     list_display_links = ['id', 'name']
     fields = ['name', 'factor', 'description']
 
+
 admin.site.register(ExtraService, ExtraServiceAdmin)
 admin.site.register(ComplexityFactor, ComplexityFactorAdmin)
 admin.site.register(CleaningSort)
 admin.site.register(Service)
 admin.site.register(PropertySort)
 admin.site.register(Client)
+admin.site.register(Fine)
+admin.site.register(FineCategory)
+admin.site.register(Bonus)
 admin.site.register(Inventory)
 admin.site.register(Cleansear)
+
