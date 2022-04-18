@@ -157,10 +157,10 @@ class Order(models.Model): #Таблица самого заказа
 
     #Уборки
     service = models.ManyToManyField('crmapp.Service', null=True, blank=True, related_name='order_service', verbose_name=_('Услуга'),
-                                     through='ServiceOrder')
+                                     through='ServiceOrder', through_fields=('order', 'service'))
     extra_service = models.ManyToManyField('crmapp.ExtraService', on_delete=models.PROTECT, null=True, blank=True,
                                       related_name='order_extra', verbose_name=_('Дополнительная услуга'),
-                                        through='crmapp.ExtraServiceOrder')
+                                        through='crmapp.ExtraServiceOrder', through_fields=('order', 'extra_service'))
 
     #Инвентарь для бригадира
     # inventory = models.ForeignKey()
@@ -258,7 +258,7 @@ class ExtraServiceOrder(models.Model):
     amount = models.IntegerField(max_length=255, verbose_name=_('Объем работы'), null=False, blank=False)
     rate = models.DecimalField(default=1, null=False, blank=False, verbose_name=_('Коэффицент сложности'),
                                validators=[MinValueValidator(1.0), MaxValueValidator(3.0)])
-    total = models.PositiveIntegerField(null=False, blank=False, verbose_name=_('Стоимость услуги'))
+    total = models.PositiveIntegerField(null=False, blank=False, verbose_name=_('Стоимость доп. услуги'))
 
     def __str__(self):
         return f"{self.order} и {self.extra_service}: {self.total}"
