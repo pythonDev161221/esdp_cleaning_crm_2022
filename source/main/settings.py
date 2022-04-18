@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'accounts',
 
     #lib app
-    'phonenumber_field'
+    'phonenumber_field',
+    'fontawesomefree'
 ]
 
 MIDDLEWARE = [
