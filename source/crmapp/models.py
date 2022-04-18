@@ -233,13 +233,13 @@ class Cleansear(models.Model):
 
 class ServiceOrder(models.Model):
     order = models.ForeignKey('crmapp.Order', related_name='services_order', verbose_name=_('Заказ'),
-                              null=False, blank=False)
-    service = models.ForeignKey('crmapp.Service', related_name='services_order', verbose_name=_('Услуга'),
-                                null=False, blank=False)
-    amount = models.IntegerField(max_length=255, verbose_name=_('Объем'), null=False, blank=False)
+                              null=False, blank=False, on_delete=models.PROTECT)
+    service = models.ForeignKey('crmapp.Service', related_name='services_service', verbose_name=_('Услуга'),
+                                null=False, blank=False, on_delete=models.PROTECT)
+    amount = models.IntegerField(max_length=255, verbose_name=_('Объем работы'), null=False, blank=False)
     rate = models.DecimalField(default=1, null=False, blank=False, verbose_name=_('Коэффицент сложности'),
                                validators=[MinValueValidator(1.0), MaxValueValidator(3.0)])
-    total = models.PositiveIntegerField()
+    total = models.PositiveIntegerField(null=False, blank=False, verbose_name=_('Стоимость услуги'))
 
     def __str__(self):
         return f"{self.order} и {self.service}: {self.total}"
@@ -251,14 +251,14 @@ class ServiceOrder(models.Model):
 
 
 class ExtraServiceOrder(models.Model):
-    order = models.ForeignKey('crmapp.Order', related_name='services_order', verbose_name=_('Заказ'),
-                              null=False, blank=False)
-    extra_service = models.ForeignKey('crmapp.Service', related_name='extra_services_order', verbose_name=_('Доп. услуга'),
-                                null=False, blank=False)
-    amount = models.IntegerField(max_length=255, verbose_name=_('Объем'), null=False, blank=False)
+    order = models.ForeignKey('crmapp.Order', related_name='extra_services_order', verbose_name=_('Заказ'),
+                              null=False, blank=False, on_delete=models.PROTECT)
+    extra_service = models.ForeignKey('crmapp.Service', related_name='extra_services_service', verbose_name=_('Доп. услуга'),
+                                null=False, blank=False, on_delete=models.PROTECT)
+    amount = models.IntegerField(max_length=255, verbose_name=_('Объем работы'), null=False, blank=False)
     rate = models.DecimalField(default=1, null=False, blank=False, verbose_name=_('Коэффицент сложности'),
                                validators=[MinValueValidator(1.0), MaxValueValidator(3.0)])
-    total = models.PositiveIntegerField()
+    total = models.PositiveIntegerField(null=False, blank=False, verbose_name=_('Стоимость услуги'))
 
     def __str__(self):
         return f"{self.order} и {self.extra_service}: {self.total}"
