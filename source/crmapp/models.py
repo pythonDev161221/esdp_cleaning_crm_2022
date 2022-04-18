@@ -55,15 +55,18 @@ UNIT_CHOICE = (
 
 class Service(models.Model):
     cleaning_sort = models.ForeignKey('crmapp.CleaningSort', on_delete=models.PROTECT,
+                                      related_name='services',
                                       verbose_name=_('Тип уборки'),
                                       null=False, blank=False)
     property_sort = models.ForeignKey('crmapp.PropertySort', on_delete=models.PROTECT,
+                                      related_name='services',
                                        verbose_name=_('Тип объекта'),
                                       null=False, blank=False)
     unit = models.CharField(max_length=125, verbose_name=_('Единица измерения'),
                             choices=UNIT_CHOICE, default='Square meter',
                             null=False, blank=False)
     price = models.PositiveIntegerField(verbose_name=_('Цена'), null=False, blank=False)
+
 
     def __str__(self):
         return f"{self.property_sort} {self.cleaning_sort} {self.price}"
@@ -153,9 +156,11 @@ class Order(models.Model): #Таблица самого заказа
     address = models.CharField(max_length=256, null=False, blank=False, verbose_name=_('Адрес'))
 
     #Уборки
-    service = models.ManyToManyField('crmapp.Service',null=True, blank=True, related_name='order_service', verbose_name=_('Услуга'))
-    extra_service = models.ForeignKey('crmapp.ExtraService', on_delete=models.PROTECT, null=True, blank=True,
-                                      related_name='order_extra', verbose_name=_('Дополнительная услуга'))
+    service = models.ManyToManyField('crmapp.Service', null=True, blank=True, related_name='order_service', verbose_name=_('Услуга'),
+                                     through='ServiceOrder')
+    extra_service = models.ManyToManyField('crmapp.ExtraService', on_delete=models.PROTECT, null=True, blank=True,
+                                      related_name='order_extra', verbose_name=_('Дополнительная услуга'),
+                                        through='crmapp.ExtraServiceOrder')
 
     #Инвентарь для бригадира
     # inventory = models.ForeignKey()
@@ -224,3 +229,42 @@ class Cleansear(models.Model):
         db_table = "cleansear"
         verbose_name = _("Моющее средство")
         verbose_name_plural = _("Моющие средства")
+
+
+class ServiceOrder(models.Model):
+    order = models.ForeignKey('crmapp.Order', related_name='services_order', verbose_name=_('Услуга'),
+                              null=False, blank=False)
+    service = models.ForeignKey('crmapp.Service', related_name='services_order', verbose_name=_('Доп. услуга'),
+                                null=False, blank=False)
+    amount = models.IntegerField(max_length=255, verbose_name=_('Объем'), null=False, blank=False)
+    rate = models.DecimalField(default=1, null=False, blank=False, verbose_name=_('Коэффицент сложности'),
+                               validators=[MinValueValidator(1.0), MaxValueValidator(3.0)])
+    total = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"{self.order} и {self.service}: {self.total}"
+
+    class Meta:
+        db_table = "service_order"
+        verbose_name = _("Заказ услуги")
+        verbose_name_plural = _("Заказ услуг")
+
+
+class ExtraServiceOrder(models.Model):
+    order = models.ForeignKey('crmapp.Order', related_name='services_order', verbose_name=_('Услуга'),
+                              null=False, blank=False)
+    extra_service = models.ForeignKey('crmapp.Service', related_name='extra_services_order', verbose_name=_('Доп. услуга'),
+                                null=False, blank=False)
+    amount = models.IntegerField(max_length=255, verbose_name=_('Объем'), null=False, blank=False)
+    rate = models.DecimalField(default=1, null=False, blank=False, verbose_name=_('Коэффицент сложности'),
+                               validators=[MinValueValidator(1.0), MaxValueValidator(3.0)])
+    total = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"{self.order} и {self.extra_service}: {self.total}"
+
+    class Meta:
+        db_table = "extra_service_order"
+        verbose_name = _("Заказ доп. услуги")
+        verbose_name_plural = _("Заказ доп. услуг")
+
