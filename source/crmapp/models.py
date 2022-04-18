@@ -112,9 +112,9 @@ class ForemanReport(models.Model):
     expenses = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Расходы'))
     start_at = models.DateTimeField(verbose_name=_('Дата и время начала работы'))
     end_at = models.DateTimeField(verbose_name=_('Дата и время окончания работы'))
-    photo_before = models.ManyToManyField('crmapp.ForemanPhoto', null=True, blank=True,
+    photo_before = models.ManyToManyField('crmapp.ForemanPhoto',
                                           related_name='foreman_photo_before', verbose_name=_('Фото до начала работ'))
-    photo_after = models.ManyToManyField('crmapp.ForemanPhoto', null=True, blank=True,
+    photo_after = models.ManyToManyField('crmapp.ForemanPhoto',
                                          related_name='foreman_photo_after',
                                          verbose_name=_('Фото после окончания работ'))
 
@@ -126,7 +126,7 @@ class ForemanPhoto(models.Model):
 
 class ForemanOrderUpdate(models.Model):
     # Таблица для редактирования услуг и доп услуг в заказе для бригадира, имеет связь FK с таблицей Order
-    service = models.ManyToManyField('crmapp.Service', null=True, blank=True, related_name='foreman_service',
+    service = models.ManyToManyField('crmapp.Service', related_name='foreman_service',
                                      verbose_name=_('Услуга'))
     extra_service = models.ForeignKey('crmapp.ExtraService', on_delete=models.PROTECT, null=True, blank=True,
                                       related_name='foreman_extra', verbose_name=_('Дополнительная услуга'))
@@ -134,7 +134,7 @@ class ForemanOrderUpdate(models.Model):
 
 class Foreman(models.Model):
     # Таблица для выбора бригади в заказе, в которой указываем денежные моменты, имеет связь FK с таблицей Order
-    staff = models.OneToOneField('accounts.Staff', related_name='foreman', on_delete=models.PROTECT,
+    staff = models.ForeignKey('accounts.Staff', related_name='foreman', on_delete=models.PROTECT,
                                  verbose_name=_('Бригадир'))
     bonus = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Бонус бригадира'))
     forfeit = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Штраф бригадира'))
@@ -143,7 +143,7 @@ class Foreman(models.Model):
 
 class Cleaners(models.Model):
     # Таблица для выбора клинеров в заказе, имеет связь m2m с таблицей order
-    staff = models.OneToOneField('accounts.Staff', related_name='cleaner', on_delete=models.PROTECT,
+    staff = models.ForeignKey('accounts.Staff', related_name='cleaner', on_delete=models.PROTECT,
                                  verbose_name=_('Клинер'))
     forfeit = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Штраф клинера'))
     salary = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Зарплата'))
@@ -165,13 +165,10 @@ class Order(models.Model):  # Таблица самого заказа
     address = models.CharField(max_length=256, null=False, blank=False, verbose_name=_('Адрес'))
 
     # Уборки
-    service = models.ManyToManyField('crmapp.Service', null=True, blank=True, related_name='order_service',
-                                     verbose_name=_('Услуга'),
-                                     through='ServiceOrder', through_fields=('order', 'service'))
-    extra_service = models.ManyToManyField('crmapp.ExtraService', on_delete=models.PROTECT, null=True, blank=True,
-                                           related_name='order_extra', verbose_name=_('Дополнительная услуга'),
-                                           through='crmapp.ExtraServiceOrder',
-                                           through_fields=('order', 'extra_service'))
+    service = models.ManyToManyField('crmapp.ServiceOrder', related_name='order_service',
+                                     verbose_name=_('Услуга'))
+    extra_service = models.ManyToManyField('crmapp.ExtraServiceOrder',
+                                           related_name='order_extra', verbose_name=_('Дополнительная услуга'))
 
     # Инвентарь для бригадира
     # inventory = models.ForeignKey()
@@ -285,17 +282,16 @@ class Cleansear(models.Model):
 
 
 class ServiceOrder(models.Model):
-    order = models.ForeignKey('crmapp.Order', related_name='services_order', verbose_name=_('Заказ'),
-                              null=False, blank=False, on_delete=models.PROTECT)
     service = models.ForeignKey('crmapp.Service', related_name='services_service', verbose_name=_('Услуга'),
                                 null=False, blank=False, on_delete=models.PROTECT)
-    amount = models.IntegerField(max_length=255, verbose_name=_('Объем работы'), null=False, blank=False)
+    amount = models.IntegerField(verbose_name=_('Объем работы'), null=False, blank=False)
     rate = models.DecimalField(default=1, null=False, blank=False, verbose_name=_('Коэффицент сложности'),
+                               max_digits=2, decimal_places=1,
                                validators=[MinValueValidator(1.0), MaxValueValidator(3.0)])
     total = models.PositiveIntegerField(null=False, blank=False, verbose_name=_('Стоимость услуги'))
 
     def __str__(self):
-        return f"{self.order} и {self.service}: {self.total}"
+        return f"{self.service}: {self.total}"
 
     class Meta:
         db_table = "service_order"
@@ -304,18 +300,17 @@ class ServiceOrder(models.Model):
 
 
 class ExtraServiceOrder(models.Model):
-    order = models.ForeignKey('crmapp.Order', related_name='extra_services_order', verbose_name=_('Заказ'),
-                              null=False, blank=False, on_delete=models.PROTECT)
     extra_service = models.ForeignKey('crmapp.Service', related_name='extra_services_service',
                                       verbose_name=_('Доп. услуга'),
                                       null=False, blank=False, on_delete=models.PROTECT)
-    amount = models.IntegerField(max_length=255, verbose_name=_('Объем работы'), null=False, blank=False)
+    amount = models.IntegerField(verbose_name=_('Объем работы'), null=False, blank=False)
     rate = models.DecimalField(default=1, null=False, blank=False, verbose_name=_('Коэффицент сложности'),
+                               max_digits=2, decimal_places=1,
                                validators=[MinValueValidator(1.0), MaxValueValidator(3.0)])
     total = models.PositiveIntegerField(null=False, blank=False, verbose_name=_('Стоимость доп. услуги'))
 
     def __str__(self):
-        return f"{self.order} и {self.extra_service}: {self.total}"
+        return f"{self.extra_service}: {self.total}"
 
     class Meta:
         db_table = "extra_service_order"
