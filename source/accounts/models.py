@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext as _
 
+
 class Staff(AbstractUser):
     CATEGORY_CHOICES = [
         ('Trainee', 'Стажер'),
@@ -16,7 +17,6 @@ class Staff(AbstractUser):
     experience = models.CharField(max_length=256, choices=CATEGORY_CHOICES, null=False, blank=False,
                                   default='Trainee', verbose_name=_('Опыт работы'))
     black_list = models.BooleanField(default=False, verbose_name=_('В черном списке'))
-
 
     def __str__(self):
         return f'{self.first_name} --- {self.last_name} --- {self.experience} --- {self.phone} '

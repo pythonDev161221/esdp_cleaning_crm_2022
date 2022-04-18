@@ -8,6 +8,7 @@ class MyUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         fields = ("username", "password1", "password2", "email", "first_name", "last_name")
 
+
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Staff
