@@ -186,10 +186,48 @@ class Order(models.Model): #Таблица самого заказа
     payment_type = models.CharField(max_length=100, null=False, blank=False, default=1, choices=PAYMENT, verbose_name=_('Вид оплаты'))             #вид оплаты
     total_cost = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Общая сумма заказа'))
 
-    
-    
+
+class FineCategory(models.Model):
+    name = models.CharField(max_length=255, null=True, blank=True, verbose_name=_('Категория'))
+
+    def __str__(self):
+        return f'{self.name}'
+
+    class Meta:
+        db_table = 'fine_category'
+        verbose_name = _('Категория для штрафа')
+        verbose_name_plural = _('Категории для штрафа')
 
 
+class Fine(models.Model):
+    category = models.ForeignKey('crmapp.FineCategory', on_delete=models.PROTECT, null=True, blank=True, related_name='fines', verbose_name=_('Категория'))
+    fine = models.CharField(max_length=300, null=True, blank=True, verbose_name=_('Штраф'))
+    criteria = models.CharField(max_length=255, null=True, blank=True, verbose_name=_('Критерий'))
+    value = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name=_('Сумма штрафа'))
+    description = models.TextField(max_length=500, blank=True, null=True, verbose_name=_('Пояснение'))
+
+    def __str__(self):
+        return f"{self.fine} - {self.value}"
+
+    class Meta:
+        db_table = 'fine'
+        verbose_name = _('Штраф')
+        verbose_name_plural = _('Штрафы')
+
+
+class Bonus(models.Model):
+    bonus = models.CharField(max_length=300, null=True, blank=True, verbose_name=_('Бонус'))
+    value = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name=_('Сумма бонуса'))
+
+    def __str__(self):
+        return f"{self.bonus} - {self.value}"
+
+    class Meta:
+        db_table = 'bonus'
+        verbose_name = _('Бонус')
+        verbose_name_plural = _('Бонусы')
+
+    
 class Inventory(models.Model):
     name = models.CharField(max_length=255, verbose_name=_('Инвентарь'), null=False, blank=False)
     # datetime = models.DateTimeField(verbose_name=_('Дата и время'))
@@ -267,4 +305,3 @@ class ExtraServiceOrder(models.Model):
         db_table = "extra_service_order"
         verbose_name = _("Заказ доп. услуги")
         verbose_name_plural = _("Заказ доп. услуг")
-
