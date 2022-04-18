@@ -1,7 +1,9 @@
 from django.contrib import admin
 
 
-from crmapp.models import ExtraService, CleaningSort, Service, PropertySort, ComplexityFactor, Client
+from crmapp.models import ExtraService, CleaningSort, Service, PropertySort, \
+    ComplexityFactor, Client, Inventory, Cleansear
+
 
 
 class ExtraServiceAdmin(admin.ModelAdmin):
@@ -21,3 +23,5 @@ admin.site.register(CleaningSort)
 admin.site.register(Service)
 admin.site.register(PropertySort)
 admin.site.register(Client)
+admin.site.register(Inventory)
+admin.site.register(Cleansear)
