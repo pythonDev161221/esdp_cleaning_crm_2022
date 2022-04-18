@@ -234,7 +234,7 @@ class Cleansear(models.Model):
 class ServiceOrder(models.Model):
     order = models.ForeignKey('crmapp.Order', related_name='services_order', verbose_name=_('Заказ'),
                               null=False, blank=False)
-    service = models.ForeignKey('crmapp.Service', related_name='services_order', verbose_name=_('Доп. услуга'),
+    service = models.ForeignKey('crmapp.Service', related_name='services_order', verbose_name=_('Услуга'),
                                 null=False, blank=False)
     amount = models.IntegerField(max_length=255, verbose_name=_('Объем'), null=False, blank=False)
     rate = models.DecimalField(default=1, null=False, blank=False, verbose_name=_('Коэффицент сложности'),
