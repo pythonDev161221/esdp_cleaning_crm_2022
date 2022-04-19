@@ -10,6 +10,7 @@ psycopg2 = "*"
 pillow = "*"
 django-phonenumber-field = "*"
 phonenumbers = "*"
+fontawesomefree = "*"
 
 [dev-packages]
 

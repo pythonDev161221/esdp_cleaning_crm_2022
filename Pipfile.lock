@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "c4adcec64461eb80659d05d19704f8d79e9f70b909d5e7fe8dcbb37a45692d23"
+            "sha256": "7b92621304e96aa9b240e7999c87264338b01336578e0849b1342a9390970802"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -47,6 +47,13 @@
             ],
             "index": "pypi",
             "version": "==6.1.0"
+        },
+        "fontawesomefree": {
+            "hashes": [
+                "sha256:b077739369c013e8c8cf5edd59cb7fca3a5b16803d632cd466a62fd2e28937cb"
+            ],
+            "index": "pypi",
+            "version": "==6.1.1"
         },
         "phonenumbers": {
             "hashes": [
@@ -124,14 +131,6 @@
             ],
             "markers": "python_version >= '3.5'",
             "version": "==0.4.2"
-        },
-        "tzdata": {
-            "hashes": [
-                "sha256:238e70234214138ed7b4e8a0fab0e5e13872edab3be586ab8198c407620e2ab9",
-                "sha256:8b536a8ec63dc0751342b3984193a3118f8fca2afe25752bb9b7fffd398552d3"
-            ],
-            "markers": "sys_platform == 'win32'",
-            "version": "==2022.1"
         }
     },
     "develop": {}
