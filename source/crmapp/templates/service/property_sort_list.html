@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 
-{% block title %}Список объектов{% endblock title %}
+{% block title %}Список типов объекта{% endblock title %}
+
+{% block links %}
+{% include 'partial/service_links.html' %}
+{% endblock links %}
 
 {% block content %}
 <div class="container">
     <div class="row fw-bold">
-        <div class="col order-1">Вид уборки</div>
+        <div class="col order-1">Тип объекта уборки</div>
         <div class="col order-2"></div>
         <div class="col order-3"></div>
     </div>
@@ -20,7 +24,7 @@
     </div>
     </div>
 {% endfor %}
-</div>
+<div>
     <a href="{% url 'crmapp:property_sort_create'%}" class="w-100 btn btn-primary">Добавить тип объекта</a>
 </div>
 </div>

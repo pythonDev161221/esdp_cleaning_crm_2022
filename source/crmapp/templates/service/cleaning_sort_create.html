@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Изменение типа объекта{% endblock title %}
+{% block title %}Добавление вида уборки{% endblock title %}
 
 {% block links %}
 {% include 'partial/service_links.html' %}
@@ -8,10 +8,10 @@
 
 {% block content %}
 <div class="container">
-<h1>Изменить тип объекта</h1>
+<h1>Новый вид уборки</h1>
     <form method="POST" class="mb-5">
         {% csrf_token %}
-        {% include 'partial/form.html' with button_text='Обновить' %}
+        {% include 'partial/form.html' with button_text='Добавить' %}
     </form>
 </div>
 {% endblock content %}

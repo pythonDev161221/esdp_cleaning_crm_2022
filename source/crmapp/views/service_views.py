@@ -1,8 +1,8 @@
 from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView, DetailView
 
-from crmapp.forms import ServiceForm, PropertySortForm
-from crmapp.models import Service, PropertySort
+from crmapp.forms import ServiceForm, PropertySortForm, CleaningSortForm
+from crmapp.models import Service, PropertySort, CleaningSort
 
 
 class ServiceListView(ListView):
@@ -58,3 +58,30 @@ class PropertySortDeleteView(DeleteView):
     template_name = 'service/property_sort_delete.html'
     context_object_name = 'property_sort'
     success_url = reverse_lazy('crmapp:property_sort_list')
+
+
+class CleaningSortListView(ListView):
+    model = CleaningSort
+    context_object_name = 'cleaning_sorts'
+    template_name = 'service/cleaning_sort_list.html'
+
+
+class CleaningSortCreateView(CreateView):
+    model = CleaningSort
+    form_class = CleaningSortForm
+    success_url = reverse_lazy('crmapp:cleaning_sort_list')
+    template_name = 'service/cleaning_sort_create.html'
+
+
+class CleaningSortUpdateView(UpdateView):
+    model = CleaningSort
+    form_class = CleaningSortForm
+    success_url = reverse_lazy('crmapp:cleaning_sort_list')
+    template_name = 'service/cleaning_sort_update.html'
+
+
+class CleaningSortDeleteView(DeleteView):
+    model = CleaningSort
+    success_url = reverse_lazy('crmapp:cleaning_sort_list')
+    context_object_name = 'cleaning_sort'
+    template_name = 'service/cleaning_sort_delete.html'

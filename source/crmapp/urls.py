@@ -2,7 +2,8 @@ from django.urls import path, include
 
 from crmapp.views.client_views import ClientCreateView, ClientListView, ClientUpdateView
 from crmapp.views.service_views import ServiceListView, ServiceCreateView, ServiceUpdateView, ServiceDeleteView, \
-    PropertySortListView, PropertySortCreateView, PropertySortUpdateView, PropertySortDeleteView
+    PropertySortListView, PropertySortCreateView, PropertySortUpdateView, PropertySortDeleteView, CleaningSortListView, \
+    CleaningSortCreateView, CleaningSortUpdateView, CleaningSortDeleteView
 
 app_name = 'crmapp'
 
@@ -26,9 +27,17 @@ property_sort_urlpatterns = [
     path('delete/<int:pk>/', PropertySortDeleteView.as_view(), name='property_sort_delete'),
 ]
 
+cleaning_sort_urlpatterns = [
+    path('list/', CleaningSortListView.as_view(), name='cleaning_sort_list'),
+    path('create/', CleaningSortCreateView.as_view(), name='cleaning_sort_create'),
+    path('update/<int:pk>/', CleaningSortUpdateView.as_view(), name='cleaning_sort_update'),
+    path('delete/<int:pk>/', CleaningSortDeleteView.as_view(), name='cleaning_sort_delete'),
+]
+
 urlpatterns = [
     path('client/', include(client_urlpatterns)),
     path('service/', include(service_urlpatterns)),
     path('property_sort/', include(property_sort_urlpatterns)),
+    path('cleaning_sort/', include(cleaning_sort_urlpatterns)),
 ]
 
