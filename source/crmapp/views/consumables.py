@@ -1,8 +1,8 @@
 from django.urls import reverse
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
-from crmapp.forms import InventoryForm
-from crmapp.models import Inventory
+from crmapp.forms import InventoryForm, CleansearForm
+from crmapp.models import Inventory, Cleansear
 
 
 class InventoryListView(ListView):
@@ -29,3 +29,31 @@ class InventoryDeleteView(DeleteView):
 
     def get_success_url(self):
         return reverse("crmapp:inventory_index")
+
+
+
+
+class CleansearListView(ListView):
+    model = Cleansear
+    context_object_name = 'cleansears'
+    template_name = 'consumables/cleansear_list.html'
+
+
+class CleansearCreateView(CreateView):
+    model = Cleansear
+    form_class = CleansearForm
+    template_name = 'consumables/create.html'
+
+
+class CleansearUpdateView(UpdateView):
+    model = Cleansear
+    form_class = CleansearForm
+    template_name = 'consumables/update.html'
+
+
+class CleansearDeleteView(DeleteView):
+    model = Cleansear
+    template_name = "consumables/delete.html"
+
+    def get_success_url(self):
+        return reverse("crmapp:cleansear_index")

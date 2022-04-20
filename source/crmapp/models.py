@@ -265,7 +265,7 @@ class Inventory(models.Model):
 
 
 UNIT_CLEANSEARS_CHOICE = [
-    ('Piece', 'штука'),
+    ('Piece', 'шт'),
     ('Liter', 'литр'),
     ('kg', 'килограмм')
 ]
@@ -278,6 +278,9 @@ class Cleansear(models.Model):
                             null=False, blank=False, verbose_name=_('Единица измерения'))
     price = models.PositiveIntegerField(verbose_name=_('Цена'), null=False, blank=False)
     amount = models.IntegerField(verbose_name=_('Количество'), null=False, blank=False)
+
+    def get_absolute_url(self):
+        return reverse('crmapp:cleansear_index')
 
     def __str__(self):
         return f"{self.name}:{self.price}"

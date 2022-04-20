@@ -1,7 +1,8 @@
 from django.urls import path, include
 
 from crmapp.views.client_views import ClientCreateView, ClientListView, ClientUpdateView
-from crmapp.views.consumables import InventoryListView, InventoryCreateView, InventoryUpdateView, InventoryDeleteView
+from crmapp.views.consumables import InventoryListView, InventoryCreateView, InventoryUpdateView, InventoryDeleteView, \
+    CleansearListView, CleansearCreateView, CleansearUpdateView, CleansearDeleteView
 
 app_name = 'crmapp'
 
@@ -15,11 +16,16 @@ consumables_urlpatterns = [
     path('inventory/all/', InventoryListView.as_view(), name='inventory_index'),
     path('inventory/create/', InventoryCreateView.as_view(), name='inventory_create'),
     path('inventory/up/<int:pk>/', InventoryUpdateView.as_view(), name='inventory_update'),
-    path('inventory/delete/<int:pk>/', InventoryDeleteView.as_view(), name='inventory_delete')
+    path('inventory/delete/<int:pk>/', InventoryDeleteView.as_view(), name='inventory_delete'),
+
+    path('cleansear/all/', CleansearListView.as_view(), name='cleansear_index'),
+    path('cleansear/create/', CleansearCreateView.as_view(), name='cleansear_create'),
+    path('cleansear/up/<int:pk>/', CleansearUpdateView.as_view(), name='cleansear_update'),
+    path('cleansear/delete/<int:pk>/', CleansearDeleteView.as_view(), name='cleansear_delete')
 ]
 
 urlpatterns = [
     path('client/', include(client_urlpatterns)),
-    path('consumables/', include(consumables_urlpatterns))
+    path('consumables/', include(consumables_urlpatterns)),
 ]
 
