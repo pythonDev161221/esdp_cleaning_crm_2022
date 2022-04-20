@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Список объектов{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <div class="row fw-bold">
+        <div class="col order-1">Вид уборки</div>
+        <div class="col order-2"></div>
+        <div class="col order-3"></div>
+    </div>
+{% for property_sort in property_sorts.all %}
+    <div class="row">
+    <div class="col order-1">{{ property_sort.name }}</div>
+    <div class="col order-2 my-1">
+        <a href="{% url 'crmapp:property_sort_update' property_sort.pk %}" class="btn btn-warning">Изменить</a>
+    </div>
+    <div class="col order-3 my-1">
+        <a href="{% url 'crmapp:property_sort_delete' property_sort.pk %}" class="btn btn-danger">Удалить</a>
+    </div>
+    </div>
+{% endfor %}
+</div>
+    <a href="{% url 'crmapp:property_sort_create'%}" class="w-100 btn btn-primary">Добавить тип объекта</a>
+</div>
+</div>
+{% endblock content %}

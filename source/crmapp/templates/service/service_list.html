@@ -2,6 +2,12 @@
 
 {% block title %}Список услуг{% endblock title %}
 
+{% block links %}
+<li class="nav-item">
+    <a href="{% url 'crmapp:property_sort_list' %}" class="nav-link">Тип объекта</a>
+</li>
+{% endblock links %}
+
 {% block content %}
 <div class="container">
 <div class="row fw-bold">
