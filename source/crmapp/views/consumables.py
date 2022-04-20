@@ -1,5 +1,5 @@
 from django.urls import reverse
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 
 from crmapp.forms import InventoryForm, CleansearForm
 from crmapp.models import Inventory, Cleansear
@@ -38,6 +38,9 @@ class CleansearListView(ListView):
     context_object_name = 'cleansears'
     template_name = 'consumables/cleansear_list.html'
 
+class CleansearDetailView(DetailView):
+    model = Cleansear
+    template_name = 'consumables/cleansear_detail.html'
 
 class CleansearCreateView(CreateView):
     model = Cleansear

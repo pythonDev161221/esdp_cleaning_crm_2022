@@ -17,7 +17,7 @@
                 {% for c in cleansears %}
                     <tr>
                         <th scope="row">{{ c.id }}</th>
-                        <td>{{ c.name }}</td>
+                        <td><a href="{% url 'crmapp:cleansear_detail' c.id %}">{{ c.name }}</a></td>
                         <td>{{ c.amount }} {{ c.get_unit_display }}</td>
                         <td>{{ c.price }}</td>
                         <td><a href="{% url 'crmapp:cleansear_update' c.id %}">Редактировать</a></td>
