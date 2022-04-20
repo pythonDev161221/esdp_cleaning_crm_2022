@@ -1,4 +1,3 @@
-from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from crmapp.models import ExtraService
@@ -17,7 +16,7 @@ class ExtraServiceCreateView(CreateView):
     template_name = "extra_service/create.html"
 
     def get_success_url(self):
-        return redirect("crmapp:extra_service_index")
+        return reverse("crmapp:extra_service_index")
 
 
 class ExtraServiceUpdateView(UpdateView):
@@ -26,7 +25,7 @@ class ExtraServiceUpdateView(UpdateView):
     template_name = "extra_service/update.html"
 
     def get_success_url(self):
-        return redirect("crmapp:extra_service_index")
+        return reverse("crmapp:extra_service_index")
 
 
 class ExtraServiceDeleteView(DeleteView):
