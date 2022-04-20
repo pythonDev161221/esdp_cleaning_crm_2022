@@ -113,6 +113,8 @@ class Client(models.Model):
 
 class ForemanReport(models.Model):
     # Таблица для отчёта бригадира имеет связь FK с таблицей Order
+    order = models.ForeignKey('crmapp.Order', on_delete=models.PROTECT, null=False, blank=False,
+                              related_name='foreman_order_report', verbose_name=_('Заказ'))
     expenses = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Расходы'))
     start_at = models.DateTimeField(verbose_name=_('Дата и время начала работы'))
     end_at = models.DateTimeField(verbose_name=_('Дата и время окончания работы'))
@@ -130,6 +132,8 @@ class ForemanPhoto(models.Model):
 
 class ForemanOrderUpdate(models.Model):
     # Таблица для редактирования услуг и доп услуг в заказе для бригадира, имеет связь FK с таблицей Order
+    order = models.ForeignKey('crmapp.Order', on_delete=models.PROTECT, null=False, blank=False,
+                              related_name='foreman_order_update', verbose_name=_('Заказ'))
     service = models.ManyToManyField('crmapp.Service', related_name='foreman_service',
                                      verbose_name=_('Услуга'))
     extra_service = models.ForeignKey('crmapp.ExtraService', on_delete=models.PROTECT, null=True, blank=True,
@@ -175,8 +179,10 @@ class Order(models.Model):  # Таблица самого заказа
                                            related_name='order_extra', verbose_name=_('Дополнительная услуга'))
 
     # Инвентарь для бригадира
-    # inventory = models.ForeignKey()
-    # soap_washer = models.ForeignKey()
+    inventory = models.ForeignKey('crmapp.Inventory', on_delete=models.PROTECT, related_name='order_inventory',
+                                  null=False, blank=False, verbose_name=_('Инвентарь заказа'))
+    soap_washer = models.ForeignKey('crmapp.Cleansear', on_delete=models.PROTECT, related_name='order_cleansear',
+                                  null=False, blank=False, verbose_name=_('Мыломойка заказа'))
 
     # Поля для Staff
     manager = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='manager_order',
@@ -184,13 +190,6 @@ class Order(models.Model):  # Таблица самого заказа
     foreman = models.ForeignKey('crmapp.Foreman', on_delete=models.PROTECT, related_name='foreman_order', null=False,
                                 blank=False, verbose_name=_('Бригадир заказа'))
     cleaners = models.ManyToManyField('crmapp.Cleaners', related_name='cleaners_order', verbose_name=_('Клинеры'))
-    foremen_order = models.ForeignKey('crmapp.ForemanReport', on_delete=models.PROTECT, null=True, blank=True,
-                                      verbose_name=_('Отчёт бригадира'))  # таблица для фото и доп расходов
-    # таблица для редактирования услуг для бригадира
-    foreman_order_update = models.ForeignKey('crmapp.ForemanOrderUpdate', on_delete=models.PROTECT, null=True,
-                                             blank=True,
-                                             verbose_name=_(
-                                                 'Редактирование услуг для бригадира'))
 
     review = models.PositiveIntegerField(null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(5)],
                                          verbose_name=_('Отзыв'))
