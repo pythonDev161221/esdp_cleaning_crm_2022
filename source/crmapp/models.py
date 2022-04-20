@@ -134,9 +134,9 @@ class ForemanOrderUpdate(models.Model):
     # Таблица для редактирования услуг и доп услуг в заказе для бригадира, имеет связь FK с таблицей Order
     order = models.ForeignKey('crmapp.Order', on_delete=models.PROTECT, null=False, blank=False,
                               related_name='foreman_order_update', verbose_name=_('Заказ'))
-    service = models.ManyToManyField('crmapp.Service', related_name='foreman_service',
+    service = models.ManyToManyField('crmapp.ServiceOrder', related_name='foreman_service',
                                      verbose_name=_('Услуга'))
-    extra_service = models.ForeignKey('crmapp.ExtraService', on_delete=models.PROTECT, null=True, blank=True,
+    extra_service = models.ForeignKey('crmapp.ExtraServiceOrder', on_delete=models.PROTECT, null=True, blank=True,
                                       related_name='foreman_extra', verbose_name=_('Дополнительная услуга'))
 
 
