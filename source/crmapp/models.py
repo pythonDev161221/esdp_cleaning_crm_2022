@@ -252,6 +252,9 @@ class Inventory(models.Model):
     # storage = models.CharField(max_length=255, verbose_name=_('Склад'))
     amount = models.IntegerField(verbose_name=_('Количество'), null=False, blank=False)
 
+    def get_absolute_url(self):
+        return reverse('crmapp:inventory_index')
+
     def __str__(self):
         return f"{self.name}"
 
