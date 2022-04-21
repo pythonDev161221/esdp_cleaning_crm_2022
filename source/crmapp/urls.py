@@ -3,6 +3,8 @@ from django.urls import path, include
 from crmapp.views.client_views import ClientCreateView, ClientListView, ClientUpdateView
 from crmapp.views.consumables import InventoryListView, InventoryCreateView, InventoryUpdateView, InventoryDeleteView, \
     CleansearListView, CleansearCreateView, CleansearUpdateView, CleansearDeleteView, CleansearDetailView
+from crmapp.views.extra_service_views import ExtraServiceListView, ExtraServiceCreateView, ExtraServiceUpdateView, ExtraServiceDeleteView
+
 
 app_name = 'crmapp'
 
@@ -27,8 +29,16 @@ consumables_urlpatterns = [
 
 
 
+extra_service_urlpatterns = [
+    path("", ExtraServiceListView.as_view(), name="extra_service_index"),
+    path("create/", ExtraServiceCreateView.as_view(), name="extra_service_create"),
+    path("<int:pk>/update/", ExtraServiceUpdateView.as_view(), name="extra_service_update"),
+    path("<int:pk>/delete/", ExtraServiceDeleteView.as_view(), name="extra_service_delete")
+]
+
 urlpatterns = [
     path('client/', include(client_urlpatterns)),
+    path('extra-service/', include(extra_service_urlpatterns)),
     path('consumables/', include(consumables_urlpatterns)),
 ]
 

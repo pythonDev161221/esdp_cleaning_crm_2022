@@ -1,7 +1,6 @@
 from django import forms
-from django.forms import inlineformset_factory
 
-from crmapp.models import Inventory, Cleansear, Client, ForemanOrderUpdate, ServiceOrder, ExtraServiceOrder
+from crmapp.models import Inventory, Cleansear, Client, ForemanOrderUpdate, ServiceOrder, ExtraServiceOrder, ExtraService
 
 
 class ClientForm(forms.ModelForm):
@@ -35,11 +34,7 @@ class ForemanExtraService(forms.ModelForm):
         fields = ('extra_service', 'amount', 'rate', 'total')
 
 
-# ChildrenFormset = inlineformset_factory(models.Parent,
-#                                         models.Child,
-#                                         formset=BaseChildrenFormset,
-#                                         extra=1)
-# ChildrenFormset = inlineformset_factory(models.Parent,
-#                                         models.Child,
-#                                         formset=BaseChildrenFormset,
-#                                         extra=1)
+class ExtraServiceForm(forms.ModelForm):
+    class Meta:
+        model = ExtraService
+        fields = ("name", "unit", "price", "cleaning_time")
