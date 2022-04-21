@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <form method="POST" class="mb-5">
+        {% csrf_token %}
+        {% include 'partial/form.html' with form=form fields_only=True button_text='Создать' %}
+        <div class="mt-5">
+        {% include 'partial/form.html' with form=service_form fields_only=True %}
+        </div>
+        <div class="mt-5">
+        {% include 'partial/form.html' with form=extra_service_form fields_only=True %}
+        </div>
+        <input class="btn btn-warning mt-3" type="submit" value="Изменить">
+    </form>
+</div>
+{% endblock content %}

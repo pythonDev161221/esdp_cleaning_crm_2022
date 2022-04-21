@@ -25,6 +25,8 @@ consumables_urlpatterns = [
     path('cleansear/detail/<int:pk>/', CleansearDetailView.as_view(), name='cleansear_detail')
 ]
 
+
+
 urlpatterns = [
     path('client/', include(client_urlpatterns)),
     path('consumables/', include(consumables_urlpatterns)),
