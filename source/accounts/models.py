@@ -60,5 +60,6 @@ class WorkDay(models.Model):
         return self.get_day_display()
 
     class Meta:
+        db_table = 'WorkDays'
         verbose_name = _('День недели')
         verbose_name_plural = _('Дни недели')
