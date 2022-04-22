@@ -313,3 +313,4 @@ class ExtraServiceOrder(models.Model):
         db_table = "extra_service_order"
         verbose_name = _("Заказ доп. услуги")
         verbose_name_plural = _("Заказ доп. услуг")
+

@@ -1,10 +1,12 @@
 from django.urls import path, include
 
 from crmapp.views.client_views import ClientCreateView, ClientListView, ClientUpdateView
-from crmapp.views.consumables import InventoryListView, InventoryCreateView, InventoryUpdateView, InventoryDeleteView, \
-    CleansearListView, CleansearCreateView, CleansearUpdateView, CleansearDeleteView, CleansearDetailView
-from crmapp.views.extra_service_views import ExtraServiceListView, ExtraServiceCreateView, ExtraServiceUpdateView, ExtraServiceDeleteView
-
+from crmapp.views.consumables import (InventoryListView, InventoryCreateView, InventoryUpdateView,
+                                      InventoryDeleteView, CleansearListView, CleansearCreateView,
+                                      CleansearUpdateView, CleansearDeleteView, CleansearDetailView)
+from crmapp.views.extra_service_views import (ExtraServiceListView, ExtraServiceCreateView, ExtraServiceUpdateView,
+                                              ExtraServiceDeleteView)
+from crmapp.views.foreman import ForemanOrderUpdateCreateView
 
 app_name = 'crmapp'
 
@@ -36,9 +38,14 @@ extra_service_urlpatterns = [
     path("<int:pk>/delete/", ExtraServiceDeleteView.as_view(), name="extra_service_delete")
 ]
 
+foreman_urlpatterns = [
+    path('order/update/', ForemanOrderUpdateCreateView.as_view(), name='foremanorder_create')
+]
+
 urlpatterns = [
     path('client/', include(client_urlpatterns)),
     path('extra-service/', include(extra_service_urlpatterns)),
     path('consumables/', include(consumables_urlpatterns)),
+    path('foreman/<int:pk>/', include(foreman_urlpatterns)),
 ]
 
