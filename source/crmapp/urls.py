@@ -56,6 +56,7 @@ consumables_urlpatterns = [
 ]
 
 
+
 extra_service_urlpatterns = [
     path("", ExtraServiceListView.as_view(), name="extra_service_index"),
     path("create/", ExtraServiceCreateView.as_view(), name="extra_service_create"),

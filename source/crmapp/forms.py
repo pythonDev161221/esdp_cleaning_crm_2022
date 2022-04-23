@@ -1,8 +1,7 @@
 from django import forms
 
 
-from crmapp.models import Inventory, Cleansear, Client, ForemanOrderUpdate, \
-    ServiceOrder, ExtraServiceOrder, ExtraService, Service, PropertySort, CleaningSort
+from crmapp.models import Inventory, Cleansear, Client, ForemanOrderUpdate, ServiceOrder, ExtraServiceOrder, ExtraService, Service, PropertySort, CleaningSort
 
 class ServiceForm(forms.ModelForm):
     class Meta:
