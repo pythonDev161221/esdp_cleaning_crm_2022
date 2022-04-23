@@ -1,4 +1,4 @@
-from django.contrib.auth import login, get_user_model, update_session_auth_hash
+from django.contrib.auth import get_user_model, update_session_auth_hash
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
@@ -33,6 +33,13 @@ class StaffRegisterView(CreateView):
         return next_url
 
 
+class PasswordChangeView(UpdateView):
+    model = get_user_model()
+    form_class = PasswordChangeForm
+    template_name = 'account/password.html'
+    context_object_name = 'user_object'
+
+
 class StaffListView(ListView):
     model = Staff
     template_name = 'account/staff_list.html'
@@ -45,21 +52,6 @@ class StaffListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['staff_list'] = Staff.objects.filter(black_list=False).exclude(is_active=False)
-        return context
-
-
-class StaffBlackListView(ListView):
-    model = Staff
-    template_name = 'account/black_list.html'
-    context_object_name = "user_object"
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['staff_list'] = Staff.objects.filter(black_list=True)
         return context
 
 
@@ -78,13 +70,6 @@ class StaffEditPhoto(UpdateView):
     form_class = EditPhotoForm
     template_name = "account/staff_photo.html"
     context_object_name = "user_object"
-
-
-class PasswordChangeView(UpdateView):
-    model = get_user_model()
-    form_class = PasswordChangeForm
-    template_name = 'account/password.html'
-    context_object_name = 'user_object'
 
     def form_valid(self, form):
         response = super().form_valid(form)
@@ -110,6 +95,21 @@ class StaffDeleteView(DeleteView):
         self.object = self.get_object()
         self.object.soft_delete()
         return HttpResponseRedirect(self.get_success_url())
+
+
+class StaffBlackListView(ListView):
+    model = Staff
+    template_name = 'account/black_list.html'
+    context_object_name = "user_object"
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['staff_list'] = Staff.objects.filter(black_list=True)
+        return context
 
 
 class AddToBlackList(DeleteView):
