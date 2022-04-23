@@ -9,7 +9,7 @@
                 списока?</h3>
             {% csrf_token %}
             <a href="{% url 'accounts:staff-list' %}" class="btn btn-dark">Нет</a>
-            <input type="submit" name="action" value="Да" class="btn btn-danger"/>
+            <input type="submit" name="action" value="Да" class="btn btn-primary"/>
         </form>
     </div>
 {% endblock %}
