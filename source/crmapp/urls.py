@@ -49,5 +49,6 @@ urlpatterns = [
     path('client/', include(client_urlpatterns)),
     path('extra-service/', include(extra_service_urlpatterns)),
     path('service_order/', include(service_order_urlpatterns)),
+    path('consumables/', include(consumables_urlpatterns)),
 ]
 
