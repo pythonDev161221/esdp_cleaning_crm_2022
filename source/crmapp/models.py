@@ -65,7 +65,7 @@ class Service(models.Model):
     price = models.PositiveIntegerField(verbose_name=_('Цена'), null=False, blank=False)
 
     def __str__(self):
-        return f"{self.property_sort} {self.cleaning_sort} {self.price}"
+        return f"{self.property_sort} {self.cleaning_sort} {self.price}сом за {self.unit}"
 
     class Meta:
         db_table = 'service'

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Удаление заказа услуги{% endblock title %}
+
+{% block links %}
+<li class="nav-item">
+    <a href="{% url 'crmapp:service_order_list' %}" class="nav-link">Просмотр заказов услуг</a>
+</li>
+{% endblock links %}
+
+{% block content %}
+    <form method="POST">
+        {% csrf_token %}
+        <h2>Вы действительно хотите удалить заказ услуги "{{ service_order }}"</h2>
+        <input type="submit" value="Да">
+    </form>
+    <a href="{% url "crmapp:service_order_list" %}">Нет</a>
+{% endblock %}
