@@ -9,7 +9,7 @@
 
 {% block content %}
     <div class="container">
-        <h1>Обновлить заказ услуги</h1>
+        <h1>Обновить заказ услуги</h1>
         <form method="POST" class="mb-5">
             {% csrf_token %}
             {% include 'partial/form.html' with button_text='Обновить' %}
