@@ -31,8 +31,16 @@ class StaffRegistrationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = Staff
         fields = (
-            "email", "first_name", "last_name", "password1", "password2", "phone", "inn_passport", "address",
-            "experience", "schedule")
+            "email",
+            "first_name",
+            "last_name",
+            "password1",
+            "password2",
+            "phone",
+            "inn_passport",
+            "address",
+            "experience",
+            "schedule")
         field_classes = {'username': UsernameField}
         widgets = {
             'schedule': forms.CheckboxSelectMultiple,
@@ -58,7 +66,13 @@ class StaffEditForm(forms.ModelForm):
 
     class Meta:
         model = Staff
-        fields = ("email", "first_name", "last_name", "phone", "inn_passport", "address", "schedule")
+        fields = ("email",
+                  "first_name",
+                  "last_name",
+                  "phone",
+                  "inn_passport",
+                  "address",
+                  "schedule")
         widgets = {
             'schedule': forms.CheckboxSelectMultiple,
         }
@@ -78,7 +92,7 @@ class EditPhotoForm(forms.ModelForm):
 
 class PasswordChangeForm(forms.ModelForm):
     password = forms.CharField(label="Новый пароль", strip=False, widget=forms.PasswordInput)
-    password_confirm = forms.CharField(label="Подтвердите пароль", widget=forms.PasswordInput, strip=False)
+    password_confirm = forms.CharField(label="Подтвердите пароль", strip=False, widget=forms.PasswordInput)
     old_password = forms.CharField(label="Старый пароль", strip=False, widget=forms.PasswordInput)
 
     def clean_password_confirm(self):
