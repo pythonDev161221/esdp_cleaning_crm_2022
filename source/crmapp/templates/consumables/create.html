@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <form method="POST" class="mb-5">
+        {% csrf_token %}
+        {% include 'partial/form.html' with button_text='Создать' %}
+    </form>
+</div>
+{% endblock content %}

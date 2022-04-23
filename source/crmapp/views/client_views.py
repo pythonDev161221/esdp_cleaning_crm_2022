@@ -1,6 +1,6 @@
 from django.views.generic import CreateView, ListView, UpdateView
 
-from accounts.forms import ClientForm
+from crmapp.forms import ClientForm
 from crmapp.models import Client
 
 

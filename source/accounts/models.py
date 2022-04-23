@@ -13,7 +13,7 @@ class Staff(AbstractUser):
     inn_passport = models.CharField(max_length=20, unique=True, null=False, blank=False, verbose_name=_('ИНН'))
     phone = models.CharField(max_length=20, null=False, blank=False, verbose_name=_('Номер телефона'))
     avatar = models.ImageField(upload_to="avatars/", null=True, blank=True, verbose_name=_('Фото профиля'))
-    schedule = models.ManyToManyField('accounts.WorkDay', verbose_name=_('График работы'))
+    schedule = models.ManyToManyField('accounts.WorkDay',null=True, blank=True, verbose_name=_('График работы'))
     experience = models.CharField(max_length=256, choices=CATEGORY_CHOICES, null=False, blank=False,
                                   default='Trainee', verbose_name=_('Опыт работы'))
     black_list = models.BooleanField(default=False, verbose_name=_('В черном списке'))

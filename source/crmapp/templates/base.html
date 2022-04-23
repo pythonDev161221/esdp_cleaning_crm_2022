@@ -15,26 +15,32 @@
 <body>
 <header>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container">
-    <a class="navbar-brand" href="#">Clean_CRM</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-      <li class="nav-item">
-        <a href="{% url 'crmapp:client_index' %}" class="nav-link">Просмотр клиентов</a>
-    </li>
-      <li class="nav-item">
-          <a href="{% url 'crmapp:service_list' %}" class="nav-link">Услуги</a>
-      </li>
-        {% block links %}
 
-        {% endblock links %}
-      </ul>
-    </div>
-  </div>
-</nav>
+        <div class="container">
+            <a class="navbar-brand" href="#">Clean_CRM</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a href="{% url 'crmapp:client_index' %}" class="nav-link">Просмотр клиентов</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'crmapp:extra_service_index' %}" class="nav-link">Просмотр доп. услуг</a>
+                    </li>
+                <li class="nav-item">
+                      <a href="{% url 'crmapp:service_list' %}" class="nav-link">Услуги</a>
+                  </li>
+                    {% block links %}
+
+
+                    {% endblock links %}
+                </ul>
+            </div>
+        </div>
+    </nav>
 </header>
 {% block content %}
 
