@@ -8,31 +8,39 @@
 
 {% block content %}
 <div class="container">
-<div class="row fw-bold">
-    <div class="col-4 order-1">Вид уборки</div>
-    <div class="col order-2">Тип объекта</div>
-    <div class="col order-3">Стоимость (сом)</div>
-    <div class="col order-4">Единица измерения</div>
-    <div class="col order-5"></div>
-    <div class="col order-5"></div>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">Вид уборки</th>
+            <th scope="col">Тип объекта</th>
+            <th scope="col">Стоимость (сом)</th>
+            <th scope="col">Единица измерения</th>
+            <th scope="col">Редактировать</th>
+            <th scope="col">Удалить</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for service in services.all %}
+        <tr>
+            <th scope="row">{{ service.id }}</th>
+            <td>{{ service.cleaning_sort }}</td>
+            <td>{{ service.property_sort }}</td>
+            <td>{{ service.price }}</td>
+            <td>{{ service.unit }}</td>
+            <td><a href="{% url 'crmapp:service_update' service.pk %}">
+                <i class="fa fa-pencil text-warning" aria-hidden="true"></i>
+            </a></td>
+            <td><a href="{% url 'crmapp:service_delete' service.pk %}">
+                <i class="fa fa-trash text-danger" aria-hidden="true"></i>
+            </a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+        <a href="{% url 'crmapp:service_create'%}" class="w-100 btn btn-primary">
+        Добавить услугу
+    </a>
 </div>
-<div>
-{% for service in services.all %}
-  <div class="row">
-    <div class="col-4 order-1">{{ service.cleaning_sort }}</div>
-    <div class="col order-2">{{ service.property_sort }}</div>
-    <div class="col order-3">{{ service.price }}</div>
-    <div class="col order-4">{{ service.unit }}</div>
-    <div class="col order-5 my-1">
-        <a href="{% url 'crmapp:service_update' service.pk %}" class="btn btn-warning">Изменить</a>
-    </div>
-    <div class="col order-5 my-1">
-        <a href="{% url 'crmapp:service_delete' service.pk %}" class="btn btn-danger">Удалить</a>
-    </div>
-  </div>
-{% endfor %}
-<div>
-    <a href="{% url 'crmapp:service_create'%}" class="w-100 btn btn-primary">Добавить услугу</a>
-</div>
-</div>
+
 {% endblock content %}
