@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
-{% block title %}Update Photo{% endblock title %}
-{% block nav %}
+{% block title %}Photo{% endblock title %}
+{% block links %}
     <li class="nav-item">
         <a class="nav-link text-light" href="{% url "accounts:profile" user_object.pk %}">Назад</a>
     </li>
-{% endblock nav %}
+{% endblock links %}
 {% block content %}
     <div class="container m-5">
         {% if user_object.avatar %}
