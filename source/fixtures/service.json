@@ -5,7 +5,7 @@
     "fields": {
         "cleaning_sort": 2,
         "property_sort": 1,
-        "unit": "Square meter",
+        "unit": "square_meter",
         "price": 35
     }
 },
@@ -15,7 +15,7 @@
     "fields": {
         "cleaning_sort": 1,
         "property_sort": 1,
-        "unit": "Square meter",
+        "unit": "square_meter",
         "price": 50
     }
 },
@@ -25,7 +25,7 @@
     "fields": {
         "cleaning_sort": 3,
         "property_sort": 1,
-        "unit": "Square meter",
+        "unit": "square_meter",
         "price": 60
     }
 },
@@ -35,7 +35,7 @@
     "fields": {
         "cleaning_sort": 4,
         "property_sort": 1,
-        "unit": "Square meter",
+        "unit": "square_meter",
         "price": 140
     }
 },
@@ -45,7 +45,7 @@
     "fields": {
         "cleaning_sort": 5,
         "property_sort": 1,
-        "unit": "Piece",
+        "unit": "piece",
         "price": 2000
     }
 },
@@ -55,7 +55,7 @@
     "fields": {
         "cleaning_sort": 6,
         "property_sort": 1,
-        "unit": "Piece",
+        "unit": "piece",
         "price": 1500
     }
 },
@@ -65,7 +65,7 @@
     "fields": {
         "cleaning_sort": 7,
         "property_sort": 1,
-        "unit": "Square meter",
+        "unit": "square_meter",
         "price": 100
     }
 },
@@ -75,7 +75,7 @@
     "fields": {
         "cleaning_sort": 8,
         "property_sort": 1,
-        "unit": "Square meter",
+        "unit": "square_meter",
         "price": 140
     }
 },
@@ -85,7 +85,7 @@
     "fields": {
         "cleaning_sort": 9,
         "property_sort": 1,
-        "unit": "Square meter",
+        "unit": "square_meter",
         "price": 350
     }
 },
@@ -95,7 +95,7 @@
     "fields": {
         "cleaning_sort": 10,
         "property_sort": 1,
-        "unit": "Square meter",
+        "unit": "square_meter",
         "price": 125
     }
 },
