@@ -16,16 +16,16 @@
                 {% if not user_object.avatar %}
                     <div class="position-relative">
                         <div class="position-absolute bottom-0 end-50">
-                            <a class="btn btn-dark" href="{% url 'accounts:staff-photo' user_object.pk %}">Выбрать
+                            <a class="btn btn-light" href="{% url 'accounts:staff-photo' user_object.pk %}">Выбрать
                                 фото</a>
                         </div>
                         <img class="cart-img-top rounded" style="height: 300px; width: 300px"
-                             src="{% static 'images/no-photo.jpg' %}" alt="no photo">
+                             src="{% static 'img/no_pic.jpg' %}" alt="no photo">
                     </div>
                 {% else %}
                     <div class="position-relative">
                         <div class="position-absolute bottom-0 end-50">
-                            <a class="btn btn-dark" href="{% url 'accounts:staff-photo' user_object.pk %}">Изменить
+                            <a class="btn btn-light" href="{% url 'accounts:staff-photo' user_object.pk %}">Изменить
                                 фото</a>
                         </div>
                         <img class="cart-img-top rounded" style="height: 300px; width: 300px"

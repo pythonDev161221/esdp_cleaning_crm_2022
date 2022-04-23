@@ -8,12 +8,12 @@
 {% block content %}
     <div class="container m-5">
         {% if user_object.avatar %}
-            <p>Текущее фото:</p>
             <img class="cart-img-top rounded" style="height: 330px; width: 330px"
                  src="{{ user_object.avatar.url }}"
                  alt="user avatar">
         {% else %}{% endif %}
         <form method="post" enctype='multipart/form-data'>
+            {% csrf_token %}
             {% include "partial/form.html" with button_text="Применить изменения" %}
         </form>
     </div>

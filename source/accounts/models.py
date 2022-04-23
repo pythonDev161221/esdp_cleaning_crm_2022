@@ -44,7 +44,7 @@ class Staff(AbstractUser):
         return f'{self.first_name} --- {self.last_name} --- {self.experience} --- {self.phone} '
 
     def get_absolute_url(self):
-        return reverse('accounts:staff-profile', kwargs={'pk': self.pk})
+        return reverse('accounts:profile', kwargs={'pk': self.pk})
 
     class Meta:
         db_table = 'Staff'

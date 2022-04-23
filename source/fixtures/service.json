@@ -1,0 +1,193 @@
+[
+{
+    "model": "crmapp.service",
+    "pk": 9,
+    "fields": {
+        "cleaning_sort": 2,
+        "property_sort": 1,
+        "unit": "square_meter",
+        "price": 35
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 10,
+    "fields": {
+        "cleaning_sort": 1,
+        "property_sort": 1,
+        "unit": "square_meter",
+        "price": 50
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 11,
+    "fields": {
+        "cleaning_sort": 3,
+        "property_sort": 1,
+        "unit": "square_meter",
+        "price": 60
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 12,
+    "fields": {
+        "cleaning_sort": 4,
+        "property_sort": 1,
+        "unit": "square_meter",
+        "price": 140
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 13,
+    "fields": {
+        "cleaning_sort": 5,
+        "property_sort": 1,
+        "unit": "piece",
+        "price": 2000
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 14,
+    "fields": {
+        "cleaning_sort": 6,
+        "property_sort": 1,
+        "unit": "piece",
+        "price": 1500
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 15,
+    "fields": {
+        "cleaning_sort": 7,
+        "property_sort": 1,
+        "unit": "square_meter",
+        "price": 100
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 16,
+    "fields": {
+        "cleaning_sort": 8,
+        "property_sort": 1,
+        "unit": "square_meter",
+        "price": 140
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 17,
+    "fields": {
+        "cleaning_sort": 9,
+        "property_sort": 1,
+        "unit": "square_meter",
+        "price": 350
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 18,
+    "fields": {
+        "cleaning_sort": 10,
+        "property_sort": 1,
+        "unit": "square_meter",
+        "price": 125
+    }
+},
+{
+    "model": "crmapp.propertysort",
+    "pk": 1,
+    "fields": {
+        "name": "Квартира"
+    }
+},
+{
+    "model": "crmapp.propertysort",
+    "pk": 2,
+    "fields": {
+        "name": "Дом"
+    }
+},
+{
+    "model": "crmapp.propertysort",
+    "pk": 3,
+    "fields": {
+        "name": "Офис"
+    }
+},
+{
+    "model": "crmapp.cleaningsort",
+    "pk": 1,
+    "fields": {
+        "name": "Генеральная уборка"
+    }
+},
+{
+    "model": "crmapp.cleaningsort",
+    "pk": 2,
+    "fields": {
+        "name": "Влажная уборка"
+    }
+},
+{
+    "model": "crmapp.cleaningsort",
+    "pk": 3,
+    "fields": {
+        "name": "Уборка после ремонта"
+    }
+},
+{
+    "model": "crmapp.cleaningsort",
+    "pk": 4,
+    "fields": {
+        "name": "Мойка окон"
+    }
+},
+{
+    "model": "crmapp.cleaningsort",
+    "pk": 5,
+    "fields": {
+        "name": "Мойка кухни"
+    }
+},
+{
+    "model": "crmapp.cleaningsort",
+    "pk": 6,
+    "fields": {
+        "name": "Мойка санузла"
+    }
+},
+{
+    "model": "crmapp.cleaningsort",
+    "pk": 7,
+    "fields": {
+        "name": "Химчистка ковролина"
+    }
+},
+{
+    "model": "crmapp.cleaningsort",
+    "pk": 8,
+    "fields": {
+        "name": "Химчистка ковра"
+    }
+},
+{
+    "model": "crmapp.cleaningsort",
+    "pk": 9,
+    "fields": {
+        "name": "Химчистка мягкой мебели"
+    }
+},
+{
+    "model": "crmapp.cleaningsort",
+    "pk": 10,
+    "fields": {
+        "name": "Химчистка стула"
+    }
+}
+]

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Добавление услуги{% endblock title %}
+
+{% block links %}
+{% include 'partial/service_links.html' %}
+{% endblock links %}
+
+{% block content %}
+<div class="container">
+<h1>Новая услуга</h1>
+    <form method="POST" class="mb-5">
+        {% csrf_token %}
+        {% include 'partial/form.html' with button_text='Добавить' %}
+    </form>
+</div>
+{% endblock content %}

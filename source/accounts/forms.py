@@ -3,13 +3,6 @@ from django.contrib.auth import password_validation
 from django.contrib.auth.forms import UserCreationForm, UsernameField
 
 from accounts.models import Staff
-from crmapp.models import Client
-
-
-class ClientForm(forms.ModelForm):
-    class Meta:
-        model = Client
-        fields = ('first_name', 'last_name', 'phone')
 
 
 class LoginForm(forms.Form):
