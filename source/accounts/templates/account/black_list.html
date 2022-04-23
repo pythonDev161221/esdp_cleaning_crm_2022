@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% if staff_list %}
+        {% include 'account/staff.html' %}
+    {% else %}
+        <p class="p-5">Черный список пуст</p>
+    {% endif %}
+{% endblock content %}

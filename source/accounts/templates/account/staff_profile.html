@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block nav %}
+    <li class="nav-item">
+        <a href="{% url 'accounts:change_password' %}" class="nav-link">Изменить пароль</a>
+    </li>
+{% endblock nav %}
+
+{% block content %}
+    <div class="container mb-5 text-start">
+        <br>
+        <div class=" row display-flex">
+            <div class="col-md-4">
+                {% if not user_object.avatar %}
+                    <div class="position-relative">
+                        <div class="position-absolute bottom-0 end-50">
+                            <a class="btn btn-dark" href="{% url 'accounts:staff-photo' user_object.pk %}">Выбрать
+                                фото</a>
+                        </div>
+                        <img class="cart-img-top rounded" style="height: 300px; width: 300px"
+                             src="{% static 'images/no-photo.jpg' %}" alt="no photo">
+                    </div>
+                {% else %}
+                    <div class="position-relative">
+                        <div class="position-absolute bottom-0 end-50">
+                            <a class="btn btn-dark" href="{% url 'accounts:staff-photo' user_object.pk %}">Изменить
+                                фото</a>
+                        </div>
+                        <img class="cart-img-top rounded" style="height: 300px; width: 300px"
+                             src="{{ user_object.avatar.url }}" alt="user avatar">
+                    </div>
+                {% endif %}
+            </div>
+            <div class="col-md-8 p-4">
+                <p><strong>Личный
+                    кабинет: </strong> {{ user_object.first_name | capfirst }} {{ user_object.last_name | capfirst }}
+                </p>
+                <p><strong>Email: </strong>{{ user_object.email }}</p>
+                <p><strong>ИНН: </strong>{{ user_object.inn_passport }}</p>
+                <p><strong>Телефон: </strong>{{ user_object.phone }}
+                <p><strong>Адрес: </strong>{% if user_object.address %}{{ user_object.address }}{% else %}
+                    Не указан{% endif %}</p>
+                <p><strong>Квалификация: </strong>{{ user_object.get_experience_display }}
+                    <br>
+                    <br>
+                    <span><strong>График работы: </strong></span>
+                    {% for day in user_object.schedule.all %}
+                        {{ day }}{% if not forloop.last %}, {% else %}. {% endif %}
+
+                    {% endfor %}
+                <hr>
+                <a class="btn btn-success" href="#">Мой Баланс 4352 сом</a>
+                <a class="btn btn-dark" href="#">Истрия заказов</a>
+                <a class="btn btn-dark" href="#">Истрия зарплаты</a>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block links %}
+    <li class="nav-item">
+        <a href="{% url 'accounts:register' %}" class="nav-link">Добавить сотрудника</a>
+    </li>
+    <li class="nav-item">
+        <a href="{% url 'accounts:black-list' %}" class="nav-link">Черный список</a>
+    </li>
+{% endblock links %}
+{% block content %}
+    {% if staff_list %}
+        {% include 'account/staff.html' %}
+    {% else %}
+        <p class="p-5">Список сотрудников пуст</p>
+    {% endif %}
+{% endblock content %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Register{% endblock title %}
+{% block links %}
+    <li class="nav-item">
+        <a class="nav-link text-light" href="{% url "accounts:staff-list" %}">Вернуться назад</a>
+    </li>
+{% endblock links %}
+
+{% block content %}
+    <div class="container m-5">
+        <form method="post" enctype='multipart/form-data'>
+            {% csrf_token %}
+            {% include "partial/form.html" with button_text="Добавить сотрудника" %}
+        </form>
+    </div>
+{% endblock content %}

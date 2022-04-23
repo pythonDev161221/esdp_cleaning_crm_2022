@@ -1,0 +1,36 @@
+<div class="m-3">
+    <table class="table mb-4">
+        <thead>
+        <tr>
+            <th scope="col">ФИО Сотрудника</th>
+            <th scope="col">Телефон</th>
+            <th scope="col">Квалификация</th>
+            <th scope="col">График работы</th>
+            <th scope="col"></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for staff in staff_list %}
+            <tr>
+                <td><a style="text-decoration: none" href="{% url 'accounts:profile' staff.pk %}">
+                    {{ staff.last_name | capfirst }} {{ staff.first_name | capfirst }} </a></td>
+                <td>{{ staff.phone }}</td>
+                <td>{{ staff.get_experience_display }}</td>
+                <td>
+                    {% for day in staff.schedule.all %}
+                        <span>{{ day }}{% if not forloop.last %}, {% else %}. {% endif %}</span>
+                    {% endfor %}
+                </td>
+                {% if not staff.black_list %}
+                    <td><a class="btn btn-primary" href="{% url 'accounts:staff-edit' staff.pk %}">Редактировать</a>
+                    <a class="btn btn-warning" href="{% url 'accounts:black-list-add' staff.pk %}">B Черный Список</a>
+                    <a class="btn btn-danger" href="{% url 'accounts:staff-delete' staff.pk %}">Удалить</a></td>
+                {% else %}
+                    <td><a class="btn btn-primary" href="{% url 'accounts:black-list-remove' staff.pk %}">Вернуть из Черного Спискa</a>
+                    </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
