@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        <p>Наименование: {{ cleansear.name }}</p>
+        <p>Описание: {{ cleansear.description }}</p>
+        <p>Количество: {{ cleansear.amount }} {{ cleansear.get_unit_display }}</p>
+        <p>Цена: {{ cleansear.price }}</p>
+    </div>
+{% endblock content %}
