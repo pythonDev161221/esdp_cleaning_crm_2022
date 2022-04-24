@@ -72,6 +72,7 @@ class StaffEditForm(forms.ModelForm):
                   "phone",
                   "inn_passport",
                   "address",
+                  "experience",
                   "schedule")
         widgets = {
             'schedule': forms.CheckboxSelectMultiple,
