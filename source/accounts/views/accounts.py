@@ -1,4 +1,5 @@
-from django.contrib.auth import get_user_model, update_session_auth_hash
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
@@ -33,26 +34,32 @@ class StaffRegisterView(CreateView):
         return next_url
 
 
-class PasswordChangeView(UpdateView):
-    model = get_user_model()
-    form_class = PasswordChangeForm
+class PasswordChangeView(LoginRequiredMixin, UpdateView):
+    model = Staff
     template_name = 'account/password.html'
+    form_class = PasswordChangeForm
     context_object_name = 'user_object'
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        update_session_auth_hash(self.request, self.object)
+        return response
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def get_success_url(self):
+        return reverse("accounts:profile", kwargs={"pk": self.request.user.pk})
 
 
 class StaffListView(ListView):
     model = Staff
     template_name = 'account/staff_list.html'
-    context_object_name = "user_object"
+    context_object_name = "user_objects"
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = Staff.objects.filter(black_list=False).exclude(is_active=False)
         return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['staff_list'] = Staff.objects.filter(black_list=False).exclude(is_active=False)
-        return context
 
 
 class StaffEditView(UpdateView):
@@ -100,16 +107,11 @@ class StaffDeleteView(DeleteView):
 class StaffBlackListView(ListView):
     model = Staff
     template_name = 'account/black_list.html'
-    context_object_name = "user_object"
+    context_object_name = "user_objects"
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = Staff.objects.filter(black_list=True)
         return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['staff_list'] = Staff.objects.filter(black_list=True)
-        return context
 
 
 class AddToBlackList(DeleteView):
