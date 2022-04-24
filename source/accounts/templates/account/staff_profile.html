@@ -2,11 +2,7 @@
 {% load static %}
 {% block title %}Profile{% endblock title %}
 
-{% block links %}
-    <li class="nav-item">
-        <a href="{% url 'accounts:change_password' %}" class="nav-link">Изменить пароль</a>
-    </li>
-{% endblock links %}
+{% block links %} {% endblock links %}
 
 {% block content %}
     <div class="container mb-5 text-start">
@@ -54,6 +50,7 @@
                 <a class="btn btn-success" href="#">Мой Баланс 4352 сом</a>
                 <a class="btn btn-dark" href="#">Истрия заказов</a>
                 <a class="btn btn-dark" href="#">Истрия зарплаты</a>
+                <a class="btn btn-dark" href="{% url 'accounts:change_password' %}">Изменить пароль</a>
             </div>
         </div>
     </div>
