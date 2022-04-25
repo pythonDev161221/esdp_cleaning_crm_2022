@@ -1,0 +1,51 @@
+[
+{
+  "model": "accounts.workday",
+  "pk": 1,
+  "fields": {
+    "day": "monday"
+  }
+},
+{
+  "model": "accounts.workday",
+  "pk": 2,
+  "fields": {
+    "day": "tuesday"
+  }
+},
+{
+  "model": "accounts.workday",
+  "pk": 3,
+  "fields": {
+    "day": "wednesday"
+  }
+},
+{
+  "model": "accounts.workday",
+  "pk": 4,
+  "fields": {
+    "day": "thursday"
+  }
+},
+{
+  "model": "accounts.workday",
+  "pk": 5,
+  "fields": {
+    "day": "friday"
+  }
+},
+{
+  "model": "accounts.workday",
+  "pk": 6,
+  "fields": {
+    "day": "saturday"
+  }
+},
+{
+  "model": "accounts.workday",
+  "pk": 7,
+  "fields": {
+    "day": "sunday"
+  }
+}
+]

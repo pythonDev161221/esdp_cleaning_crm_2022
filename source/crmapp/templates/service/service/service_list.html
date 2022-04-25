@@ -27,7 +27,7 @@
             <td>{{ service.cleaning_sort }}</td>
             <td>{{ service.property_sort }}</td>
             <td>{{ service.price }}</td>
-            <td>{{ service.unit }}</td>
+            <td>{{ service.get_unit_display }}</td>
             <td><a href="{% url 'crmapp:service_update' service.pk %}">
                 <i class="fa fa-pencil text-warning" aria-hidden="true"></i>
             </a></td>
