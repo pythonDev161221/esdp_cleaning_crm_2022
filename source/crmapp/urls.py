@@ -18,7 +18,7 @@ app_name = 'crmapp'
 client_urlpatterns = [
     path('all/', ClientListView.as_view(), name='client_index'),
     path('create/', ClientCreateView.as_view(), name='client_create'),
-    path('up/<int:pk>', ClientUpdateView.as_view(), name='client_update')
+    path('up/<int:pk>/', ClientUpdateView.as_view(), name='client_update')
 ]
 
 service_urlpatterns = [
