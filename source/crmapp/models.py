@@ -133,14 +133,14 @@ class ForemanOrderUpdate(models.Model):
     service = models.ManyToManyField('crmapp.ServiceOrder', related_name='foreman_service',
                                      verbose_name=_('Услуга'))
     extra_service = models.ManyToManyField('crmapp.ExtraServiceOrder',
-                                      related_name='foreman_extra', verbose_name=_('Дополнительная услуга'))
+                                           related_name='foreman_extra', verbose_name=_('Дополнительная услуга'))
     description = models.TextField(max_length=500, blank=True, null=True, verbose_name=_('Причина внесения изменений'))
 
 
 class Foreman(models.Model):
     # Таблица для выбора бригади в заказе, в которой указываем денежные моменты, имеет связь FK с таблицей Order
     staff = models.ForeignKey('accounts.Staff', related_name='foreman', on_delete=models.PROTECT,
-                                 verbose_name=_('Бригадир'))
+                              verbose_name=_('Бригадир'))
     bonus = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Бонус бригадира'))
     forfeit = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Штраф бригадира'))
     salary = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Зарплата'))
@@ -149,7 +149,7 @@ class Foreman(models.Model):
 class Cleaners(models.Model):
     # Таблица для выбора клинеров в заказе, имеет связь m2m с таблицей order
     staff = models.ForeignKey('accounts.Staff', related_name='cleaner', on_delete=models.PROTECT,
-                                 verbose_name=_('Клинер'))
+                              verbose_name=_('Клинер'))
     forfeit = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Штраф клинера'))
     salary = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Зарплата'))
 
@@ -170,10 +170,13 @@ class Order(models.Model):  # Таблица самого заказа
     address = models.CharField(max_length=256, null=False, blank=False, verbose_name=_('Адрес'))
 
     # Уборки
-    service = models.ManyToManyField('crmapp.ServiceOrder', related_name='order_service',
-                                     verbose_name=_('Услуга'))
-    extra_service = models.ManyToManyField('crmapp.ExtraServiceOrder',
-                                           related_name='order_extra', verbose_name=_('Дополнительная услуга'))
+    services = models.ManyToManyField('crmapp.Service', related_name='orders',
+                                      verbose_name=_('Услуга'), through='crmapp.ServiceOrder',
+                                      through_fields=('order', 'service'))
+    extra_services = models.ManyToManyField('crmapp.ExtraService',
+                                            related_name='orders', verbose_name=_('Дополнительная услуга'),
+                                            through='crmapp.ExtraServiceOrder',
+                                            through_fields=('order', 'extra_service'))
 
     # Инвентарь для бригадира
     # inventory = models.ForeignKey('crmapp.Inventory', on_delete=models.PROTECT, related_name='order_inventory',
@@ -183,7 +186,7 @@ class Order(models.Model):  # Таблица самого заказа
 
     # Поля для Staff
     manager = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='manager_order',
-                                   verbose_name=_('Менеджер'))
+                                verbose_name=_('Менеджер'))
     foreman = models.ForeignKey('crmapp.Foreman', on_delete=models.PROTECT, related_name='foreman_order', null=False,
                                 blank=False, verbose_name=_('Бригадир заказа'))
     cleaners = models.ManyToManyField('crmapp.Cleaners', related_name='cleaners_order', verbose_name=_('Клинеры'))
@@ -191,7 +194,8 @@ class Order(models.Model):  # Таблица самого заказа
     review = models.PositiveIntegerField(null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(5)],
                                          verbose_name=_('Отзыв'))
     # Финансовая часть
-    payment_type = models.CharField(max_length=25, null=False, blank=False, default='cash', choices=PaymentChoices.choices,
+    payment_type = models.CharField(max_length=25, null=False, blank=False, default='cash',
+                                    choices=PaymentChoices.choices,
                                     verbose_name=_('Вид оплаты'))  # вид оплаты
     total_cost = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Общая сумма заказа'))
 
@@ -256,8 +260,6 @@ class Inventory(models.Model):
         verbose_name_plural = _("Инвентари")
 
 
-
-
 class Cleansear(models.Model):
     name = models.CharField(max_length=255, verbose_name=_('Моющее средство'), null=False, blank=False)
     description = models.TextField(max_length=510, verbose_name=_('Описание товара'), null=False, blank=False)
@@ -279,7 +281,9 @@ class Cleansear(models.Model):
 
 
 class ServiceOrder(models.Model):
-    service = models.ForeignKey('crmapp.Service', related_name='services_service', verbose_name=_('Услуга'),
+    order = models.ForeignKey('crmapp.Order', related_name='order_services', verbose_name=_('Заказ'), null=False,
+                              blank=False, on_delete=models.PROTECT)
+    service = models.ForeignKey('crmapp.Service', related_name='service_orders', verbose_name=_('Услуга'),
                                 null=False, blank=False, on_delete=models.PROTECT)
     amount = models.IntegerField(verbose_name=_('Объем работы'), null=False, blank=False)
     rate = models.DecimalField(default=1, null=False, blank=False, verbose_name=_('Коэффицент сложности'),
@@ -292,12 +296,15 @@ class ServiceOrder(models.Model):
 
     class Meta:
         db_table = "service_order"
-        verbose_name = _("Заказ услуги")
-        verbose_name_plural = _("Заказ услуг")
+        verbose_name = _("Услуга заказа")
+        verbose_name_plural = _("Услуги заказа")
 
 
 class ExtraServiceOrder(models.Model):
-    extra_service = models.ForeignKey('crmapp.ExtraService', related_name='extra_services_service',
+    order = models.ForeignKey('crmapp.Order', related_name='order_extra_services', verbose_name=_('Заказ'), null=False,
+                              blank=False,
+                              on_delete=models.PROTECT)
+    extra_service = models.ForeignKey('crmapp.ExtraService', related_name='extra_service_orders',
                                       verbose_name=_('Доп. услуга'),
                                       null=False, blank=False, on_delete=models.PROTECT)
     amount = models.IntegerField(verbose_name=_('Объем работы'), null=False, blank=False)
@@ -311,6 +318,5 @@ class ExtraServiceOrder(models.Model):
 
     class Meta:
         db_table = "extra_service_order"
-        verbose_name = _("Заказ доп. услуги")
-        verbose_name_plural = _("Заказ доп. услуг")
-
+        verbose_name = _("Доп. услуга заказа")
+        verbose_name_plural = _("Доп. услуги заказа")
