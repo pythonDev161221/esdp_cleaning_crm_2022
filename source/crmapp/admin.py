@@ -3,7 +3,8 @@ from django.contrib import admin
 
 from crmapp.models import ExtraService, CleaningSort, Service, PropertySort, \
     Client, Inventory, Cleansear, Fine, Bonus, \
-    FineCategory, Order, ForemanReport, ForemanOrderUpdate, ExtraServiceOrder, ServiceOrder, Foreman, Cleaners
+    FineCategory, Order, ForemanReport, ForemanOrderUpdate, ExtraServiceOrder, ServiceOrder, Foreman, Cleaners, \
+    InventoryInOrder, CleanserInOrder
 
 
 class ExtraServiceAdmin(admin.ModelAdmin):
@@ -30,4 +31,6 @@ admin.site.register(ServiceOrder)
 admin.site.register(ExtraServiceOrder)
 admin.site.register(Foreman)
 admin.site.register(Cleaners)
+admin.site.register(InventoryInOrder)
+admin.site.register(CleanserInOrder)
 

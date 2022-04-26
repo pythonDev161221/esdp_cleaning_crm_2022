@@ -292,3 +292,34 @@ class ExtraServiceOrder(models.Model):
         verbose_name = _("Заказ доп. услуги")
         verbose_name_plural = _("Заказ доп. услуг")
 
+
+class InventoryInOrder(models.Model):
+    order = models.ForeignKey('crmapp.Order', related_name='order_inventories', verbose_name=_('Заказ'),
+                              null=True, blank=True, on_delete=models.PROTECT)
+    inventory = models.ForeignKey('crmapp.Inventory', related_name='inventories_order',
+                                  verbose_name=_('Инвентарь'), null=True, blank=True, on_delete=models.PROTECT)
+    amount = models.PositiveIntegerField(verbose_name=_('Количество'), null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.inventory}:{self.amount}'
+
+    class Meta:
+        db_table = 'inventory_in_order'
+        verbose_name = _('Инвентарь заказа')
+        verbose_name_plural = _('Инвентари заказа')
+
+
+class CleanserInOrder(models.Model):
+    order = models.ForeignKey('crmapp.Order', related_name='order_cleanser', verbose_name=_('Заказ'),
+                              null=True, blank=True, on_delete=models.PROTECT)
+    cleanser = models.ForeignKey('crmapp.Cleansear', related_name='cleansers_order',
+                                  verbose_name=_('Моющее средство'), null=True, blank=True, on_delete=models.PROTECT)
+    amount = models.PositiveIntegerField(verbose_name=_('Количество'), null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.cleanser}:{self.amount}'
+
+    class Meta:
+        db_table = 'cleanser_in_order'
+        verbose_name = _('Моющее средство в заказе')
+        verbose_name_plural = _('Моющие средства в заказе')
