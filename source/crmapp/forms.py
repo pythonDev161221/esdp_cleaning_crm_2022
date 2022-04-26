@@ -38,7 +38,7 @@ class CleansearForm(forms.ModelForm):
 class ForemanOrderUpdateForm(forms.ModelForm):
     class Meta:
         model = ForemanOrderUpdate
-        fields = ('description', )
+        fields = ['order', 'updated_services', 'updated_extra_services']
 
 class ForemanService(forms.ModelForm):
     class Meta:

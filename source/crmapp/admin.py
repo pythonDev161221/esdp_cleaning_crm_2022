@@ -2,7 +2,39 @@ from django.contrib import admin
 
 from crmapp.models import ExtraService, CleaningSort, Service, PropertySort, \
     ComplexityFactor, Client, Inventory, Cleansear, Fine, Bonus, \
-    FineCategory, Order, ForemanReport, ForemanOrderUpdate, ExtraServiceOrder, ServiceOrder, StaffOrder
+    FineCategory, Order, ForemanReport, ForemanOrderUpdate, ExtraServiceOrder, ServiceOrder, StaffOrder, \
+    ServiceForemanOrderUpdate, ExtraServiceForemanOrderUpdate, ExtraServiceForemanOrderAdd, ServiceForemanOrderAdd
+
+
+class ExtraServiceForemanOrderAddInline(admin.StackedInline):
+    model = ExtraServiceForemanOrderAdd
+    extra = 0
+    fields = ['foreman_order_update', 'extra_service_added', 'amount', 'rate', 'total']
+
+
+class ServiceForemanOrderAddInline(admin.StackedInline):
+    model = ServiceForemanOrderAdd
+    extra = 0
+    fields = ['foreman_order_update', 'service_added', 'amount', 'rate', 'total']
+
+
+class ServiceForemanOrderUpdateInline(admin.StackedInline):
+    model = ServiceForemanOrderUpdate
+    extra = 0
+    fields = ['foreman_order_update', 'service_updated', 'amount', 'rate', 'total']
+
+
+class ExtraServiceForemanOrderUpdateInline(admin.StackedInline):
+    model = ExtraServiceForemanOrderUpdate
+    extra = 0
+    fields = ['foreman_order_update', 'extra_service_updated', 'amount', 'rate', 'total']
+
+
+class ForemanOrderUpdateAdmin(admin.ModelAdmin):
+    inlines = [
+        ServiceForemanOrderUpdateInline, ExtraServiceForemanOrderUpdateInline, ServiceForemanOrderAddInline,
+        ExtraServiceForemanOrderAddInline
+    ]
 
 
 class StaffOrderInline(admin.StackedInline):
@@ -54,7 +86,7 @@ admin.site.register(Inventory)
 admin.site.register(Cleansear)
 admin.site.register(Order, OrderAdmin, )
 admin.site.register(ForemanReport)
-admin.site.register(ForemanOrderUpdate)
+admin.site.register(ForemanOrderUpdate, ForemanOrderUpdateAdmin)
 admin.site.register(ServiceOrder, )
 admin.site.register(ExtraServiceOrder)
 # admin.site.register(Foreman)
