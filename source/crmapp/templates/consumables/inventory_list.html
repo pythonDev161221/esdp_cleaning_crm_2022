@@ -7,7 +7,7 @@
                 <tr>
                     <th scope="col">id</th>
                     <th scope="col">Наименование</th>
-                    <th scope="col">Количество</th>
+                    <th scope="col">Описание</th>
                     <th scope="col">Редактирование</th>
                     <th scope="col">Удаление</th>
                 </tr>
@@ -17,7 +17,7 @@
                     <tr>
                         <th scope="row">{{ i.id }}</th>
                         <td>{{ i.name }}</td>
-                        <td>{{ i.amount }}</td>
+                        <td>{{ i.description }}</td>
                         <td><a href="{% url 'crmapp:inventory_update' i.id %}">Редактировать</a></td>
                         <td><a href="{% url 'crmapp:inventory_delete' i.id %}">Удалить</a></td>
                     </tr>

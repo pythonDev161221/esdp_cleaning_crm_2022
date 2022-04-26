@@ -7,8 +7,7 @@
                 <tr>
                     <th scope="col">id</th>
                     <th scope="col">Наименование</th>
-                    <th scope="col">Количество</th>
-                    <th scope="col">Цена</th>
+                    <th scope="col">Описание</th>
                     <th scope="col">Редактирование</th>
                     <th scope="col">Удаление</th>
                 </tr>
@@ -18,8 +17,7 @@
                     <tr>
                         <th scope="row">{{ c.id }}</th>
                         <td><a href="{% url 'crmapp:cleansear_detail' c.id %}">{{ c.name }}</a></td>
-                        <td>{{ c.amount }} {{ c.get_unit_display }}</td>
-                        <td>{{ c.price }}</td>
+                        <td>{{ c.description }}</td>
                         <td><a href="{% url 'crmapp:cleansear_update' c.id %}">Редактировать</a></td>
                         <td><a href="{% url 'crmapp:cleansear_delete' c.id %}">Удалить</a></td>
                     </tr>

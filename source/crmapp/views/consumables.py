@@ -31,16 +31,16 @@ class InventoryDeleteView(DeleteView):
         return reverse("crmapp:inventory_index")
 
 
-
-
 class CleansearListView(ListView):
     model = Cleansear
     context_object_name = 'cleansears'
     template_name = 'consumables/cleansear_list.html'
 
+
 class CleansearDetailView(DetailView):
     model = Cleansear
     template_name = 'consumables/cleansear_detail.html'
+
 
 class CleansearCreateView(CreateView):
     model = Cleansear
