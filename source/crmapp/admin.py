@@ -2,7 +2,13 @@ from django.contrib import admin
 
 from crmapp.models import ExtraService, CleaningSort, Service, PropertySort, \
     ComplexityFactor, Client, Inventory, Cleansear, Fine, Bonus, \
-    FineCategory, Order, ForemanReport, ForemanOrderUpdate, ExtraServiceOrder, ServiceOrder, Foreman, Cleaners
+    FineCategory, Order, ForemanReport, ForemanOrderUpdate, ExtraServiceOrder, ServiceOrder, StaffOrder
+
+
+class StaffOrderInline(admin.StackedInline):
+    model = StaffOrder
+    extra = 1
+    fields = ['order', 'staff', 'is_brigadier']
 
 
 class ServiceOrderInline(admin.StackedInline):
@@ -19,7 +25,7 @@ class ExtraServiceOrderInline(admin.StackedInline):
 
 class OrderAdmin(admin.ModelAdmin):
     inlines = [
-        ServiceOrderInline, ExtraServiceOrderInline
+        StaffOrderInline, ServiceOrderInline, ExtraServiceOrderInline
     ]
 
 
@@ -46,10 +52,10 @@ admin.site.register(FineCategory)
 admin.site.register(Bonus)
 admin.site.register(Inventory)
 admin.site.register(Cleansear)
-admin.site.register(Order, OrderAdmin,)
+admin.site.register(Order, OrderAdmin, )
 admin.site.register(ForemanReport)
 admin.site.register(ForemanOrderUpdate)
-admin.site.register(ServiceOrder,)
+admin.site.register(ServiceOrder, )
 admin.site.register(ExtraServiceOrder)
-admin.site.register(Foreman)
-admin.site.register(Cleaners)
+# admin.site.register(Foreman)
+# admin.site.register(Cleaners)
