@@ -136,6 +136,10 @@ class ForemanOrderUpdate(models.Model):
                                       related_name='foreman_extra', verbose_name=_('Дополнительная услуга'))
     description = models.TextField(max_length=500, blank=True, null=True, verbose_name=_('Причина внесения изменений'))
 
+    class Meta:
+        db_table = 'foreman_order_update'
+        verbose_name = _('Корректировка бригадира')
+        verbose_name_plural = _('Корректировки бригадиров')
 
 class Foreman(models.Model):
     # Таблица для выбора бригади в заказе, в которой указываем денежные моменты, имеет связь FK с таблицей Order

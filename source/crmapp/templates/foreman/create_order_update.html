@@ -6,6 +6,7 @@
         {% csrf_token %}
         <div class="mt-5">
             <p class="text-center fs-1 text-uppercase">Услуги</p>
+        {{ service_form.management_form }}
         <div class="row row-cols-1 row-cols-md-2 g-4">
             {% for error in service_form.non_field_errors %}
                <p class="text-danger">{{ error }}</p>
@@ -25,6 +26,8 @@
         </div>
         <div class="mt-5">
             <p class="text-center fs-1 text-uppercase">Доп услуги</p>
+            {{ extra_service_form.management_form }}
+{#        {{ extra_service_form }}#}
             <div class="row row-cols-1 row-cols-md-2 g-4">
             {% for error in extra_service_form.non_field_errors %}
                <p class="text-danger">{{ error }}</p>

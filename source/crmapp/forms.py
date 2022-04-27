@@ -43,12 +43,12 @@ class ForemanOrderUpdateForm(forms.ModelForm):
 class ForemanService(forms.ModelForm):
     class Meta:
         model = ServiceOrder
-        fields = ('service', 'amount', 'rate', 'total')
+        fields = '__all__'
 
 class ForemanExtraService(forms.ModelForm):
     class Meta:
         model = ExtraServiceOrder
-        fields = ('extra_service', 'amount', 'rate', 'total')
+        fields = '__all__'
 
 
 class ExtraServiceForm(forms.ModelForm):
