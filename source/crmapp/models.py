@@ -240,18 +240,18 @@ class Inventory(models.Model):
         verbose_name_plural = _("Инвентари")
 
 
-class Cleansear(models.Model):
+class Cleanser(models.Model):
     name = models.CharField(max_length=255, verbose_name=_('Моющее средство'), null=False, blank=False)
     description = models.TextField(max_length=1000, verbose_name=_('Описание товара'), null=True, blank=True)
 
     def get_absolute_url(self):
-        return reverse('crmapp:cleansear_index')
+        return reverse('crmapp:cleanser_index')
 
     def __str__(self):
         return f"{self.name}"
 
     class Meta:
-        db_table = "cleansear"
+        db_table = "cleanser"
         verbose_name = _("Моющее средство")
         verbose_name_plural = _("Моющие средства")
 
@@ -312,7 +312,7 @@ class InventoryInOrder(models.Model):
 class CleanserInOrder(models.Model):
     order = models.ForeignKey('crmapp.Order', related_name='order_cleanser', verbose_name=_('Заказ'),
                               null=True, blank=True, on_delete=models.PROTECT)
-    cleanser = models.ForeignKey('crmapp.Cleansear', related_name='cleansers_order',
+    cleanser = models.ForeignKey('crmapp.Cleanser', related_name='cleansers_order',
                                   verbose_name=_('Моющее средство'), null=True, blank=True, on_delete=models.PROTECT)
     amount = models.PositiveIntegerField(verbose_name=_('Количество'), null=True, blank=True)
 

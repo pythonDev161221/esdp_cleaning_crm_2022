@@ -2,7 +2,7 @@ from django.contrib import admin
 
 
 from crmapp.models import ExtraService, CleaningSort, Service, PropertySort, \
-    Client, Inventory, Cleansear, Fine, Bonus, \
+    Client, Inventory, Cleanser, Fine, Bonus, \
     FineCategory, Order, ForemanReport, ForemanOrderUpdate, ExtraServiceOrder, ServiceOrder, Foreman, Cleaners, \
     InventoryInOrder, CleanserInOrder
 
@@ -23,7 +23,7 @@ admin.site.register(Fine)
 admin.site.register(FineCategory)
 admin.site.register(Bonus)
 admin.site.register(Inventory)
-admin.site.register(Cleansear)
+admin.site.register(Cleanser)
 admin.site.register(Order)
 admin.site.register(ForemanReport)
 admin.site.register(ForemanOrderUpdate)
