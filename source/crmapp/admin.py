@@ -1,7 +1,6 @@
 from django.contrib import admin
 
-from crmapp.models import CleaningSort, Service, PropertySort, \
-    Client, Inventory, Cleanser, Fine, Bonus, \
+from crmapp.models import Service, Client, Inventory, Cleanser, Fine, Bonus, \
     FineCategory, Order, ForemanReport, ForemanOrderUpdate, ServiceOrder, StaffOrder, \
     InventoryInOrder, CleanserInOrder
 
@@ -24,9 +23,7 @@ class OrderAdmin(admin.ModelAdmin):
     ]
 
 
-admin.site.register(CleaningSort)
 admin.site.register(Service)
-admin.site.register(PropertySort)
 admin.site.register(Client)
 admin.site.register(Fine)
 admin.site.register(FineCategory)

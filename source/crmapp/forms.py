@@ -6,7 +6,7 @@ from crmapp.models import Inventory, Cleanser, Client, ForemanOrderUpdate, Servi
 class ServiceForm(forms.ModelForm):
     class Meta:
         model = Service
-        fields = ('name', 'unit', 'price', 'cleaning_time', 'is_extra')
+        fields = ('name', 'unit', 'price', 'is_extra')
 
 
 class ClientForm(forms.ModelForm):

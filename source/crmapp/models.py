@@ -11,9 +11,8 @@ from crmapp.choice import PaymentChoices, UnitChoices
 class Service(models.Model):
     name = models.CharField(max_length=300, null=False, blank=False, verbose_name=_('Yслуга'))
     unit = models.CharField(max_length=350, null=False, blank=False, choices=UnitChoices.choices,
-                            verbose_name=_('Единица измерения'))
+                            verbose_name=_('Единица измерения'), default='square_meter')
     price = models.PositiveIntegerField(verbose_name=_('Цена за единицу'), null=False, blank=False)
-    cleaning_time = models.IntegerField(verbose_name=_('Расчетное время уборки'), null=True, blank=True)
     is_extra = models.BooleanField(verbose_name=_('Доп. услуга'))
 
     def __str__(self):
