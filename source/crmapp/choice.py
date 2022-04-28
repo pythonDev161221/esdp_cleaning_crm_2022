@@ -10,3 +10,5 @@ class PaymentChoices(TextChoices):
 class UnitChoices(TextChoices):
     SQUARE_METER = 'square_meter', _('м²')
     PIECE = 'piece', _('шт.')
+    SEAT_PLACE = 'seat_place', _('посад/место')
+    SASH = 'sash', _('створка')

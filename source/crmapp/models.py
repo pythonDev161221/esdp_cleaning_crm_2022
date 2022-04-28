@@ -9,7 +9,7 @@ from crmapp.choice import PaymentChoices, UnitChoices
 
 
 class Service(models.Model):
-    name = models.CharField(max_length=300, null=False, blank=False, verbose_name=_('Yслуга'))
+    name = models.CharField(max_length=300, null=False, blank=False, verbose_name=_('Услуга'))
     unit = models.CharField(max_length=350, null=False, blank=False, choices=UnitChoices.choices,
                             verbose_name=_('Единица измерения'), default='square_meter')
     price = models.PositiveIntegerField(verbose_name=_('Цена за единицу'), null=False, blank=False)

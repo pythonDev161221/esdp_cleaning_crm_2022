@@ -1,193 +1,502 @@
 [
 {
     "model": "crmapp.service",
+    "pk": 3,
+    "fields": {
+        "name": "Влажная уборка",
+        "unit": "square_meter",
+        "price": 35,
+        "is_extra": false
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 4,
+    "fields": {
+        "name": "Генеральная уборка",
+        "unit": "square_meter",
+        "price": 50,
+        "is_extra": false
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 5,
+    "fields": {
+        "name": "Мойка окон",
+        "unit": "square_meter",
+        "price": 140,
+        "is_extra": false
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 7,
+    "fields": {
+        "name": "Мойка санузла",
+        "unit": "piece",
+        "price": 1500,
+        "is_extra": false
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 8,
+    "fields": {
+        "name": "Химчистка ковролина",
+        "unit": "square_meter",
+        "price": 100,
+        "is_extra": false
+    }
+},
+{
+    "model": "crmapp.service",
     "pk": 9,
     "fields": {
-        "cleaning_sort": 2,
-        "property_sort": 1,
+        "name": "Химчистка ковра",
         "unit": "square_meter",
-        "price": 35
+        "price": 140,
+        "is_extra": false
     }
 },
 {
     "model": "crmapp.service",
     "pk": 10,
     "fields": {
-        "cleaning_sort": 1,
-        "property_sort": 1,
+        "name": "Химчистка мягкой мебели",
         "unit": "square_meter",
-        "price": 50
-    }
-},
-{
-    "model": "crmapp.service",
-    "pk": 11,
-    "fields": {
-        "cleaning_sort": 3,
-        "property_sort": 1,
-        "unit": "square_meter",
-        "price": 60
-    }
-},
-{
-    "model": "crmapp.service",
-    "pk": 12,
-    "fields": {
-        "cleaning_sort": 4,
-        "property_sort": 1,
-        "unit": "square_meter",
-        "price": 140
+        "price": 350,
+        "is_extra": false
     }
 },
 {
     "model": "crmapp.service",
     "pk": 13,
     "fields": {
-        "cleaning_sort": 5,
-        "property_sort": 1,
-        "unit": "piece",
-        "price": 2000
+        "name": "Мойка стен (обои, кафель, краска)",
+        "unit": "square_meter",
+        "price": 50,
+        "is_extra": true
     }
 },
 {
     "model": "crmapp.service",
     "pk": 14,
     "fields": {
-        "cleaning_sort": 6,
-        "property_sort": 1,
-        "unit": "piece",
-        "price": 1500
+        "name": "Мойка потолка",
+        "unit": "square_meter",
+        "price": 50,
+        "is_extra": true
     }
 },
 {
     "model": "crmapp.service",
     "pk": 15,
     "fields": {
-        "cleaning_sort": 7,
-        "property_sort": 1,
-        "unit": "square_meter",
-        "price": 100
+        "name": "мойка  холодильника 1-камерного (внутри и снаружи)",
+        "unit": "piece",
+        "price": 250,
+        "is_extra": true
     }
 },
 {
     "model": "crmapp.service",
     "pk": 16,
     "fields": {
-        "cleaning_sort": 8,
-        "property_sort": 1,
-        "unit": "square_meter",
-        "price": 140
+        "name": "мойка  холодильника 2-камерного  (мойка внутри и снаружи)",
+        "unit": "piece",
+        "price": 350,
+        "is_extra": true
     }
 },
 {
     "model": "crmapp.service",
     "pk": 17,
     "fields": {
-        "cleaning_sort": 9,
-        "property_sort": 1,
-        "unit": "square_meter",
-        "price": 350
+        "name": "мойка духовки, плитки",
+        "unit": "piece",
+        "price": 250,
+        "is_extra": true
     }
 },
 {
     "model": "crmapp.service",
     "pk": 18,
     "fields": {
-        "cleaning_sort": 10,
-        "property_sort": 1,
+        "name": "микроволновка",
+        "unit": "piece",
+        "price": 150,
+        "is_extra": true
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 19,
+    "fields": {
+        "name": "мойка посудомоечной машинки",
+        "unit": "piece",
+        "price": 250,
+        "is_extra": true
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 20,
+    "fields": {
+        "name": "мойка вытяжки и решетки",
+        "unit": "piece",
+        "price": 250,
+        "is_extra": true
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 21,
+    "fields": {
+        "name": "мытье посуды 30мин",
+        "unit": "piece",
+        "price": 150,
+        "is_extra": true
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 22,
+    "fields": {
+        "name": "мытье посуды 1час",
+        "unit": "piece",
+        "price": 300,
+        "is_extra": true
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 23,
+    "fields": {
+        "name": "чистка кафеля и швов",
         "unit": "square_meter",
-        "price": 125
+        "price": 150,
+        "is_extra": true
     }
 },
 {
-    "model": "crmapp.propertysort",
-    "pk": 1,
+    "model": "crmapp.service",
+    "pk": 25,
     "fields": {
-        "name": "Квартира"
+        "name": "Химчистка ковер (синтетика)",
+        "unit": "square_meter",
+        "price": 130,
+        "is_extra": true
     }
 },
 {
-    "model": "crmapp.propertysort",
-    "pk": 2,
+    "model": "crmapp.service",
+    "pk": 26,
     "fields": {
-        "name": "Дом"
+        "name": "Химчистка ковер (шерстяной)",
+        "unit": "square_meter",
+        "price": 150,
+        "is_extra": true
     }
 },
 {
-    "model": "crmapp.propertysort",
-    "pk": 3,
+    "model": "crmapp.service",
+    "pk": 27,
     "fields": {
-        "name": "Офис"
+        "name": "Химчистка римские шторы",
+        "unit": "square_meter",
+        "price": 150,
+        "is_extra": true
     }
 },
 {
-    "model": "crmapp.cleaningsort",
-    "pk": 1,
+    "model": "crmapp.service",
+    "pk": 28,
     "fields": {
-        "name": "Генеральная уборка"
+        "name": "Химчистка шторы",
+        "unit": "square_meter",
+        "price": 120,
+        "is_extra": true
     }
 },
 {
-    "model": "crmapp.cleaningsort",
-    "pk": 2,
+    "model": "crmapp.service",
+    "pk": 29,
     "fields": {
-        "name": "Влажная уборка"
+        "name": "Химчистка тюли",
+        "unit": "square_meter",
+        "price": 100,
+        "is_extra": true
     }
 },
 {
-    "model": "crmapp.cleaningsort",
-    "pk": 3,
+    "model": "crmapp.service",
+    "pk": 30,
     "fields": {
-        "name": "Уборка после ремонта"
+        "name": "Химчистка жалюзи (вертик/горизонт)",
+        "unit": "square_meter",
+        "price": 450,
+        "is_extra": true
     }
 },
 {
-    "model": "crmapp.cleaningsort",
-    "pk": 4,
+    "model": "crmapp.service",
+    "pk": 31,
     "fields": {
-        "name": "Мойка окон"
+        "name": "Стирка ковров с вывозом (аутсорс)",
+        "unit": "square_meter",
+        "price": 100,
+        "is_extra": true
     }
 },
 {
-    "model": "crmapp.cleaningsort",
-    "pk": 5,
+    "model": "crmapp.service",
+    "pk": 32,
     "fields": {
-        "name": "Мойка кухни"
+        "name": "Химчистка - стул со спинкой",
+        "unit": "piece",
+        "price": 150,
+        "is_extra": true
     }
 },
 {
-    "model": "crmapp.cleaningsort",
-    "pk": 6,
+    "model": "crmapp.service",
+    "pk": 33,
     "fields": {
-        "name": "Мойка санузла"
+        "name": "Химчистка стул без спинки",
+        "unit": "piece",
+        "price": 100,
+        "is_extra": true
     }
 },
 {
-    "model": "crmapp.cleaningsort",
-    "pk": 7,
+    "model": "crmapp.service",
+    "pk": 34,
     "fields": {
-        "name": "Химчистка ковролина"
+        "name": "Химчистка мебель (простая ткань) (без подлокотников)",
+        "unit": "seat_place",
+        "price": 350,
+        "is_extra": true
     }
 },
 {
-    "model": "crmapp.cleaningsort",
-    "pk": 8,
+    "model": "crmapp.service",
+    "pk": 35,
     "fields": {
-        "name": "Химчистка ковра"
+        "name": "Химчистка мебель (флок, кожа, алькантара)(без подлокотников)",
+        "unit": "seat_place",
+        "price": 500,
+        "is_extra": true
     }
 },
 {
-    "model": "crmapp.cleaningsort",
-    "pk": 9,
+    "model": "crmapp.service",
+    "pk": 36,
     "fields": {
-        "name": "Химчистка мягкой мебели"
+        "name": "Химчистка кресло (простая ткань)",
+        "unit": "seat_place",
+        "price": 500,
+        "is_extra": true
     }
 },
 {
-    "model": "crmapp.cleaningsort",
-    "pk": 10,
+    "model": "crmapp.service",
+    "pk": 37,
     "fields": {
-        "name": "Химчистка стула"
+        "name": "Химчистка кресло (флок, кожа, алькантара)",
+        "unit": "seat_place",
+        "price": 800,
+        "is_extra": true
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 38,
+    "fields": {
+        "name": "Химчистка каркас дивана (простая ткань)",
+        "unit": "piece",
+        "price": 500,
+        "is_extra": true
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 39,
+    "fields": {
+        "name": "Химчистка каркас дивана (флок, кожа, алькантара)",
+        "unit": "piece",
+        "price": 700,
+        "is_extra": true
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 40,
+    "fields": {
+        "name": "Химчистка спальное место дивана  (простая ткань)",
+        "unit": "piece",
+        "price": 400,
+        "is_extra": true
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 41,
+    "fields": {
+        "name": "Химчистка спальное место дивана  (флок, кожа, алькантара)",
+        "unit": "piece",
+        "price": 600,
+        "is_extra": true
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 42,
+    "fields": {
+        "name": "Химчистка пуфик (простая ткань)",
+        "unit": "seat_place",
+        "price": 200,
+        "is_extra": true
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 43,
+    "fields": {
+        "name": "Химчистка матрас (двуспалка)",
+        "unit": "piece",
+        "price": 1200,
+        "is_extra": true
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 44,
+    "fields": {
+        "name": "Химчистка матрас (односпалка)",
+        "unit": "piece",
+        "price": 600,
+        "is_extra": true
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 45,
+    "fields": {
+        "name": "Химчистка подушка",
+        "unit": "piece",
+        "price": 200,
+        "is_extra": true
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 47,
+    "fields": {
+        "name": "Уборка ванной комнаты",
+        "unit": "piece",
+        "price": 1500,
+        "is_extra": true
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 48,
+    "fields": {
+        "name": "Уборка туалета",
+        "unit": "piece",
+        "price": 1500,
+        "is_extra": true
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 49,
+    "fields": {
+        "name": "Мытье кухни 1-к.кв",
+        "unit": "piece",
+        "price": 1500,
+        "is_extra": false
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 50,
+    "fields": {
+        "name": "Мытье кухни 2-к.кв",
+        "unit": "piece",
+        "price": 1700,
+        "is_extra": false
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 51,
+    "fields": {
+        "name": "Мытье кухни 3-к.кв",
+        "unit": "piece",
+        "price": 1900,
+        "is_extra": false
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 52,
+    "fields": {
+        "name": "Мытье кухни 4-к.кв",
+        "unit": "square_meter",
+        "price": 2100,
+        "is_extra": false
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 53,
+    "fields": {
+        "name": "Мытье окон: Пластиковое окно",
+        "unit": "sash",
+        "price": 150,
+        "is_extra": false
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 54,
+    "fields": {
+        "name": "Мытье окон: Москитная сетка",
+        "unit": "piece",
+        "price": 85,
+        "is_extra": false
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 55,
+    "fields": {
+        "name": "Мытье окон: Остекленение эркером",
+        "unit": "piece",
+        "price": 320,
+        "is_extra": false
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 56,
+    "fields": {
+        "name": "Мытье окон: Мытье лоджии",
+        "unit": "piece",
+        "price": 1600,
+        "is_extra": false
+    }
+},
+{
+    "model": "crmapp.service",
+    "pk": 57,
+    "fields": {
+        "name": "Мытье окон: Мытье балкона",
+        "unit": "piece",
+        "price": 1300,
+        "is_extra": false
     }
 }
 ]
