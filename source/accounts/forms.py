@@ -39,6 +39,7 @@ class StaffRegistrationForm(UserCreationForm):
             "phone",
             "inn_passport",
             "address",
+            "online_wallet",
             "experience",
             "schedule")
         field_classes = {'username': UsernameField}
@@ -70,8 +71,9 @@ class StaffEditForm(forms.ModelForm):
                   "first_name",
                   "last_name",
                   "phone",
-                  "inn_passport",
                   "address",
+                  "inn_passport",
+                  "online_wallet",
                   "experience",
                   "schedule")
         widgets = {
