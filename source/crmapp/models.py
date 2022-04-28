@@ -25,32 +25,6 @@ class Service(models.Model):
         verbose_name_plural = _('Услуги')
 
 
-class CleaningSort(models.Model):
-    name = models.CharField(max_length=200, verbose_name=_('Тип уборки'),
-                            null=False, blank=False)
-
-    def __str__(self):
-        return f"{self.name}"
-
-    class Meta:
-        db_table = 'cleaning_sort'
-        verbose_name = _('Тип уборки')
-        verbose_name_plural = _('Типы уборок')
-
-
-class PropertySort(models.Model):
-    name = models.CharField(max_length=255, verbose_name=_('Тип объекта'),
-                            null=False, blank=False)
-
-    def __str__(self):
-        return f"{self.name}"
-
-    class Meta:
-        db_table = 'property_sort'
-        verbose_name = _('Тип объекта')
-        verbose_name_plural = _('Типы объектов')
-
-
 class Client(models.Model):
     first_name = models.CharField(verbose_name=_('Имя'), max_length=75, blank=False, null=False)
     last_name = models.CharField(verbose_name=_('Фамилия'), max_length=75, blank=False, null=False)
