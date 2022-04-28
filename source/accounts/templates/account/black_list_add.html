@@ -5,8 +5,7 @@
     <div class="container text-center">
         <form method="post">
             <h3 class="mt-4 mb-4">Вы хотите
-                добавить {{ user_object.last_name | capfirst }} {{ user_object.first_name | capfirst }} в черный
-                список?</h3>
+                добавить {{ user_object.last_name | capfirst }} {{ user_object.first_name | capfirst }} в ЧЕРНЫЙ СПИСОК?</h3>
             {% csrf_token %}
             <a href="{% url 'accounts:staff-list' %}" class="btn btn-dark">Нет</a>
             <input type="submit" name="action" value="Да" class="btn btn-danger"/>
