@@ -5,7 +5,7 @@ from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
 from django.utils.translation import gettext as _
 
-from crmapp.choice import PaymentChoices, UnitChoices, UnitCleansearsChoice
+from crmapp.choice import PaymentChoices, UnitChoices
 
 
 class ExtraService(models.Model):
@@ -21,20 +21,6 @@ class ExtraService(models.Model):
         db_table = 'extra_services'
         verbose_name = _('Дополнительная услуга')
         verbose_name_plural = _('Дополнительные услуги')
-
-
-class ComplexityFactor(models.Model):
-    name = models.CharField(max_length=100, null=False, blank=False, verbose_name=_('Название коэффициента'))
-    description = models.TextField(max_length=400, null=True, blank=True, verbose_name=_('Описание'))
-    factor = models.DecimalField(max_digits=5, decimal_places=2, verbose_name=_('Значение коэффициента'))
-
-    def __str__(self):
-        return f'{self.name}-{self.factor}'
-
-    class Meta:
-        db_table = 'complexity_factor'
-        verbose_name = _('Коэффициент сложности')
-        verbose_name_plural = _('Коэффициенты сложности')
 
 
 class CleaningSort(models.Model):
@@ -240,9 +226,7 @@ class Bonus(models.Model):
 
 class Inventory(models.Model):
     name = models.CharField(max_length=255, verbose_name=_('Инвентарь'), null=False, blank=False)
-    # datetime = models.DateTimeField(verbose_name=_('Дата и время'))
-    # storage = models.CharField(max_length=255, verbose_name=_('Склад'))
-    amount = models.IntegerField(verbose_name=_('Количество'), null=False, blank=False)
+    description = models.TextField(max_length=1000, verbose_name=_('Описание'), null=True, blank=True)
 
     def get_absolute_url(self):
         return reverse('crmapp:inventory_index')
@@ -256,24 +240,18 @@ class Inventory(models.Model):
         verbose_name_plural = _("Инвентари")
 
 
-
-
-class Cleansear(models.Model):
+class Cleanser(models.Model):
     name = models.CharField(max_length=255, verbose_name=_('Моющее средство'), null=False, blank=False)
-    description = models.TextField(max_length=510, verbose_name=_('Описание товара'), null=False, blank=False)
-    unit = models.CharField(max_length=126, choices=UnitCleansearsChoice.choices, default='Piece',
-                            null=False, blank=False, verbose_name=_('Единица измерения'))
-    price = models.PositiveIntegerField(verbose_name=_('Цена'), null=False, blank=False)
-    amount = models.IntegerField(verbose_name=_('Количество'), null=False, blank=False)
+    description = models.TextField(max_length=1000, verbose_name=_('Описание товара'), null=True, blank=True)
 
     def get_absolute_url(self):
-        return reverse('crmapp:cleansear_index')
+        return reverse('crmapp:cleanser_index')
 
     def __str__(self):
-        return f"{self.name}:{self.price}"
+        return f"{self.name}"
 
     class Meta:
-        db_table = "cleansear"
+        db_table = "cleanser"
         verbose_name = _("Моющее средство")
         verbose_name_plural = _("Моющие средства")
 
@@ -314,3 +292,34 @@ class ExtraServiceOrder(models.Model):
         verbose_name = _("Заказ доп. услуги")
         verbose_name_plural = _("Заказ доп. услуг")
 
+
+class InventoryInOrder(models.Model):
+    order = models.ForeignKey('crmapp.Order', related_name='order_inventories', verbose_name=_('Заказ'),
+                              null=True, blank=True, on_delete=models.PROTECT)
+    inventory = models.ForeignKey('crmapp.Inventory', related_name='inventories_order',
+                                  verbose_name=_('Инвентарь'), null=True, blank=True, on_delete=models.PROTECT)
+    amount = models.PositiveIntegerField(verbose_name=_('Количество'), null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.inventory}:{self.amount}'
+
+    class Meta:
+        db_table = 'inventory_in_order'
+        verbose_name = _('Инвентарь заказа')
+        verbose_name_plural = _('Инвентари заказа')
+
+
+class CleanserInOrder(models.Model):
+    order = models.ForeignKey('crmapp.Order', related_name='order_cleanser', verbose_name=_('Заказ'),
+                              null=True, blank=True, on_delete=models.PROTECT)
+    cleanser = models.ForeignKey('crmapp.Cleanser', related_name='cleansers_order',
+                                  verbose_name=_('Моющее средство'), null=True, blank=True, on_delete=models.PROTECT)
+    amount = models.PositiveIntegerField(verbose_name=_('Количество'), null=True, blank=True)
+
+    def __str__(self):
+        return f'{self.cleanser}:{self.amount}'
+
+    class Meta:
+        db_table = 'cleanser_in_order'
+        verbose_name = _('Моющее средство в заказе')
+        verbose_name_plural = _('Моющие средства в заказе')

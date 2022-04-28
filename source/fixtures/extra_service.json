@@ -4,7 +4,7 @@
   "pk": 1,
   "fields": {
     "name": "Мойка стен (обои, кафель, краска)",
-    "unit": "м²",
+    "unit": "м2",
     "price": 50,
     "cleaning_time": null
   }
@@ -14,7 +14,7 @@
   "pk": 2,
   "fields": {
     "name": "Мойка потолка",
-    "unit": "м²",
+    "unit": "м2",
     "price": 50,
     "cleaning_time": null
   }
@@ -26,77 +26,307 @@
     "name": "Мойка холодильника (внутри и снаружи)",
     "unit": "1-камерный",
     "price": 250,
-    "cleaning_time": "30-50"
+    "cleaning_time": 50
   }
 },
 {
   "model": "crmapp.extraservice",
   "pk": 4,
   "fields": {
-    "name": "мойка холодильника (внутри и снаружи)",
-    "unit": "2-камерный",
+    "name": "Мойка холодильника (внутри и снаружи)",
+    "unit": "2-хкамерный",
     "price": 350,
-    "cleaning_time": "30-50"
+    "cleaning_time": 50
   }
 },
 {
   "model": "crmapp.extraservice",
   "pk": 5,
   "fields": {
-    "name": "мойка духовки, плиты",
+    "name": "Мойка бытовой техники (духовка, плита)",
     "unit": "шт",
     "price": 250,
-    "cleaning_time": "60"
+    "cleaning_time": 60
   }
 },
 {
   "model": "crmapp.extraservice",
   "pk": 6,
   "fields": {
-    "name": "мойка микроволновки",
+    "name": "Мойка бытовой техники (микроволновка)",
     "unit": "шт",
     "price": 150,
-    "cleaning_time": "30"
+    "cleaning_time": 30
   }
 },
 {
   "model": "crmapp.extraservice",
   "pk": 7,
   "fields": {
-    "name": "мойка посудомоечной машины",
+    "name": "Мойка посудомоечной машины",
     "unit": "шт",
     "price": 250,
-    "cleaning_time": "30"
+    "cleaning_time": 30
   }
 },
 {
   "model": "crmapp.extraservice",
   "pk": 8,
   "fields": {
-    "name": "мойка вытяжки и решетки",
+    "name": "Мойка вытяжки и решетки",
     "unit": "шт",
     "price": 250,
-    "cleaning_time": "30"
+    "cleaning_time": 30
   }
 },
 {
   "model": "crmapp.extraservice",
   "pk": 9,
   "fields": {
-    "name": "мытье посуду",
+    "name": "Мытье посуды",
     "unit": "30 мин",
     "price": 150,
-    "cleaning_time": "30"
+    "cleaning_time": 30
   }
 },
 {
   "model": "crmapp.extraservice",
   "pk": 10,
   "fields": {
-    "name": "мытье посуды",
+    "name": "Мытье посуды",
     "unit": "1 час",
     "price": 300,
-    "cleaning_time": "60"
+    "cleaning_time": 60
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 11,
+  "fields": {
+    "name": "Чистка кафеля и швов",
+    "unit": "м2",
+    "price": 150,
+    "cleaning_time": null
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 12,
+  "fields": {
+    "name": "Химчистка ковролина с выездом (на месте)",
+    "unit": "м2",
+    "price": 100,
+    "cleaning_time": null
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 13,
+  "fields": {
+    "name": "Химчистка ковров (синтетика) с выездом (на месте)",
+    "unit": "м2",
+    "price": 130,
+    "cleaning_time": null
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 14,
+  "fields": {
+    "name": "Химчистка ковров  (шерстяной) с выездом (на месте)",
+    "unit": "м2",
+    "price": 150,
+    "cleaning_time": null
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 15,
+  "fields": {
+    "name": "Химчистка римских штор ( на месте)",
+    "unit": "м2",
+    "price": 150,
+    "cleaning_time": null
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 16,
+  "fields": {
+    "name": "Химчистка штор ( на месте)",
+    "unit": "м2",
+    "price": 120,
+    "cleaning_time": null
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 17,
+  "fields": {
+    "name": "Химчистка тюли ( на месте)",
+    "unit": "м2",
+    "price": 100,
+    "cleaning_time": null
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 18,
+  "fields": {
+    "name": "Химчистка жалюзи (вертик/горизонт) ( на месте)",
+    "unit": "м2",
+    "price": 450,
+    "cleaning_time": null
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 19,
+  "fields": {
+    "name": "Стирка ковров с вывозом (аутсорс)",
+    "unit": "м2",
+    "price": 100,
+    "cleaning_time": null
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 20,
+  "fields": {
+    "name": "Химчистка стула со спинкой (с выездом)",
+    "unit": "шт",
+    "price": 150,
+    "cleaning_time": null
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 21,
+  "fields": {
+    "name": "Химчистка стула без спинки (с выездом)",
+    "unit": "шт",
+    "price": 100,
+    "cleaning_time": null
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 22,
+  "fields": {
+    "name": "Химчистка мебели с выездом (простая ткань) (без подлокотников)",
+    "unit": "1 пос/м",
+    "price": 350,
+    "cleaning_time": null
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 23,
+  "fields": {
+    "name": "Химчистка мебели с выездом  (флок, кожа, алькантара)  (без подлокотников)",
+    "unit": "1 пос/м",
+    "price": 500,
+    "cleaning_time": null
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 24,
+  "fields": {
+    "name": "Химчистка кресла (простая ткань) с выездом",
+    "unit": "1 пос/м",
+    "price": 500,
+    "cleaning_time": null
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 25,
+  "fields": {
+    "name": "Химчистка кресла  (флок, кожа, алькантара) с выездом",
+    "unit": "1 пос/м",
+    "price": 800,
+    "cleaning_time": null
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 26,
+  "fields": {
+    "name": "Химчистка каркаса дивана (простая ткань) с выездом",
+    "unit": "шт",
+    "price": 500,
+    "cleaning_time": null
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 27,
+  "fields": {
+    "name": "Химчистка каркаса дивана (флок, кожа, алькантара) с выездом",
+    "unit": "шт",
+    "price": 700,
+    "cleaning_time": null
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 28,
+  "fields": {
+    "name": "Химчистка спального места дивана  (простая ткань) с выездом",
+    "unit": "шт",
+    "price": 400,
+    "cleaning_time": null
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 29,
+  "fields": {
+    "name": "Химчистка спального места дивана  (флок, кожа, алькантара) с выездом",
+    "unit": "шт",
+    "price": 600,
+    "cleaning_time": null
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 30,
+  "fields": {
+    "name": "Химчистка пуфика (простая ткань) с выездом",
+    "unit": "1 пос/м",
+    "price": 200,
+    "cleaning_time": null
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 31,
+  "fields": {
+    "name": "Химчистка матраса (двуспалка) с выездом",
+    "unit": "шт",
+    "price": 1200,
+    "cleaning_time": null
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 32,
+  "fields": {
+    "name": "Химчистка матраса (односпалка) с выездом",
+    "unit": "шт",
+    "price": 600,
+    "cleaning_time": null
+  }
+},
+{
+  "model": "crmapp.extraservice",
+  "pk": 33,
+  "fields": {
+    "name": "Химчистка подушки с выездом",
+    "unit": "шт",
+    "price": 200,
+    "cleaning_time": null
   }
 }
 ]

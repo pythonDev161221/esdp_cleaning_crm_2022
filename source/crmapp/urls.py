@@ -8,7 +8,7 @@ from crmapp.views.service_views import ServiceListView, ServiceCreateView, Servi
     CleaningSortCreateView, CleaningSortUpdateView, CleaningSortDeleteView
 
 from crmapp.views.consumables import InventoryListView, InventoryCreateView, InventoryUpdateView, InventoryDeleteView, \
-    CleansearListView, CleansearCreateView, CleansearUpdateView, CleansearDeleteView, CleansearDetailView
+    CleanserListView, CleanserCreateView, CleanserUpdateView, CleanserDeleteView
 from crmapp.views.extra_service_views import ExtraServiceListView, ExtraServiceCreateView, ExtraServiceUpdateView, ExtraServiceDeleteView
 from crmapp.views.servie_views import ServiceOrderListView, ServiceOrderDetailView, ServiceOrderCreateView, \
     ServiceOrderUpdateView, ServiceOrderDeleteView
@@ -48,11 +48,10 @@ consumables_urlpatterns = [
     path('inventory/up/<int:pk>/', InventoryUpdateView.as_view(), name='inventory_update'),
     path('inventory/delete/<int:pk>/', InventoryDeleteView.as_view(), name='inventory_delete'),
 
-    path('cleansear/all/', CleansearListView.as_view(), name='cleansear_index'),
-    path('cleansear/create/', CleansearCreateView.as_view(), name='cleansear_create'),
-    path('cleansear/up/<int:pk>/', CleansearUpdateView.as_view(), name='cleansear_update'),
-    path('cleansear/delete/<int:pk>/', CleansearDeleteView.as_view(), name='cleansear_delete'),
-    path('cleansear/detail/<int:pk>/', CleansearDetailView.as_view(), name='cleansear_detail')
+    path('cleanser/all/', CleanserListView.as_view(), name='cleanser_index'),
+    path('cleanser/create/', CleanserCreateView.as_view(), name='cleanser_create'),
+    path('cleanser/up/<int:pk>/', CleanserUpdateView.as_view(), name='cleanser_update'),
+    path('cleanser/delete/<int:pk>/', CleanserDeleteView.as_view(), name='cleanser_delete')
 ]
 
 

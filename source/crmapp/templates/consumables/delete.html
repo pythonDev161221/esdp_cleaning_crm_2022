@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="container">
-    {% if inventory %}
-        <form method="POST">
-            {% csrf_token %}
-            <h2>Вы действительно хотите удалить инвентарь {{ inventory.name }}?</h2>
-            <input class="btn btn-danger" type="submit" value="Да">
-        </form>
-        <a class="btn btn-dark mt-2" href="{% url "crmapp:inventory_index" %}">Нет</a>
-    {% else %}
-        <form method="POST">
-            {% csrf_token %}
-            <h2>Вы действительно хотите удалить мыломойку {{ cleansear.name }}?</h2>
-            <input class="btn btn-danger" type="submit" value="Да">
-        </form>
-        <a class="btn btn-dark mt-2" href="{% url "crmapp:cleansear_index" %}">Нет</a>
-    {% endif %}
+    <div class="container text-center">
+        {% if inventory %}
+            <form method="POST">
+                {% csrf_token %}
+                <h2>Вы действительно хотите удалить инвентарь {{ inventory.name }}?</h2>
+                <input class="btn btn-danger" type="submit" value="Да">
+                <a class="btn btn-dark" href="{% url "crmapp:inventory_index" %}">Нет</a>
+            </form>
+        {% else %}
+            <form method="POST">
+                {% csrf_token %}
+                <h2>Вы действительно хотите удалить мыломойку {{ cleansear.name }}?</h2>
+                <input class="btn btn-danger" type="submit" value="Да">
+                <a class="btn btn-dark" href="{% url "crmapp:cleanser_index" %}">Нет</a>
+            </form>
+        {% endif %}
     </div>
 {% endblock %}
