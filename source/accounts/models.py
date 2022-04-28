@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext as _
@@ -15,6 +16,10 @@ class Staff(AbstractUser):
     phone = PhoneNumberField(region="KG", max_length=15, verbose_name=_('Номер телефона'))
     avatar = models.ImageField(upload_to="avatars/", null=True, blank=True, verbose_name=_('Фото профиля'))
     address = models.CharField(max_length=200, null=True, blank=True, verbose_name=_('Адрес'))
+    online_wallet = ArrayField(
+        models.CharField(max_length=256, null=True, blank=True),
+        size=4, null=True, blank=True, verbose_name=_('Электронные кошельки')
+    )
     schedule = models.ManyToManyField('accounts.WorkDay', related_name='workday', default='monday',
                                       verbose_name=_('График работы'))
     experience = models.CharField(max_length=25, choices=StaffCategoryChoices.choices, default='trainee', null=False,
