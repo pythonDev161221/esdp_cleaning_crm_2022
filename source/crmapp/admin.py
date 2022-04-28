@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from crmapp.models import ExtraService, CleaningSort, Service, PropertySort, \
+from crmapp.models import CleaningSort, Service, PropertySort, \
     Client, Inventory, Cleanser, Fine, Bonus, \
-    FineCategory, Order, ForemanReport, ForemanOrderUpdate, ExtraServiceOrder, ServiceOrder, StaffOrder, \
+    FineCategory, Order, ForemanReport, ForemanOrderUpdate, ServiceOrder, StaffOrder, \
     InventoryInOrder, CleanserInOrder
 
 
@@ -18,25 +18,12 @@ class ServiceOrderInline(admin.StackedInline):
     fields = ['order', 'service', 'amount', 'rate', 'total']
 
 
-class ExtraServiceOrderInline(admin.StackedInline):
-    model = ExtraServiceOrder
-    extra = 1
-    fields = ['order', 'extra_service', 'amount', 'rate', 'total']
-
-
 class OrderAdmin(admin.ModelAdmin):
     inlines = [
-        StaffOrderInline, ServiceOrderInline, ExtraServiceOrderInline
+        StaffOrderInline, ServiceOrderInline
     ]
 
 
-class ExtraServiceAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name']
-    list_display_links = ['id', 'name']
-    fields = ['name', 'unit', 'price', 'cleaning_time']
-
-
-admin.site.register(ExtraService, ExtraServiceAdmin)
 admin.site.register(CleaningSort)
 admin.site.register(Service)
 admin.site.register(PropertySort)
@@ -50,6 +37,5 @@ admin.site.register(Cleanser)
 admin.site.register(ForemanReport)
 admin.site.register(ForemanOrderUpdate)
 admin.site.register(ServiceOrder, )
-admin.site.register(ExtraServiceOrder)
 admin.site.register(InventoryInOrder)
 admin.site.register(CleanserInOrder)

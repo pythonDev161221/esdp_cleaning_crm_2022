@@ -8,8 +8,7 @@ from crmapp.views.service_views import ServiceListView, ServiceCreateView, Servi
 
 from crmapp.views.consumables import InventoryListView, InventoryCreateView, InventoryUpdateView, InventoryDeleteView, \
     CleanserListView, CleanserCreateView, CleanserUpdateView, CleanserDeleteView
-from crmapp.views.extra_service_views import ExtraServiceListView, ExtraServiceCreateView, ExtraServiceUpdateView, \
-    ExtraServiceDeleteView
+
 from crmapp.views.servie_views import ServiceOrderListView, ServiceOrderDetailView, ServiceOrderCreateView, \
     ServiceOrderUpdateView, ServiceOrderDeleteView
 
@@ -54,13 +53,6 @@ consumables_urlpatterns = [
     path('cleanser/delete/<int:pk>/', CleanserDeleteView.as_view(), name='cleanser_delete')
 ]
 
-extra_service_urlpatterns = [
-    path("", ExtraServiceListView.as_view(), name="extra_service_index"),
-    path("create/", ExtraServiceCreateView.as_view(), name="extra_service_create"),
-    path("<int:pk>/update/", ExtraServiceUpdateView.as_view(), name="extra_service_update"),
-    path("<int:pk>/delete/", ExtraServiceDeleteView.as_view(), name="extra_service_delete")
-]
-
 service_order_urlpatterns = [
     path("", ServiceOrderListView.as_view(), name="service_order_list"),
     path("detail/<int:pk>/", ServiceOrderDetailView.as_view(), name="service_order_detail"),
@@ -74,7 +66,6 @@ urlpatterns = [
     path('service/', include(service_urlpatterns)),
     path('property_sort/', include(property_sort_urlpatterns)),
     path('cleaning_sort/', include(cleaning_sort_urlpatterns)),
-    path('extra-service/', include(extra_service_urlpatterns)),
     path('service_order/', include(service_order_urlpatterns)),
     path('consumables/', include(consumables_urlpatterns)),
 ]
