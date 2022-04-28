@@ -10,9 +10,3 @@ class PaymentChoices(TextChoices):
 class UnitChoices(TextChoices):
     SQUARE_METER = 'square_meter', _('м²')
     PIECE = 'piece', _('шт.')
-
-
-class UnitCleansearsChoice(TextChoices):
-    PIECE = 'piece', _('шт.')
-    LITER = 'liter', _('литр')
-    KG = 'kg', _('килограмм')

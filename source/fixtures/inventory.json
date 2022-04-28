@@ -1,0 +1,82 @@
+[
+{
+    "model": "crmapp.inventory",
+    "pk": 1,
+    "fields": {
+        "name": "Перчатки",
+        "description": "Перчатки изготовлены из высококачественного латекса, \r\nэластичны, долговечны, защищают от влаги, от воздействия \r\nмоющих, чистящих средств."
+    }
+},
+{
+    "model": "crmapp.inventory",
+    "pk": 2,
+    "fields": {
+        "name": "Корейская губка",
+        "description": "Губка в чехле-сетке из полиэстеровой серебристой нити \r\nхорошо удаляет стойкие загрязнения и остатки еды, \r\nполирует поверхности, создает обильную пену, \r\nбыстро высыхает, длительное время сохраняет форму."
+    }
+},
+{
+    "model": "crmapp.inventory",
+    "pk": 3,
+    "fields": {
+        "name": "Ведро",
+        "description": "сосуд для хранения жидких и сыпучих материалов и транспортировки их на небольшие расстояния."
+    }
+},
+{
+    "model": "crmapp.inventory",
+    "pk": 4,
+    "fields": {
+        "name": "Мусорный пакет",
+        "description": "предназначенные для размещения в них мусора и использующихся, как правило, в домашних условиях"
+    }
+},
+{
+    "model": "crmapp.inventory",
+    "pk": 5,
+    "fields": {
+        "name": "Пылесос",
+        "description": ""
+    }
+},
+{
+    "model": "crmapp.inventory",
+    "pk": 6,
+    "fields": {
+        "name": "Швабра",
+        "description": ""
+    }
+},
+{
+    "model": "crmapp.inventory",
+    "pk": 7,
+    "fields": {
+        "name": "Стремянка",
+        "description": ""
+    }
+},
+{
+    "model": "crmapp.inventory",
+    "pk": 8,
+    "fields": {
+        "name": "Губка",
+        "description": ""
+    }
+},
+{
+    "model": "crmapp.inventory",
+    "pk": 9,
+    "fields": {
+        "name": "Цветная тряпка",
+        "description": ""
+    }
+},
+{
+    "model": "crmapp.inventory",
+    "pk": 10,
+    "fields": {
+        "name": "Тряпка для стекол",
+        "description": ""
+    }
+}
+]
