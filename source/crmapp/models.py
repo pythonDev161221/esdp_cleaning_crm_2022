@@ -9,11 +9,10 @@ from crmapp.choice import PaymentChoices, UnitChoices
 
 
 class Service(models.Model):
-    name = models.CharField(max_length=300, null=False, blank=False, verbose_name=_('Yслуга'))
+    name = models.CharField(max_length=300, null=False, blank=False, verbose_name=_('Услуга'))
     unit = models.CharField(max_length=350, null=False, blank=False, choices=UnitChoices.choices,
-                            verbose_name=_('Единица измерения'))
+                            verbose_name=_('Единица измерения'), default='square_meter')
     price = models.PositiveIntegerField(verbose_name=_('Цена за единицу'), null=False, blank=False)
-    cleaning_time = models.IntegerField(verbose_name=_('Расчетное время уборки'), null=True, blank=True)
     is_extra = models.BooleanField(verbose_name=_('Доп. услуга'))
 
     def __str__(self):
@@ -23,32 +22,6 @@ class Service(models.Model):
         db_table = 'services'
         verbose_name = _('Услуга')
         verbose_name_plural = _('Услуги')
-
-
-class CleaningSort(models.Model):
-    name = models.CharField(max_length=200, verbose_name=_('Тип уборки'),
-                            null=False, blank=False)
-
-    def __str__(self):
-        return f"{self.name}"
-
-    class Meta:
-        db_table = 'cleaning_sort'
-        verbose_name = _('Тип уборки')
-        verbose_name_plural = _('Типы уборок')
-
-
-class PropertySort(models.Model):
-    name = models.CharField(max_length=255, verbose_name=_('Тип объекта'),
-                            null=False, blank=False)
-
-    def __str__(self):
-        return f"{self.name}"
-
-    class Meta:
-        db_table = 'property_sort'
-        verbose_name = _('Тип объекта')
-        verbose_name_plural = _('Типы объектов')
 
 
 class Client(models.Model):

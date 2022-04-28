@@ -2,14 +2,12 @@ from django.urls import path, include
 
 from crmapp.views.client_views import ClientCreateView, ClientListView, ClientUpdateView
 
-from crmapp.views.service_views import ServiceListView, ServiceCreateView, ServiceUpdateView, ServiceDeleteView, \
-    PropertySortListView, PropertySortCreateView, PropertySortUpdateView, PropertySortDeleteView, \
-    CleaningSortListView, CleaningSortCreateView, CleaningSortUpdateView, CleaningSortDeleteView
+from crmapp.views.service_views import ServiceListView, ServiceCreateView, ServiceUpdateView, ServiceDeleteView
 
 from crmapp.views.consumables import InventoryListView, InventoryCreateView, InventoryUpdateView, InventoryDeleteView, \
     CleanserListView, CleanserCreateView, CleanserUpdateView, CleanserDeleteView
 
-from crmapp.views.servie_views import ServiceOrderListView, ServiceOrderDetailView, ServiceOrderCreateView, \
+from crmapp.views.service_order_views import ServiceOrderListView, ServiceOrderDetailView, ServiceOrderCreateView, \
     ServiceOrderUpdateView, ServiceOrderDeleteView
 
 app_name = 'crmapp'
@@ -25,20 +23,6 @@ service_urlpatterns = [
     path('create/', ServiceCreateView.as_view(), name='service_create'),
     path('update/<int:pk>/', ServiceUpdateView.as_view(), name='service_update'),
     path('delete/<int:pk>/', ServiceDeleteView.as_view(), name='service_delete'),
-]
-
-property_sort_urlpatterns = [
-    path('list/', PropertySortListView.as_view(), name='property_sort_list'),
-    path('create/', PropertySortCreateView.as_view(), name='property_sort_create'),
-    path('update/<int:pk>/', PropertySortUpdateView.as_view(), name='property_sort_update'),
-    path('delete/<int:pk>/', PropertySortDeleteView.as_view(), name='property_sort_delete'),
-]
-
-cleaning_sort_urlpatterns = [
-    path('list/', CleaningSortListView.as_view(), name='cleaning_sort_list'),
-    path('create/', CleaningSortCreateView.as_view(), name='cleaning_sort_create'),
-    path('update/<int:pk>/', CleaningSortUpdateView.as_view(), name='cleaning_sort_update'),
-    path('delete/<int:pk>/', CleaningSortDeleteView.as_view(), name='cleaning_sort_delete'),
 ]
 
 consumables_urlpatterns = [
@@ -64,8 +48,6 @@ service_order_urlpatterns = [
 urlpatterns = [
     path('client/', include(client_urlpatterns)),
     path('service/', include(service_urlpatterns)),
-    path('property_sort/', include(property_sort_urlpatterns)),
-    path('cleaning_sort/', include(cleaning_sort_urlpatterns)),
     path('service_order/', include(service_order_urlpatterns)),
     path('consumables/', include(consumables_urlpatterns)),
 ]
