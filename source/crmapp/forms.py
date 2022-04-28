@@ -1,7 +1,6 @@
 from django import forms
-
-from crmapp.models import Inventory, Cleansear, Client, ForemanOrderUpdate, ServiceOrder, Service, PropertySort, \
-    CleaningSort
+from crmapp.models import Inventory, Cleanser, Client, ForemanOrderUpdate, ServiceOrder, \
+     Service, PropertySort, CleaningSort
 
 
 class ServiceForm(forms.ModelForm):
@@ -31,13 +30,13 @@ class ClientForm(forms.ModelForm):
 class InventoryForm(forms.ModelForm):
     class Meta:
         model = Inventory
-        fields = ('name', 'amount')
+        fields = ('name', 'description')
 
 
-class CleansearForm(forms.ModelForm):
+class CleanserForm(forms.ModelForm):
     class Meta:
-        model = Cleansear
-        fields = ('name', 'description', 'unit', 'price', 'amount')
+        model = Cleanser
+        fields = ('name', 'description')
 
 
 class ForemanOrderUpdateForm(forms.ModelForm):

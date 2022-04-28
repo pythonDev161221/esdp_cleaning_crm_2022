@@ -9,12 +9,13 @@
 {% block content %}
 
     {% if user_objects %}
-        <div class="m-3">
-            <table class="table mb-4">
+        <div class="container">
+            <table class="table">
                 <thead>
                 <tr>
                     <th scope="col">ФИО Сотрудника</th>
                     <th scope="col">Телефон</th>
+                    <th scope="col">Баланс</th>
                     <th scope="col">Квалификация</th>
                     <th scope="col">График работы</th>
                     <th scope="col"></th>
@@ -26,6 +27,7 @@
                         <td><a style="text-decoration: none" href="{% url 'accounts:profile' staff.pk %}">
                             {{ staff.last_name | capfirst }} {{ staff.first_name | capfirst }} </a></td>
                         <td>{{ staff.phone }}</td>
+                        <td>1000</td>
                         <td>{{ staff.get_experience_display }}</td>
                         <td>
                             {% for day in staff.schedule.all %}
@@ -33,9 +35,8 @@
                             {% endfor %}
                         </td>
                         <td><a class="btn btn-primary" href="{% url 'accounts:staff-edit' staff.pk %}">Редактировать</a>
-                            <a class="btn btn-warning" href="{% url 'accounts:black-list-add' staff.pk %}">B Черный
-                                Список</a>
-                            <a class="btn btn-danger" href="{% url 'accounts:staff-delete' staff.pk %}">Удалить</a></td>
+                        <a class="btn btn-danger" href="{% url 'accounts:black-list-add' staff.pk %}"><i class="fa-solid fa-file-excel"></i></a>
+                        <a class="btn btn-danger" href="{% url 'accounts:staff-delete' staff.pk %}"><i class="fa-solid fa-trash"></i></a></td>
                     </tr>
                 {% endfor %}
                 </tbody>

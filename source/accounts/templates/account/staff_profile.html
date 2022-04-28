@@ -34,22 +34,27 @@
                     кабинет: </strong> {{ user_object.first_name | capfirst }} {{ user_object.last_name | capfirst }}
                 </p>
                 <p><strong>Email: </strong>{{ user_object.email }}</p>
-                <p><strong>ИНН: </strong>{{ user_object.inn_passport }}</p>
-                <p><strong>Телефон: </strong>{{ user_object.phone }}
+                <p><strong>Телефон: </strong>{{ user_object.phone }}</p>
                 <p><strong>Адрес: </strong>{% if user_object.address %}{{ user_object.address }}{% else %}
                     Не указан{% endif %}</p>
-                <p><strong>Квалификация: </strong>{{ user_object.get_experience_display }}
-                    <br>
-                    <br>
-                    <span><strong>График работы: </strong></span>
-                    {% for day in user_object.schedule.all %}
-                        {{ day }}{% if not forloop.last %}, {% else %}. {% endif %}
-
+                <p><strong>ИНН: </strong>{{ user_object.inn_passport }}</p>
+                <p><strong>Электронные кошельки: </strong>
+                    {% for wallet in user_object.online_wallet %}
+                        <p>{{ wallet }}</p>
                     {% endfor %}
+                <p><strong>Квалификация: </strong>
+                    {{ user_object.get_experience_display }}</p>
+                <br>
+                <br>
+                <span><strong>График работы: </strong></span>
+                {% for day in user_object.schedule.all %}
+                    {{ day }}{% if not forloop.last %}, {% else %}. {% endif %}
+
+                {% endfor %}
                 <hr>
                 <a class="btn btn-success" href="#">Мой Баланс 4352 сом</a>
-                <a class="btn btn-dark" href="#">Истрия заказов</a>
-                <a class="btn btn-dark" href="#">Истрия зарплаты</a>
+                <a class="btn btn-dark" href="#">История заказов</a>
+                <a class="btn btn-dark" href="#">История зарплаты</a>
                 <a class="btn btn-dark" href="{% url 'accounts:change_password' %}">Изменить пароль</a>
             </div>
         </div>
