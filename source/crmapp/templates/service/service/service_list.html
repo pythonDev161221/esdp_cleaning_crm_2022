@@ -2,9 +2,7 @@
 
 {% block title %}Список услуг{% endblock title %}
 
-{% block links %}
-{% include 'partial/service_links.html' %}
-{% endblock links %}
+
 
 {% block content %}
 <div class="container">
@@ -13,7 +11,6 @@
         <tr>
             <th scope="col">id</th>
             <th scope="col">Вид уборки</th>
-            <th scope="col">Тип объекта</th>
             <th scope="col">Стоимость (сом)</th>
             <th scope="col">Единица измерения</th>
             <th scope="col">Редактировать</th>
@@ -24,8 +21,7 @@
     {% for service in services.all %}
         <tr>
             <th scope="row">{{ service.id }}</th>
-            <td>{{ service.cleaning_sort }}</td>
-            <td>{{ service.property_sort }}</td>
+            <td>{{ service.name }}</td>
             <td>{{ service.price }}</td>
             <td>{{ service.get_unit_display }}</td>
             <td><a href="{% url 'crmapp:service_update' service.pk %}">

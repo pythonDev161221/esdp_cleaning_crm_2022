@@ -10,6 +10,8 @@ class PaymentChoices(TextChoices):
 class UnitChoices(TextChoices):
     SQUARE_METER = 'square_meter', _('м²')
     PIECE = 'piece', _('шт.')
+    SEAT_PLACE = 'seat_place', _('посад/место')
+    SASH = 'sash', _('створка')
 
 
 class OrderStatusChoices(TextChoices):
@@ -20,3 +22,4 @@ class OrderStatusChoices(TextChoices):
     DISPUTABLE = 'disputable', _('Спорный')
     TO_FIX = 'to_fix', _('Переделывается')
     FINISHED = 'finished', _('Завершен')
+
