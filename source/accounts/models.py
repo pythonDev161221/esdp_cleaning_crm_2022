@@ -46,7 +46,7 @@ class Staff(AbstractUser):
         self.save()
 
     def __str__(self):
-        return f'{self.first_name} --- {self.last_name} --- {self.experience} --- {self.phone} '
+        return f' {self.last_name} {self.first_name}'
 
     def get_absolute_url(self):
         return reverse('accounts:profile', kwargs={'pk': self.pk})

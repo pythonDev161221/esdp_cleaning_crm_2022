@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Заказ №{{ order.id }} {% endblock title %}
+
+{% block content %}
+    <div class="container mt-3">
+        <p><strong>Заказ № {{ order.id }} Cтатус: {{ order.get_status_display }}</strong></p>
+        <p><strong>Адресс:</strong> {{ order.address }} - {{ order.object_type }}</p>
+        <p><strong>Дата и время:</strong> {{ order.work_start }}</p>
+        <span><strong>Услуги:</strong></span>
+        {% for service in service %}
+            {{ service }}{% if not forloop.last %}, {% else %}. {% endif %}
+        {% endfor %}
+        <br>
+        <br>
+        <span><strong>Дополнительные услуги:</strong></span>
+        {% for extra in extra_service %}
+            {{ extra }}{% if not forloop.last %}, {% else %}. {% endif %}
+        {% endfor %}
+        <br>
+        <br>
+        <p><strong>Общее время работы:</strong> {{ order.cleaning_time }} ч.</p>
+        <span><strong>Клинеры на объекте:</strong></span>
+        {% for cleaner in order.cleaners.all %}
+            <a style="text-decoration: none"
+               href="{% url 'accounts:profile' cleaner.id %}"> {{ cleaner.last_name }} {{ cleaner.first_name }}</a>
+            {% if not forloop.last %}, {% else %}. {% endif %}
+        {% endfor %}
+        <br>
+        <br>
+        <p><strong>Вид оплаты: </strong>{{ order.get_payment_type_display }}</p>
+        <p><strong>Общая стоимость: </strong>{{ order.total_cost }} сом.</p>
+        <hr>
+        <p>Менеджер: {{ order.manager.last_name }} {{ order.manager.first_name }}</p>
+        <small class="text-muted">Заказ создан: {{ order.created_at }}</small>
+    </div>
+{% endblock content %}
