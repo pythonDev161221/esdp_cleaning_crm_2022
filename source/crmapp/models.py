@@ -243,3 +243,6 @@ class CleanserInOrder(models.Model):
         db_table = 'cleanser_in_order'
         verbose_name = _('Моющее средство в заказе')
         verbose_name_plural = _('Моющие средства в заказе')
+
+
+

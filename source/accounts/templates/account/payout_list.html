@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Выплаты сотрудникам{% endblock title %}
+
+{% block content %}
+<div class="container">
+{% for payout in payouts.all %}
+    <div>
+    {{ payout.date_payout }}{{ payout.staff }}{{ payout.salary }}
+    </div>
+
+{% endfor %}
+
+</div>
+{% endblock %}
