@@ -5,7 +5,7 @@ from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
 from django.utils.translation import gettext as _
 
-from crmapp.choice import PaymentChoices, UnitChoices
+from crmapp.choice import PaymentChoices, UnitChoices, OrderStatusChoices
 
 
 class Service(models.Model):
@@ -111,12 +111,15 @@ class StaffOrder(models.Model):
 
 class Order(models.Model):  # Таблица самого заказа
     # Поле для сортировки незавершённых работ
-    is_finished = models.BooleanField(default=False, verbose_name=_('Завершённая работа'))
+    status = models.CharField(max_length=50, default='new', verbose_name=_('Статус заказа'),
+                              choices=OrderStatusChoices.choices, null=False, blank=False)
+    object_type = models.ForeignKey('crmapp.ObjectType', on_delete=models.PROTECT, related_name='orders',
+                                    verbose_name=_('Тип объекта'), null=True, blank=True)
 
     # Поля связанные со временем
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата и время создания заказа'))
     work_start = models.DateTimeField(verbose_name=_('Дата и время выполнения уборки'))
-    work_time = models.TimeField(verbose_name=_('Время выполнения работ'))
+    cleaning_time = models.TimeField(verbose_name=_('Время выполнения работ'))
 
     # Информация о клиенте
     client_info = models.ForeignKey('crmapp.Client', on_delete=models.PROTECT, related_name='order_client',
@@ -270,3 +273,15 @@ class CleanserInOrder(models.Model):
         db_table = 'cleanser_in_order'
         verbose_name = _('Моющее средство в заказе')
         verbose_name_plural = _('Моющие средства в заказе')
+
+
+class ObjectType(models.Model):
+    name = models.CharField(max_length=255, verbose_name=_('Наименование'), null=False, blank=False)
+
+    def __str__(self):
+        return f'{self.name}'
+
+    class Meta:
+        db_table = 'object_types'
+        verbose_name = _('Тип объекта')
+        verbose_name_plural = _('Типы объекта')
