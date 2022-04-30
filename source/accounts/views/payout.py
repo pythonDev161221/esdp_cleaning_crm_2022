@@ -17,9 +17,9 @@ class PayoutCreateView(CreateView):
     template_name = 'account/payout_add.html'
 
     def form_valid(self, form):
-        form.instance.salary = form.instance.staff.balance
-        if form.instance.salary == 0:
+        if form.instance.staff.balance == 0:
             return self.form_invalid(form)
-        form.instance.staff.nullify_salary(form.instance.salary)
-        return super().form_valid(form)
-
+        else:
+            form.instance.salary = form.instance.staff.balance
+            form.instance.staff.nullify_salary()
+            return super().form_valid(form)
