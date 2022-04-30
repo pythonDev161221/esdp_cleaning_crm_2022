@@ -17,4 +17,5 @@ class OrderDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['extra_service'] = self.object.order_services.all()
+        context['staff'] = self.object.order_cliners.all()
         return context
