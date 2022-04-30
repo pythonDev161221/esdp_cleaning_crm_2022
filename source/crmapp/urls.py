@@ -7,8 +7,12 @@ from crmapp.views.service_views import ServiceListView, ServiceCreateView, Servi
 from crmapp.views.consumables import InventoryListView, InventoryCreateView, InventoryUpdateView, InventoryDeleteView, \
     CleanserListView, CleanserCreateView, CleanserUpdateView, CleanserDeleteView
 
-from crmapp.views.service_order_views import ServiceOrderListView, ServiceOrderDetailView, ServiceOrderCreateView, \
+from crmapp.views.service_order_views import ServiceOrderCreateView, \
     ServiceOrderUpdateView, ServiceOrderDeleteView
+
+from crmapp.views.order_staff import OrderStaffCreateView, OrderStaffDeleteView
+
+from crmapp.views.order import OrderListView, OrderDetailView
 
 app_name = 'crmapp'
 
@@ -18,6 +22,15 @@ client_urlpatterns = [
     path('up/<int:pk>', ClientUpdateView.as_view(), name='client_update')
 ]
 
+order_urlpatterns = [
+    path('', OrderListView.as_view(), name='order_index'),
+    path('<int:pk>/', OrderDetailView.as_view(), name='order_detail'),
+    path('<int:pk>/service/create/', ServiceOrderCreateView.as_view(), name="service_order_create"),
+    path('<int:pk>/service/update/', ServiceOrderUpdateView.as_view(), name="service_order_update"),
+    path('delete/<int:pk>/', ServiceOrderDeleteView.as_view(), name="service_order_delete"),
+    path('<int:pk>/staff/add/', OrderStaffCreateView.as_view(), name='order_staff_add'),
+    path('staff/delete/<int:pk>', OrderStaffDeleteView.as_view(), name='order_staff_delete')
+]
 service_urlpatterns = [
     path('list/', ServiceListView.as_view(), name='service_list'),
     path('create/', ServiceCreateView.as_view(), name='service_create'),
@@ -37,17 +50,10 @@ consumables_urlpatterns = [
     path('cleanser/delete/<int:pk>/', CleanserDeleteView.as_view(), name='cleanser_delete')
 ]
 
-service_order_urlpatterns = [
-    path("", ServiceOrderListView.as_view(), name="service_order_list"),
-    path("detail/<int:pk>/", ServiceOrderDetailView.as_view(), name="service_order_detail"),
-    path("create/", ServiceOrderCreateView.as_view(), name="service_order_create"),
-    path("update/<int:pk>/", ServiceOrderUpdateView.as_view(), name="service_order_update"),
-    path("delete/<int:pk>/", ServiceOrderDeleteView.as_view(), name="service_order_delete"),
-]
 
 urlpatterns = [
     path('client/', include(client_urlpatterns)),
     path('service/', include(service_urlpatterns)),
-    path('service_order/', include(service_order_urlpatterns)),
     path('consumables/', include(consumables_urlpatterns)),
+    path('order/', include(order_urlpatterns))
 ]
