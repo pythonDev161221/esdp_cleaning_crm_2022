@@ -3,7 +3,8 @@ from django.contrib.auth import get_user_model
 from django.forms import BaseModelFormSet
 
 from crmapp.models import Inventory, Cleanser, Client, ForemanOrderUpdate, ServiceOrder, \
-    Service, ManagerReport
+    Service, ManagerReport, StaffOrder
+
 
 User = get_user_model()
 
@@ -60,3 +61,14 @@ class BaseManagerReportFormSet(BaseModelFormSet):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.queryset = User.objects.none()
+
+
+class OrderStaffForm(forms.ModelForm):
+    class Meta:
+        model = StaffOrder
+        fields = ("staff", "is_brigadier")
+
+
+class BaseStaffAddFormSet(BaseModelFormSet):
+    def init(self, *args, **kwargs):
+        super().init(*args, **kwargs)

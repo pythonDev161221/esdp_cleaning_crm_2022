@@ -1,18 +1,12 @@
 {% extends 'base.html' %}
 {% block title %}Обновление заказа услуги{% endblock title %}
 
-{% block links %}
-<li class="nav-item">
-    <a href="{% url 'crmapp:service_order_list' %}" class="nav-link">Просмотр заказов услуг</a>
-</li>
-{% endblock links %}
-
 {% block content %}
     <div class="container">
         <h1>Обновить заказ услуги</h1>
         <form method="POST" class="mb-5">
             {% csrf_token %}
-            {% include 'partial/form.html' with button_text='Обновить' %}
+            {% include 'partial/form.html' with button_text='Изменить' %}
         </form>
     </div>
 {% endblock content %}
