@@ -10,7 +10,7 @@ from crmapp.views.consumables import InventoryListView, InventoryCreateView, Inv
 from crmapp.views.service_order_views import ServiceOrderListView, ServiceOrderDetailView, ServiceOrderCreateView, \
     ServiceOrderUpdateView, ServiceOrderDeleteView
 
-from crmapp.views.order import OrderListView, OrderDetailView
+from crmapp.views.order import OrderListView, OrderDetailView, OrderCreateView
 
 app_name = 'crmapp'
 
@@ -22,7 +22,8 @@ client_urlpatterns = [
 
 order_urlpatterns = [
     path('', OrderListView.as_view(), name='order_index'),
-    path('<int:pk>/', OrderDetailView.as_view(), name='order_detail')
+    path('<int:pk>/', OrderDetailView.as_view(), name='order_detail'),
+    path('create/', OrderCreateView.as_view(), name='order_create')
 ]
 service_urlpatterns = [
     path('list/', ServiceListView.as_view(), name='service_list'),

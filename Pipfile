@@ -11,6 +11,7 @@ pillow = "*"
 django-phonenumber-field = "*"
 phonenumbers = "*"
 fontawesomefree = "*"
+crispy-bootstrap5 = "*"
 
 [dev-packages]
 

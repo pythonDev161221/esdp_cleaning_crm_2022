@@ -109,7 +109,7 @@ class Order(models.Model):  # Таблица самого заказа
                                 verbose_name=_('Менеджер'))
     cleaners = models.ManyToManyField(get_user_model(), related_name='orders', verbose_name=_('Клинер'),
                                       through='crmapp.StaffOrder',
-                                      through_fields=('order', 'staff'))
+                                      through_fields=('order', 'staff'), null=True, blank=True)
 
     review = models.PositiveIntegerField(null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(5)],
                                          verbose_name=_('Отзыв'))
