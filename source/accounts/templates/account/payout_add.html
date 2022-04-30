@@ -4,8 +4,8 @@
 {% block content %}
 <div class="container">
     <form method="post">
-        {% csrftoken %}
-        {{ form.as_p }}
+        {% csrf_token %}
+        {{ form.as_table }}
         <input type="submit" value="Выплатить заработную плату">
     </form>
 </div>

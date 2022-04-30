@@ -52,7 +52,7 @@ class Staff(AbstractUser):
         self.save()
 
     def __str__(self):
-        return f'{self.first_name} --- {self.last_name} --- {self.experience} --- {self.phone} '
+        return f'{self.first_name} --- {self.last_name} --- {self.experience} --- {self.phone} --- {self.balance} '
 
     def get_absolute_url(self):
         return reverse('accounts:profile', kwargs={'pk': self.pk})
@@ -78,10 +78,19 @@ class WorkDay(models.Model):
 
 class Payout(models.Model):
     staff = models.ForeignKey('accounts.Staff', null=False, blank=False,
-                              verbose_name=_('Работник'))
+                              verbose_name=_('Работник'), on_delete=models.PROTECT)
     salary = models.IntegerField(null=False, blank=False,
                                  verbose_name=_('Заработная плата'))
     date_payout = models.DateTimeField(auto_now=True)
 
     def get_absolute_url(self):
         return reverse('accounts:payout_list')
+
+    def __str__(self):
+        return f"{self.date_payout}{self.staff}{self.salary}"
+
+    class Meta:
+        db_table = 'Payouts'
+        verbose_name = _('Выплата')
+        verbose_name_plural = _('Выплаты')
+
