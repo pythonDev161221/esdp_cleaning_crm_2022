@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import password_validation
 from django.contrib.auth.forms import UserCreationForm, UsernameField
 
-from accounts.models import Staff
+from accounts.models import Staff, Payout
 
 
 class LoginForm(forms.Form):
@@ -122,3 +122,9 @@ class PasswordChangeForm(forms.ModelForm):
     class Meta:
         model = Staff
         fields = ['old_password', 'password', 'password_confirm']
+
+
+class PayoutForm(forms.ModelForm):
+    class Meta:
+        model = Payout
+        fields = ['staff', ]
