@@ -91,8 +91,8 @@ class Order(models.Model):  # Таблица самого заказа
 
     # Поля связанные со временем
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата и время создания заказа'))
-    work_start = models.DateTimeField(verbose_name=_('Дата и время выполнения уборки'))
-    cleaning_time = models.TimeField(verbose_name=_('Время выполнения работ'))
+    work_start = models.DateTimeField(verbose_name=_('Дата и время выполнения уборки'), null=True, blank=True)
+    cleaning_time = models.TimeField(verbose_name=_('Время выполнения работ'), null=True, blank=True)
 
     # Информация о клиенте
     client_info = models.ForeignKey('crmapp.Client', on_delete=models.PROTECT, related_name='order_client',
@@ -109,7 +109,7 @@ class Order(models.Model):  # Таблица самого заказа
                                 verbose_name=_('Менеджер'))
     cleaners = models.ManyToManyField(get_user_model(), related_name='orders', verbose_name=_('Клинер'),
                                       through='crmapp.StaffOrder',
-                                      through_fields=('order', 'staff'), null=True, blank=True)
+                                      through_fields=('order', 'staff'))
 
     review = models.PositiveIntegerField(null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(5)],
                                          verbose_name=_('Отзыв'))

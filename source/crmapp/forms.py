@@ -3,11 +3,10 @@ from django.forms import inlineformset_factory
 
 from crmapp.custom_layout_object import Formset
 from crmapp.models import Inventory, Cleanser, Client, ForemanOrderUpdate, ServiceOrder, \
-    Service, Order, Service, StaffOrder
+    Order, Service, StaffOrder
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, Fieldset, Div, HTML, ButtonHolder, Submit, Row, Column
-from crispy_forms.bootstrap import InlineField
+from crispy_forms.layout import Layout, Field, Fieldset, Row, Column, Submit
 
 from django.contrib.auth import get_user_model
 from django.forms import BaseModelFormSet
@@ -54,13 +53,14 @@ class ForemanService(forms.ModelForm):
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
-        exclude = ('manager',)
+        exclude = ('services', 'cleaners',)
 
     def __init__(self, *args, **kwargs):
         super(OrderForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = True
         self.helper.layout = Layout(
+            Field('manager'),
             Row(
                 Column('status', css_class='form-group col-md-4 mb-0'),
                 Column('object_type', css_class='form-group col-md-4 mb-0'),
@@ -77,6 +77,8 @@ class OrderForm(forms.ModelForm):
                 Column('address', css_class='form-group col-md-6 mb-0'),
                 css_class='form-row'
             ),
+            Fieldset('Добавление клинеров',
+                     Formset('cliners'), css_class='row form-row'),
             Fieldset('Добавление услуг',
                      Formset('services'), css_class='row form-row'),
             Submit('submit', 'Создать')
@@ -95,8 +97,20 @@ class ServiceOrderForm(forms.ModelForm):
         self.helper.label_class = 'visually-hidden'
 
 
-ServiceOrderFormSet = inlineformset_factory(Order, ServiceOrder, form=ServiceOrderForm, exclude=['order'], extra=1,
-                                            can_delete=False)
+ServiceOrderFormSet = inlineformset_factory(Order, ServiceOrder, form=ServiceOrderForm,
+                                            exclude=['order'], extra=3, can_delete=False)
+
+
+class StaffOrderForm(forms.ModelForm):
+    class Meta:
+        model = StaffOrder
+        exclude = ('order',)
+
+    def __init__(self, *args, **kwargs):
+        super(StaffOrderForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = True
+        self.helper.label_class = 'visually-hidden'
 
 
 class OrderStaffForm(forms.ModelForm):
@@ -104,9 +118,18 @@ class OrderStaffForm(forms.ModelForm):
         model = StaffOrder
         fields = ("staff", "is_brigadier")
 
+    def __init__(self, *args, **kwargs):
+        super(OrderStaffForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = True
+        self.helper.label_class = 'visually-hidden'
+
+
+StaffOrderFormSet = inlineformset_factory(Order, StaffOrder, form=OrderStaffForm,
+                                          exclude=['order'], extra=3, can_delete=False)
+
 
 class BaseStaffAddFormSet(BaseModelFormSet):
     def init(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.queryset = User.objects.none()
-

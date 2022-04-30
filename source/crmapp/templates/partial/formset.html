@@ -9,11 +9,17 @@
                 {{ hidden }}
             {% endfor %}
         {% endif %}
+
+
+        {% if field.is_hidden %}
+            {{ field.errors.as_ul }}
+            {{ field|as_crispy_field }}
+        {% else %}
             <div class="form-group col-md-3 mb-0">
                 {{ field.errors.as_ul }}
                 {{ field|as_crispy_field }}
             </div>
-
+        {% endif %}
 
     {% endfor %}
 
