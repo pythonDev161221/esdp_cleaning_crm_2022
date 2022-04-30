@@ -48,7 +48,7 @@ class Staff(AbstractUser):
         self.save()
 
     def nullify_salary(self):
-        self.balance -= 0
+        self.balance = 0
         self.save()
 
     def __str__(self):

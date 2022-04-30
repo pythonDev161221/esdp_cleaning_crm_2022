@@ -19,7 +19,6 @@ class PayoutCreateView(CreateView):
     def form_valid(self, form):
         if form.instance.staff.balance == 0:
             return self.form_invalid(form)
-        else:
-            form.instance.salary = form.instance.staff.balance
-            form.instance.staff.nullify_salary()
-            return super().form_valid(form)
+        form.instance.salary = form.instance.staff.balance
+        form.instance.staff.nullify_salary()
+        return super().form_valid(form)
