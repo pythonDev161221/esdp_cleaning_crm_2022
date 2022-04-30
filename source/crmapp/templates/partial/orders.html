@@ -7,7 +7,7 @@
                 <span class="card-text"><small class="text-muted">Заказ №{{ order.id }}</small></span>
                 <p>Адрес: {{ order.address }}</p>
                 <p> Дата и время: {{ order.work_start }}</p>
-                <p> Сумма заказа: {{ order.total_cost }} сом</p>
+                <p> Сумма заказа: {{ order.get_total }} сом</p>
                 <div class=" btn-group">
                     <a class="btn btn-dark"
                        href="{% url 'crmapp:order_detail' order.pk %}">Просмотреть</a>
