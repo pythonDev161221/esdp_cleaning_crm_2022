@@ -119,6 +119,13 @@ class Order(models.Model):  # Таблица самого заказа
                                     verbose_name=_('Вид оплаты'))  # вид оплаты
     total_cost = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Общая сумма заказа'))
 
+    def get_total(self):
+        total = 0
+        services = ServiceOrder.objects.filter(order=self)
+        for service in services:
+            total += service.service_total()
+        return total
+
 
 class FineCategory(models.Model):
     name = models.CharField(max_length=255, null=True, blank=True, verbose_name=_('Категория'))
@@ -205,10 +212,19 @@ class ServiceOrder(models.Model):
     rate = models.DecimalField(default=1, null=False, blank=False, verbose_name=_('Коэффицент сложности'),
                                max_digits=2, decimal_places=1,
                                validators=[MinValueValidator(1.0), MaxValueValidator(3.0)])
-    total = models.PositiveIntegerField(null=False, blank=False, verbose_name=_('Стоимость услуги'))
+    total = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Стоимость услуги'))
 
     def __str__(self):
-        return f"{self.service}: {self.total}"
+        return f"{self.service}: {self.total} сом"
+
+    def service_total(self):
+        return self.service.price * self.amount * self.rate
+
+    def get_total(self):
+        total = 0
+        for i in self.service_total():
+            total += i
+        return total
 
     class Meta:
         db_table = "service_order"

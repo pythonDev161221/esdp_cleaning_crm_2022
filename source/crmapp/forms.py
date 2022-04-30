@@ -3,11 +3,16 @@ from django.forms import inlineformset_factory
 
 from crmapp.custom_layout_object import Formset
 from crmapp.models import Inventory, Cleanser, Client, ForemanOrderUpdate, ServiceOrder, \
-    Service, Order
+    Service, Order, Service, StaffOrder
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Fieldset, Div, HTML, ButtonHolder, Submit, Row, Column
 from crispy_forms.bootstrap import InlineField
+
+from django.contrib.auth import get_user_model
+from django.forms import BaseModelFormSet
+
+User = get_user_model()
 
 
 class ServiceForm(forms.ModelForm):
@@ -92,3 +97,16 @@ class ServiceOrderForm(forms.ModelForm):
 
 ServiceOrderFormSet = inlineformset_factory(Order, ServiceOrder, form=ServiceOrderForm, exclude=['order'], extra=1,
                                             can_delete=False)
+
+
+class OrderStaffForm(forms.ModelForm):
+    class Meta:
+        model = StaffOrder
+        fields = ("staff", "is_brigadier")
+
+
+class BaseStaffAddFormSet(BaseModelFormSet):
+    def init(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.queryset = User.objects.none()
+
