@@ -51,6 +51,12 @@ class Staff(AbstractUser):
     def get_absolute_url(self):
         return reverse('accounts:profile', kwargs={'pk': self.pk})
 
+    def get_salaries(self):
+        total = 0
+        for report in self.manager_report.filter(cleaner=self):
+            total += (report.salary + report.bonus - report.fine)
+        return total
+
     class Meta:
         db_table = 'Staff'
         verbose_name = _('Сотрудник')

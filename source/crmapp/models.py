@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.db.models import Sum
 from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
 from django.utils.translation import gettext as _
@@ -243,3 +244,26 @@ class CleanserInOrder(models.Model):
         db_table = 'cleanser_in_order'
         verbose_name = _('Моющее средство в заказе')
         verbose_name_plural = _('Моющие средства в заказе')
+
+
+class ManagerReport(models.Model):
+    order = models.ForeignKey('crmapp.Order', related_name='order_manager', on_delete=models.PROTECT, verbose_name=_('Заказ'))
+    cleaner = models.ForeignKey(get_user_model(), related_name='manager_report', on_delete=models.PROTECT, verbose_name=_('Клинер'))
+    salary = models.IntegerField(verbose_name=_('Заработная плата'), null=False, blank=False)
+    fine = models.IntegerField(verbose_name=_('Штраф'), null=True, blank=True)
+    bonus = models.IntegerField(verbose_name=_('Бонус'), null=True, blank=True)
+    created_at = models.DateTimeField(auto_now=True, verbose_name=_('Дата создания'))
+    updated_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата изменения'))
+
+    def get_salary(self):
+        if self.bonus or self.fine:
+            total = self.salary + self.bonus - self.fine
+        else:
+            total = self.salary
+        return total
+
+    class Meta:
+        db_table = 'manager_report'
+        verbose_name = _('Отчет менеджера')
+        verbose_name_plural = _('Отчеты менеджера')
+

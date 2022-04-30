@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <h1>Отчет менеджера</h1>
+        <form method="POST" class="mb-5">
+            {{ formset.management_form }}
+            {% csrf_token %}
+            {% for hidden in formset.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+            {% for forms in formset %}
+                {{ forms.as_table }}
+            {% endfor %}
+            <input class="btn btn-primary mt-3" type="submit" value="Сохранить">
+        </form>
+    </div>
+{% endblock %}

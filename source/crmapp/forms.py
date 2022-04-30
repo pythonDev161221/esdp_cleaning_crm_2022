@@ -1,6 +1,11 @@
 from django import forms
+from django.contrib.auth import get_user_model
+from django.forms import BaseModelFormSet
+
 from crmapp.models import Inventory, Cleanser, Client, ForemanOrderUpdate, ServiceOrder, \
-     Service
+    Service, ManagerReport
+
+User = get_user_model()
 
 
 class ServiceForm(forms.ModelForm):
@@ -43,3 +48,15 @@ class ServiceOrderForm(forms.ModelForm):
     class Meta:
         model = ServiceOrder
         fields = ("service", "amount", "rate")
+
+
+class ManagerReportForm(forms.ModelForm):
+    class Meta:
+        model = ManagerReport
+        fields = ('cleaner', 'salary', 'fine', 'bonus')
+
+
+class BaseManagerReportFormSet(BaseModelFormSet):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.queryset = User.objects.none()
