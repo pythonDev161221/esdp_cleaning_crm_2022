@@ -269,8 +269,8 @@ class ManagerReport(models.Model):
     order = models.ForeignKey('crmapp.Order', related_name='order_manager', on_delete=models.PROTECT, verbose_name=_('Заказ'))
     cleaner = models.ForeignKey(get_user_model(), related_name='manager_report', on_delete=models.PROTECT, verbose_name=_('Клинер'))
     salary = models.IntegerField(verbose_name=_('Заработная плата'), null=False, blank=False)
-    fine = models.IntegerField(verbose_name=_('Штраф'), null=True, blank=True)
-    bonus = models.IntegerField(verbose_name=_('Бонус'), null=True, blank=True)
+    fine = models.IntegerField(verbose_name=_('Штраф'), null=True, blank=True, default=0)
+    bonus = models.IntegerField(verbose_name=_('Бонус'), null=True, blank=True, default=0)
     created_at = models.DateTimeField(auto_now=True, verbose_name=_('Дата создания'))
     updated_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата изменения'))
 

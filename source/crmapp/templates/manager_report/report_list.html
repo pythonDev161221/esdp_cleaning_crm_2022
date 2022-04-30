@@ -21,7 +21,7 @@
                 {% for manager_report in manager_reports %}
                     <tr>
                         <th scope="row">{{ manager_report.created_at }}</th>
-                        <th>{{ manager_report.order }}</th>
+                        <th>{{ manager_report.order.id }}</th>
                         <td>{{ manager_report.cleaner }}</td>
                         <td>{{ manager_report.salary }}</td>
                         <td>{% if manager_report.bonus %}{{ manager_report.bonus }}{% endif %}</td>

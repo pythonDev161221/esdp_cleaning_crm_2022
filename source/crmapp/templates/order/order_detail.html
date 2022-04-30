@@ -2,6 +2,7 @@
 
 {% block title %}Заказ №{{ order.id }} {% endblock title %}
 
+
 {% block content %}
     <div class="container mt-3">
         <p><strong>Заказ № {{ order.id }} Cтатус: {{ order.get_status_display }}</strong></p>
@@ -46,5 +47,8 @@
         <hr>
         <p>Менеджер: {{ order.manager.last_name }} {{ order.manager.first_name }}</p>
         <small class="text-muted">Заказ создан: {{ order.created_at }}</small>
+
+       <p><a class="btn btn-dark" href="{% url 'crmapp:manager_report_create' order.id %}">Рассчитать ЗП</a></p>
     </div>
+
 {% endblock content %}
