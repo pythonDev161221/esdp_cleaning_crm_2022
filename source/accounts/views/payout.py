@@ -1,7 +1,10 @@
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView
 
 from accounts.forms import PayoutForm
-from accounts.models import Payout
+from accounts.models import Payout, Staff
 
 
 class PayoutListView(ListView):
@@ -15,10 +18,14 @@ class PayoutCreateView(CreateView):
     model = Payout
     form_class = PayoutForm
     template_name = 'account/payout_add.html'
+    success_url = reverse_lazy('accounts:staff-list')
+    context_object_name = 'staff_payout'
 
-    def form_valid(self, form):
-        if form.instance.staff.balance == 0:
-            return self.form_invalid(form)
-        form.instance.salary = form.instance.staff.balance
-        form.instance.staff.nullify_salary()
-        return super().form_valid(form)
+    def post(self, request, *args, **kwargs):
+        staff = get_object_or_404(Staff, pk=self.kwargs['pk'])
+        if staff.balance != 0:
+            Payout.objects.create(staff=staff, salary=staff.balance)
+            staff.nullify_salary()
+        else:
+            return HttpResponse('Баланс равен 0!')
+        return HttpResponseRedirect(self.success_url)

@@ -29,5 +29,5 @@ urlpatterns = [
     path('black_list/add/<int:pk>/', AddToBlackList.as_view(), name='black-list-add'),
     path('black_list/remove/<int:pk>/', RemoveFromBlackList.as_view(), name='black-list-remove'),
     path('payout/', PayoutListView.as_view(), name='payout_list'),
-    path('payout/add/', PayoutCreateView.as_view(), name='payout_create'),
+    path('payout/<int:pk>/', PayoutCreateView.as_view(), name='payout_create'),
 ]
