@@ -52,7 +52,7 @@
 
                 {% endfor %}
                 <hr>
-                <a class="btn btn-success" href="#">Мой Баланс 4352 сом</a>
+                <a class="btn btn-success" href="#">Мой Баланс {{ user_object.balance }} сом</a>
                 <a class="btn btn-dark" href="#">История заказов</a>
                 <a class="btn btn-dark" href="#">История зарплаты</a>
                 <a class="btn btn-dark" href="{% url 'accounts:change_password' %}">Изменить пароль</a>
