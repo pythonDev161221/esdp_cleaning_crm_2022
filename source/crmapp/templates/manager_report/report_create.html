@@ -10,7 +10,7 @@
                 {{ hidden }}
             {% endfor %}
             {% for forms in formset %}
-                {{ forms.as_table }}
+                {{ forms.as_p }}
             {% endfor %}
             <input class="btn btn-primary mt-3" type="submit" value="Сохранить">
         </form>

@@ -18,11 +18,11 @@ class ManagerReportCreateView(CreateView):
         context = super().get_context_data(**kwargs)
         order = get_object_or_404(Order, pk=self.kwargs['pk'])
         cleaners = User.objects.filter(orders=order)
-
         ManagerFormset = modelformset_factory(ManagerReport, form=ManagerReportForm, formset=BaseManagerReportFormSet, extra=cleaners.count())
         formset = ManagerFormset(prefix='extra', queryset=cleaners)
         for forms in formset:
             forms.fields['cleaner'].queryset = cleaners
+
         context['formset'] = formset
         return context
 
