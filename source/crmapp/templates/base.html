@@ -17,7 +17,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 
         <div class="container">
-            <a class="navbar-brand" href="#">Clean_CRM</a>
+            <a class="navbar-brand" href="{{ index }}">Clean_CRM</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -31,11 +31,18 @@
                         <a href="{% url 'accounts:staff-list' %}" class="nav-link">Просмотр сотрудников</a>
                     </li>
                     <li class="nav-item">
+                        <a href="{% url 'accounts:payout_list' %}" class="nav-link">История выплат</a>
+                    </li>
+                    <li class="nav-item">
                         <a href="{% url 'crmapp:client_index' %}" class="nav-link">Просмотр клиентов</a>
                     </li>
                 <li class="nav-item">
                       <a href="{% url 'crmapp:service_list' %}" class="nav-link">Услуги</a>
                   </li>
+                <li class="nav-item">
+                      <a href="{% url 'crmapp:order_create' %}" class="nav-link">Создать заказ</a>
+                  </li>
+                order_create
                     {% block links %}
 
 

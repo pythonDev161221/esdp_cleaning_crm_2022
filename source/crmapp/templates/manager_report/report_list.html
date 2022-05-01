@@ -24,8 +24,8 @@
                         <th>{{ manager_report.order.id }}</th>
                         <td>{{ manager_report.cleaner }}</td>
                         <td>{{ manager_report.salary }}</td>
-                        <td>{% if manager_report.bonus %}{{ manager_report.bonus }}{% endif %}</td>
-                        <td>{% if manager_report.fine %}{{ manager_report.fine }}{% endif %}</td>
+                        <td>{{ manager_report.bonus }}</td>
+                        <td>{{ manager_report.fine }}</td>
                         <td>{{ manager_report.get_salary }}</td>
                     </tr>
                 {% endfor %}

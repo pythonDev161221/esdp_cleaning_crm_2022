@@ -27,7 +27,7 @@
                         <td><a style="text-decoration: none" href="{% url 'accounts:profile' staff.pk %}">
                             {{ staff.last_name | capfirst }} {{ staff.first_name | capfirst }} </a></td>
                         <td>{{ staff.phone }}</td>
-                        <td>{{ staff.get_salaries}}</td>
+                        <td>{{ staff.balance }}</td>
                         <td>{{ staff.get_experience_display }}</td>
                         <td>
                             {% for day in staff.schedule.all %}
