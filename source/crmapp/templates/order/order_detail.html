@@ -4,6 +4,9 @@
 
 {% block content %}
     <div class="container mt-3">
+    {% if user == brigadir.staff %}
+        <a href="{% url 'crmapp:foremanorder_create' order.id %}" class="btn btn-warning">Внести изменения в заказ</a>
+    {% endif %}
         <p><strong>Заказ № {{ order.id }} Cтатус: {{ order.get_status_display }}</strong></p>
         <p><strong>Адресс:</strong> {{ order.address }} - {{ order.object_type }}</p>
         <p><strong>Дата и время:</strong> {{ order.work_start }}</p>

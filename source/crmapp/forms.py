@@ -33,13 +33,8 @@ class ForemanOrderUpdateForm(forms.ModelForm):
         fields = ('description',)
 
 
-class ForemanService(forms.ModelForm):
-    class Meta:
-        model = ServiceOrder
-        fields = '__all__'
-
 
 class ServiceOrderForm(forms.ModelForm):
     class Meta:
-        model = ServiceOrder
-        fields = ("service", "amount", "rate")
+        model = Service
+        fields = ('name', 'unit', 'price')

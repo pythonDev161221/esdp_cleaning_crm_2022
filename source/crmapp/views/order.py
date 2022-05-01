@@ -18,4 +18,5 @@ class OrderDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['extra_service'] = self.object.services.filter(is_extra=True)
         context['service'] = self.object.services.filter(is_extra=False)
+        context['brigadir'] = self.object.order_cliners.get(is_brigadier=True)
         return context
