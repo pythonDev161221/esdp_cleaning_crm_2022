@@ -5,9 +5,24 @@
 
 {% block content %}
     <div class="container mt-3">
-    {% if user == brigadir.staff %}
-        <a href="{% url 'crmapp:foremanorder_create' order.id %}" class="btn btn-warning">Внести изменения в заказ</a>
-    {% endif %}
+        {% for staff in order.order_cliners.all %}
+            {% if staff.staff == user %}
+                {% if not staff.in_place %}
+                    <a href="{% url 'crmapp:cleaner_in_place' order.id %}" class="btn btn-dark">На месте</a>
+                {% elif staff.in_place and not staff.work_start %}
+                    <a href="{% url 'crmapp:cleaner_work_start' order.id %}" class="btn btn-success">Начать работу</a>
+                    {% if user == brigadir.staff %}
+                        <a href="{% url 'crmapp:foremanorder_create' order.id %}" class="btn btn-warning">Внести изменения в заказ</a>
+                        <a href="" class="btn btn-light">Отправить фото до</a>
+                    {% endif %}
+                {% elif staff.in_place and staff.work_start %}
+                    {% if user == brigadir.staff %}
+                        <a href="" class="btn btn-light">Отправить фото после</a>
+                        <a href="{% url 'crmapp:cleaner_work_end' order.id %}" class="btn btn-danger">Закончить работу</a>
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        {% endfor %}
         <p><strong>Заказ № {{ order.id }} Cтатус: {{ order.get_status_display }}</strong></p>
         <p><strong>Дата и время:</strong> {{ order.work_start }}</p>
         <p><strong>Адресс:</strong> {{ order.address | capfirst }}</p>

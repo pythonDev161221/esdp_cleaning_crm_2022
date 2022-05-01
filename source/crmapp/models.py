@@ -52,26 +52,29 @@ class ForemanReport(models.Model):
     order = models.ForeignKey('crmapp.Order', on_delete=models.PROTECT, null=False, blank=False,
                               related_name='foreman_order_report', verbose_name=_('Заказ'))
     expenses = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Расходы'))
-    start_at = models.DateTimeField(verbose_name=_('Дата и время начала работы'))
-    end_at = models.DateTimeField(verbose_name=_('Дата и время окончания работы'))
-    photo_before = models.ManyToManyField('crmapp.ForemanPhoto',
-                                          related_name='foreman_photo_before', verbose_name=_('Фото до начала работ'))
-    photo_after = models.ManyToManyField('crmapp.ForemanPhoto',
-                                         related_name='foreman_photo_after',
-                                         verbose_name=_('Фото после окончания работ'))
+    start_at = models.DateTimeField(null=True, blank=True, verbose_name=_('Дата и время начала работы'))
+    end_at = models.DateTimeField(null=True, blank=True, verbose_name=_('Дата и время окончания работы'))
+
+    class Meta:
+        db_table ='foreman_report'
+        verbose_name = _('Отчёт бригадира')
+        verbose_name_plural = _('Отчёты бригадира')
 
 
 class ForemanPhoto(models.Model):
-    # Таблица для хранения фотографий, имеет связь m2m с таблицей ForemanReport
-    image = models.ImageField(upload_to='photo_obj', verbose_name=_('Фото'))
+    photo_before = models.ForeignKey('crmapp.ForemanReport', null=True, blank=True, on_delete=models.CASCADE,
+                                     related_name='image_before', verbose_name='Фото до начала работ')
+    photo_after = models.ForeignKey('crmapp.ForemanReport', null=True, blank=True, on_delete=models.CASCADE,
+                                     related_name='image_after', verbose_name='Фото после окончания работ')
+    image = models.ImageField(upload_to='photo_before/', verbose_name=_('Фото'))
 
 
 class ForemanOrderUpdate(models.Model):
     # Таблица для редактирования услуг и доп услуг в заказе для бригадира, имеет связь FK с таблицей Order
     order = models.ForeignKey('crmapp.Order', on_delete=models.PROTECT, null=False, blank=False,
                               related_name='foreman_order_update', verbose_name=_('Заказ'))
-    service = models.ManyToManyField('crmapp.ServiceOrder', related_name='foreman_service',
-                                     verbose_name=_('Услуга'))
+    services = models.ManyToManyField('crmapp.ServiceOrder', related_name='foreman_order_update',
+                                      verbose_name=_('Услуга'))
     description = models.TextField(max_length=500, blank=True, null=True, verbose_name=_('Причина внесения изменений'))
 
     class Meta:
@@ -87,6 +90,7 @@ class StaffOrder(models.Model):
     is_brigadier = models.BooleanField(verbose_name=_('Бригадир'), default=False)
     is_accept = models.BooleanField(null=True, blank=True, default=False, verbose_name=_('Принял заказ'))
     in_place = models.DateTimeField(null=True, blank=True, verbose_name=_('Время прибытия на заказ'))
+    work_start = models.DateTimeField(null=True, blank=True, verbose_name=_('Время старта выполнения работ'))
 
 
 class Order(models.Model):  # Таблица самого заказа
@@ -211,8 +215,8 @@ class Cleanser(models.Model):
 
 
 class ServiceOrder(models.Model):
-    order = models.ForeignKey('crmapp.Order', related_name='order_services', verbose_name=_('Заказ'), null=False,
-                              blank=False, on_delete=models.PROTECT)
+    order = models.ForeignKey('crmapp.Order', related_name='order_services', verbose_name=_('Заказ'), null=True,
+                              blank=True, on_delete=models.PROTECT)
     service = models.ForeignKey('crmapp.Service', related_name='service_orders', verbose_name=_('Услуга'),
                                 null=False, blank=False, on_delete=models.PROTECT)
     amount = models.IntegerField(verbose_name=_('Объем работы'), null=False, blank=False)

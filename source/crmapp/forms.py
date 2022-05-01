@@ -86,7 +86,7 @@ class OrderForm(forms.ModelForm):
 class ServiceOrderForm(forms.ModelForm):
     class Meta:
         model = ServiceOrder
-        exclude = ('order',)
+        exclude = ('order', 'foreman_order', 'total')
 
     def __init__(self, *args, **kwargs):
         super(ServiceOrderForm, self).__init__(*args, **kwargs)
