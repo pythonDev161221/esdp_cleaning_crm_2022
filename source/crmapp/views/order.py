@@ -43,7 +43,6 @@ class OrderCreateView(CreateView):
         return context
 
     def form_valid(self, form):
-        print('я тут')
         context = self.get_context_data()
         services = context['services']
         cliners = context['cliners']

@@ -53,8 +53,6 @@ class ManagerReportCreateView(FormView):
         return redirect('crmapp:manager_report_list')
 
     def form_invalid(self, formset):
-        for form in formset.forms:
-            print(form.errors)
         context = self.get_context_data()
         context["formset"] = formset
         return render(self.request, self.template_name, context)
