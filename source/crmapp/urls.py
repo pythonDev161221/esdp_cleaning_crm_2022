@@ -1,6 +1,7 @@
 from django.urls import path, include
 
 from crmapp.views.client_views import ClientCreateView, ClientListView, ClientUpdateView
+from crmapp.views.manager_report import ManagerReportCreateView, ManagerReportListView
 
 from crmapp.views.service_views import ServiceListView, ServiceCreateView, ServiceUpdateView, ServiceDeleteView
 
@@ -53,9 +54,15 @@ consumables_urlpatterns = [
 ]
 
 
+manager_report_urlpatterns = [
+    path('order/<int:pk>/manager_report/create/', ManagerReportCreateView.as_view(), name='manager_report_create'),
+    path('manager_report/all/', ManagerReportListView.as_view(), name='manager_report_list'),
+]
+
 urlpatterns = [
     path('client/', include(client_urlpatterns)),
     path('service/', include(service_urlpatterns)),
     path('consumables/', include(consumables_urlpatterns)),
+    path('', include(manager_report_urlpatterns)),
     path('order/', include(order_urlpatterns))
 ]
