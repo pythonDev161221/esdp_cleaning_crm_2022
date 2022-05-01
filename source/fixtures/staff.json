@@ -1,0 +1,154 @@
+[
+{
+    "model": "accounts.staff",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$320000$l1dgIIcLSlu3z1O84DMrd2$taL6JBtX4ziPyyXuiQ/wK+UvLcD/5G4kN4WDcgGDuqU=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "Avatar",
+        "last_name": "Aang",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-05-01T09:18:19.456Z",
+        "email": "avatar@gmail.com",
+        "inn_passport": "ooo",
+        "phone": "+996555666777",
+        "avatar": "",
+        "address": "Киевская 56",
+        "online_wallet": "[\"Demir bank 3958 2398 2823 5905\"]",
+        "experience": "trainee",
+        "black_list": false,
+        "balance": 1280,
+        "groups": [],
+        "user_permissions": [],
+        "schedule": [
+            1,
+            2,
+            4,
+            5
+        ]
+    }
+},
+{
+    "model": "accounts.staff",
+    "pk": 2,
+    "fields": {
+        "password": "pbkdf2_sha256$320000$aF2J9PuU8zHUf7MjfBPuzD$y6y7Q53/yxG85MKDtqZnWLykbjJU+aVP3U9k1Ztv0NI=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "Ким",
+        "last_name": "Кардашьян",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-05-01T09:20:04.019Z",
+        "email": "kim@gmail.com",
+        "inn_passport": "999",
+        "phone": "+996777434544",
+        "avatar": "",
+        "address": "Ак-Орго",
+        "online_wallet": "[\"\\u042d\\u043b\\u043a\\u0430\\u0440\\u0442 2739 9023 1092 2837\", \"\\u041e\\u043f\\u0442\\u0438\\u043c\\u0430 8907 4567 4345 6754\"]",
+        "experience": "skilled",
+        "black_list": false,
+        "balance": 0,
+        "groups": [],
+        "user_permissions": [],
+        "schedule": [
+            4,
+            5
+        ]
+    }
+},
+{
+    "model": "accounts.staff",
+    "pk": 3,
+    "fields": {
+        "password": "pbkdf2_sha256$320000$tInaWSCS0oS9vjEzq1dCOo$SHs7OpkxyRzQ4aJnVo91gy4hyNaoBVBk4ghq8vhfRHc=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "Канье",
+        "last_name": "Уест",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-05-01T09:21:26.551Z",
+        "email": "west@gmail.com",
+        "inn_passport": "123",
+        "phone": "+996555040040",
+        "avatar": "",
+        "address": "Молдыбаева 68",
+        "online_wallet": "[\"\\u041e! \\u0434\\u0435\\u043d\\u044c\\u0433\\u0438 0700500800\"]",
+        "experience": "expert",
+        "black_list": false,
+        "balance": 900,
+        "groups": [],
+        "user_permissions": [],
+        "schedule": [
+            2,
+            3,
+            5
+        ]
+    }
+},
+{
+    "model": "accounts.staff",
+    "pk": 4,
+    "fields": {
+        "password": "pbkdf2_sha256$320000$IATbtZUVhecbwMWTCzr9NU$8mwS1XM3e4KeSoGYofTWvck38GwTVlesPKYyyXaFo3A=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "Эрен",
+        "last_name": "Йегер",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-05-01T09:22:23.707Z",
+        "email": "eren@gmail.com",
+        "inn_passport": "111",
+        "phone": "+996700200799",
+        "avatar": "",
+        "address": "Сигансина",
+        "online_wallet": "[\"Optima 9483 8273 2838 2830\", \"\\u042d\\u043b\\u0441\\u043e\\u043c 0555 555 555\", \"\\u042d\\u043b\\u043a\\u0430\\u0440\\u0442 03488 2382 3248324\"]",
+        "experience": "skilled",
+        "black_list": false,
+        "balance": 100,
+        "groups": [],
+        "user_permissions": [],
+        "schedule": [
+            1,
+            2,
+            3,
+            4
+        ]
+    }
+},
+{
+    "model": "accounts.staff",
+    "pk": 5,
+    "fields": {
+        "password": "pbkdf2_sha256$320000$MkEecjryey96f4y9Jxp1Wb$K4xlJhVQnbsiFb6B0T7RvrOC+oDVSX2JFOsyzmCRx84=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "Dua",
+        "last_name": "Lipa",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-05-01T09:23:20.770Z",
+        "email": "dualipa@gmail.com",
+        "inn_passport": "dualipka",
+        "phone": "+996700987678",
+        "avatar": "",
+        "address": "Kurenkeeva",
+        "online_wallet": "[\"Demir bank 3958 2398 2823 5905\"]",
+        "experience": "expert",
+        "black_list": false,
+        "balance": 0,
+        "groups": [],
+        "user_permissions": [],
+        "schedule": [
+            1,
+            2,
+            4,
+            6
+        ]
+    }
+}
+]
