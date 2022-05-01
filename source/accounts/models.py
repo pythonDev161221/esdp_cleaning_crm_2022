@@ -51,6 +51,10 @@ class Staff(AbstractUser):
         self.balance = 0
         self.save()
 
+    def add_salary(self, value):
+        self.balance += value
+        self.save()
+
     def __str__(self):
         return f' {self.last_name} {self.first_name}'
 

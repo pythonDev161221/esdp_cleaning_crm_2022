@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block tittle %}Отчет менеджера{% endblock tittle %}
+
+{% block content %}
+    <div class="container">
+    <h1>Отчет менеджера</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Дата создания</th>
+                    <th scope="col">id Заказа</th>
+                    <th scope="col">Клинер</th>
+                    <th scope="col">Заработная плата</th>
+                    <th scope="col">Бонус</th>
+                    <th scope="col">Штраф</th>
+                    <th scope="col">Итого</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for manager_report in manager_reports %}
+                    <tr>
+                        <th scope="row">{{ manager_report.created_at }}</th>
+                        <th>{{ manager_report.order.id }}</th>
+                        <td>{{ manager_report.cleaner }}</td>
+                        <td>{{ manager_report.salary }}</td>
+                        <td>{{ manager_report.bonus }}</td>
+                        <td>{{ manager_report.fine }}</td>
+                        <td>{{ manager_report.get_salary }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}
