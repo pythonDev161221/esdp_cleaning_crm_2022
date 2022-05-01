@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
@@ -23,9 +24,10 @@ class PayoutCreateView(CreateView):
 
     def post(self, request, *args, **kwargs):
         staff = get_object_or_404(Staff, pk=self.kwargs['pk'])
-        if staff.balance != 0:
+        if staff.balance > 0:
             Payout.objects.create(staff=staff, salary=staff.balance)
             staff.nullify_salary()
+            messages.success(self.request, f'Баланс сотрудника {staff.first_name} {staff.last_name} успешно списан!')
         else:
-            return HttpResponse('Баланс равен 0!')
+            messages.warning(self.request, f'Баланс сотрудника {staff.first_name} {staff.last_name} составляет {staff.balance} cом! Операция невозможна! ')
         return HttpResponseRedirect(self.success_url)
