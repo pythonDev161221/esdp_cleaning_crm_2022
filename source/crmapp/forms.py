@@ -145,6 +145,7 @@ StaffOrderFormSet = inlineformset_factory(Order, StaffOrder, form=OrderStaffForm
 
 
 class BaseStaffAddFormSet(BaseModelFormSet):
-    def init(self, *args, **kwargs):
-        super().init(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.queryset = User.objects.none()
 
