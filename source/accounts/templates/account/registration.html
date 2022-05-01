@@ -1,14 +1,18 @@
 {% extends 'base.html' %}
-
-{% block title %}Register{% endblock title %}
-{% block links %} {% endblock links %}
-
+{% load crispy_forms_tags %}
 {% block content %}
-    <div class="container m-5">
-        <form method="post" enctype='multipart/form-data'>
-            {% csrf_token %}
-            {% include "partial/form.html" with button_text="Добавить сотрудника" %}
-             <a class="mt-3 btn btn-dark" href="{% url 'accounts:staff-list' %}" >Назад</a>
-        </form>
+    <div class="container">
+        <div class="card mt-3">
+            <div class="card-header">
+                Регистрация нового сотрудника
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <input type="submit" value="Сохранить" class="btn btn-primary">
+                </form>
+            </div>
+        </div>
     </div>
 {% endblock content %}

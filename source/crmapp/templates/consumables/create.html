@@ -1,10 +1,19 @@
 {% extends 'base.html' %}
-
+{% load crispy_forms_tags %}
+{% block tittle %}Добавление инвентаря{% endblock tittle %}
 {% block content %}
-<div class="container">
-    <form method="POST" class="mb-5">
-        {% csrf_token %}
-        {% include 'partial/form.html' with button_text='Создать' %}
-    </form>
-</div>
+    <div class="container">
+        <div class="card mt-3">
+            <div class="card-header">
+                Добавление инвентаря
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <input type="submit" value="Сохранить" class="btn btn-primary">
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock content %}

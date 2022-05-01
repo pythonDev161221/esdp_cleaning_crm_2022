@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.forms import modelformset_factory
@@ -35,8 +36,10 @@ class ManagerReportCreateView(FormView):
         ManagerFormset = modelformset_factory(ManagerReport, form=ManagerReportForm, extra=cleaners.count())
         formset = ManagerFormset(request.POST, request.FILES, prefix="extra")
         if formset.is_valid():
+            messages.success(self.request, f'Операция успешно выполнена!')
             return self.form_valid(formset)
         else:
+            messages.warning(self.request, f'Операция не выполнена!')
             return self.form_invalid(formset)
 
     def form_valid(self, formset):
