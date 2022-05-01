@@ -4,12 +4,30 @@
     <div class="container">
         <h1>Отчет менеджера</h1>
         <form method="POST" class="mb-5">
-        {% csrf_token %}
             {{ formset.management_form }}
+            {% csrf_token %}
+            {% for hidden in formset.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+
             {% for forms in formset %}
-                {{ forms.as_p }}
-                {{ forms.salary }}
-                <hr>
+                <div style="display: flex; flex-direction: column">
+
+                    {% for form in forms %}
+                        {% if form.id_for_label %}
+                            {% if not form.is_hidden %}
+                                <p><label for="{{ form.id_for_label }}">{{ form.label }}</label></p>
+
+                            {% endif %}
+                        {% endif %}
+                        {% for error in form.errors %}
+                            <p class="text-danger">{{ error }}</p>
+                        {% endfor %}
+                        {{ form }}
+                    {% endfor %}
+
+                    <p style="border-bottom: 2px solid black; padding: 24px 0"></p>
+                </div>
             {% endfor %}
             <input class="btn btn-primary mt-3" type="submit" value="Сохранить">
         </form>

@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.forms import modelformset_factory
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.generic import CreateView, ListView
+from django.views.generic import ListView, FormView
 
 from crmapp.forms import ManagerReportForm, BaseManagerReportFormSet
 from crmapp.models import ManagerReport, Order
@@ -10,7 +10,7 @@ from crmapp.models import ManagerReport, Order
 User = get_user_model()
 
 
-class ManagerReportCreateView(CreateView):
+class ManagerReportCreateView(FormView):
     model = ManagerReport
     form_class = ManagerReportForm
     template_name = 'manager_report/report_create.html'
@@ -30,7 +30,6 @@ class ManagerReportCreateView(CreateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        self.object = None
         order = get_object_or_404(Order, pk=self.kwargs['pk'])
         cleaners = User.objects.filter(orders=order)
         ManagerFormset = modelformset_factory(ManagerReport, form=ManagerReportForm, extra=cleaners.count())
@@ -55,7 +54,6 @@ class ManagerReportCreateView(CreateView):
             print(form.errors)
         context = self.get_context_data()
         context["formset"] = formset
-        context['form_errors'] = formset.errors
         return render(self.request, self.template_name, context)
 
 

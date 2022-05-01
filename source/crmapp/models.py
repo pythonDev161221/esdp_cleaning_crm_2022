@@ -216,7 +216,7 @@ class ServiceOrder(models.Model):
     total = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Стоимость услуги'))
 
     def __str__(self):
-        return f"{self.service}: {self.total} сом"
+        return f"{self.service}: {self.service_total()} сом"
 
     def service_total(self):
         return self.service.price * self.amount * self.rate
