@@ -26,6 +26,8 @@ class Staff(AbstractUser):
                                   blank=False,
                                   verbose_name=_('Опыт работы'))
     black_list = models.BooleanField(default=False, verbose_name=_('Черный список'))
+    balance = models.IntegerField(verbose_name=_('Деньги работника'), default=0,
+                                  null=False, blank=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -43,6 +45,14 @@ class Staff(AbstractUser):
 
     def soft_delete(self):
         self.is_active = False
+        self.save()
+
+    def nullify_salary(self):
+        self.balance = 0
+        self.save()
+
+    def add_salary(self, value):
+        self.balance += value
         self.save()
 
     def __str__(self):
@@ -68,3 +78,23 @@ class WorkDay(models.Model):
         db_table = 'WorkDays'
         verbose_name = _('День недели')
         verbose_name_plural = _('Дни недели')
+
+
+class Payout(models.Model):
+    staff = models.ForeignKey('accounts.Staff', null=False, blank=False, related_name='staff',
+                              verbose_name=_('Работник'), on_delete=models.PROTECT)
+    salary = models.IntegerField(null=False, blank=False,
+                                 verbose_name=_('Заработная плата'))
+    date_payout = models.DateTimeField(auto_now=True)
+
+    def get_absolute_url(self):
+        return reverse('accounts:payout_list')
+
+    def __str__(self):
+        return f"{self.date_payout}{self.staff}{self.salary}"
+
+    class Meta:
+        db_table = 'Payouts'
+        verbose_name = _('Выплата')
+        verbose_name_plural = _('Выплаты')
+

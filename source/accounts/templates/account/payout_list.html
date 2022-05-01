@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Выплаты сотрудникам{% endblock title %}
+
+{% block content %}
+    {% if payouts %}
+        <h2 class="text-center">История выплат</h2>
+        <div class="container">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">ФИО Сотрудника</th>
+                    <th scope="col">Сумма (сом)</th>
+                    <th scope="col">Дата выплаты</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for payout in payouts.all %}
+                    <tr>
+                        <td>{{ payout.staff }}</td>
+                        <td>{{ payout.salary }}</td>
+                        <td>{{ payout.date_payout }}</td>
+                    </tr>
+                    </tbody>
+                {% endfor %}
+            </table>
+        </div>
+    {% else %}
+        <h2 class="text-center">История выплат пуста</h2>
+    {% endif %}
+{% endblock content %}

@@ -1,21 +1,10 @@
 from django.http import HttpResponseRedirect
-from django.urls import reverse_lazy, reverse
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.shortcuts import get_object_or_404
+from django.urls import reverse
+from django.views.generic import CreateView, UpdateView, DeleteView
 
 from crmapp.forms import ServiceOrderForm
-from crmapp.models import ServiceOrder
-
-
-class ServiceOrderListView(ListView):
-    model = ServiceOrder
-    template_name = 'service/service_order/service_order_list.html'
-    context_object_name = 'service_orders'
-
-
-class ServiceOrderDetailView(DetailView):
-    model = ServiceOrder
-    template_name = 'service/service_order/service_order_detail.html'
-    context_object_name = 'service_order'
+from crmapp.models import ServiceOrder, Order
 
 
 class ServiceOrderCreateView(CreateView):
@@ -24,12 +13,15 @@ class ServiceOrderCreateView(CreateView):
     form_class = ServiceOrderForm
 
     def form_valid(self, form):
-        form.instance.total = form.instance.service.price * form.instance.amount * form.instance.rate
-        self.object = form.save()
+        order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
+        self.object = form.save(commit=False)
+        self.object.total = self.object.service_total()
+        self.object.order = order
+        self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('crmapp:service_order_detail', kwargs={'pk': self.object.pk})
+        return reverse('crmapp:order_detail', kwargs={'pk': self.object.order.pk})
 
 
 class ServiceOrderUpdateView(UpdateView):
@@ -39,16 +31,18 @@ class ServiceOrderUpdateView(UpdateView):
     context_object_name = 'service_order'
 
     def form_valid(self, form):
-        form.instance.total = form.instance.service.price * form.instance.amount * form.instance.rate
-        self.object = form.save()
+        self.object.total = self.object.service_total()
+        self.object.save()
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('crmapp:service_order_detail', kwargs={'pk': self.object.pk})
+        return reverse('crmapp:order_detail', kwargs={'pk': self.object.order.pk})
 
 
 class ServiceOrderDeleteView(DeleteView):
     model = ServiceOrder
     template_name = 'service/service_order/service_order_delete.html'
-    success_url = reverse_lazy('crmapp:service_order_list')
     context_object_name = 'service_order'
+
+    def get_success_url(self):
+        return reverse('crmapp:order_detail', kwargs={'pk': self.object.order.pk})

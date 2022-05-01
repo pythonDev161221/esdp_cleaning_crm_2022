@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
@@ -43,6 +44,7 @@ class PasswordChangeView(LoginRequiredMixin, UpdateView):
     def form_valid(self, form):
         response = super().form_valid(form)
         update_session_auth_hash(self.request, self.object)
+        messages.success(self.request, f'Пароль был успешно изменен!')
         return response
 
     def get_object(self, queryset=None):
@@ -101,6 +103,7 @@ class StaffDeleteView(DeleteView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.object.soft_delete()
+        messages.success(self.request, f'{self.object.last_name} {self.object.first_name} успешно удален(a)!')
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -128,6 +131,7 @@ class AddToBlackList(DeleteView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.object.black_list_staff()
+        messages.success(self.request, f'{self.object.last_name} {self.object.first_name} добавлен(a) в черный список!')
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -145,4 +149,5 @@ class RemoveFromBlackList(DeleteView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.object.active_staff()
+        messages.success(self.request, f'{self.object.last_name} {self.object.first_name} больше не находится в черном списке!')
         return HttpResponseRedirect(self.get_success_url())

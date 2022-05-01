@@ -1,8 +1,9 @@
 from django import forms
-from django.contrib.auth import password_validation
 from django.contrib.auth.forms import UserCreationForm, UsernameField
 
-from accounts.models import Staff
+from accounts.models import Staff, Payout
+
+from crispy_forms.helper import FormHelper
 
 
 class LoginForm(forms.Form):
@@ -11,23 +12,6 @@ class LoginForm(forms.Form):
 
 
 class StaffRegistrationForm(UserCreationForm):
-    first_name = forms.CharField(label='Имя')
-    last_name = forms.CharField(label='Фамилия')
-    password1 = forms.CharField(
-        label='Пароль',
-        strip=False,
-        widget=forms.PasswordInput(),
-        help_text=password_validation.password_validators_help_text_html(),
-    )
-    password2 = forms.CharField(
-        label='Повторите пароль',
-        strip=False,
-        widget=forms.PasswordInput(),
-        help_text=password_validation.password_validators_help_text_html(),
-    )
-    inn_passport = forms.CharField(label='ИHH')
-    phone = forms.CharField(label='Телефон')
-
     class Meta(UserCreationForm.Meta):
         model = Staff
         fields = (
@@ -47,6 +31,11 @@ class StaffRegistrationForm(UserCreationForm):
             'schedule': forms.CheckboxSelectMultiple,
         }
 
+        def __init__(self, *args, **kwargs):
+            super(StaffRegistrationForm, self).__init__(*args, **kwargs)
+            self.helper = FormHelper()
+            self.helper.form_tag = True
+
         def clean(self):
             cleaned_data = super().clean()
             schedule = cleaned_data.get('schedule')
@@ -62,9 +51,6 @@ class StaffRegistrationForm(UserCreationForm):
 
 
 class StaffEditForm(forms.ModelForm):
-    first_name = forms.CharField(label='Имя')
-    last_name = forms.CharField(label='Фамилия')
-
     class Meta:
         model = Staff
         fields = ("email",
@@ -79,6 +65,11 @@ class StaffEditForm(forms.ModelForm):
         widgets = {
             'schedule': forms.CheckboxSelectMultiple,
         }
+
+        def __init__(self, *args, **kwargs):
+            super(StaffEditForm, self).__init__(*args, **kwargs)
+            self.helper = FormHelper()
+            self.helper.form_tag = True
 
         def clean(self):
             cleaned_data = super().clean()
@@ -122,3 +113,9 @@ class PasswordChangeForm(forms.ModelForm):
     class Meta:
         model = Staff
         fields = ['old_password', 'password', 'password_confirm']
+
+
+class PayoutForm(forms.ModelForm):
+    class Meta:
+        model = Payout
+        fields = ['staff', ]

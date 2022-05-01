@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+
 from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
 from django.utils.translation import gettext as _
@@ -97,8 +98,8 @@ class Order(models.Model):  # Таблица самого заказа
 
     # Поля связанные со временем
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата и время создания заказа'))
-    work_start = models.DateTimeField(verbose_name=_('Дата и время выполнения уборки'))
-    cleaning_time = models.TimeField(verbose_name=_('Время выполнения работ'))
+    work_start = models.DateTimeField(verbose_name=_('Дата и время выполнения уборки'), null=True, blank=True)
+    cleaning_time = models.TimeField(verbose_name=_('Время выполнения работ'), null=True, blank=True)
 
     # Информация о клиенте
     client_info = models.ForeignKey('crmapp.Client', on_delete=models.PROTECT, related_name='order_client',
@@ -124,6 +125,13 @@ class Order(models.Model):  # Таблица самого заказа
                                     choices=PaymentChoices.choices,
                                     verbose_name=_('Вид оплаты'))  # вид оплаты
     total_cost = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Общая сумма заказа'))
+
+    def get_total(self):
+        total = 0
+        services = ServiceOrder.objects.filter(order=self)
+        for service in services:
+            total += service.service_total()
+        return total
 
 
 class FineCategory(models.Model):
@@ -211,10 +219,19 @@ class ServiceOrder(models.Model):
     rate = models.DecimalField(default=1, null=False, blank=False, verbose_name=_('Коэффицент сложности'),
                                max_digits=2, decimal_places=1,
                                validators=[MinValueValidator(1.0), MaxValueValidator(3.0)])
-    total = models.PositiveIntegerField(null=False, blank=False, verbose_name=_('Стоимость услуги'))
+    total = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Стоимость услуги'))
 
     def __str__(self):
-        return f"{self.service}: {self.total}"
+        return f"{self.service}: {self.service_total()} сом"
+
+    def service_total(self):
+        return self.service.price * self.amount * self.rate
+
+    def get_total(self):
+        total = 0
+        for i in self.service_total():
+            total += i
+        return total
 
     class Meta:
         db_table = "service_order"
@@ -254,6 +271,25 @@ class CleanserInOrder(models.Model):
         verbose_name_plural = _('Моющие средства в заказе')
 
 
+class ManagerReport(models.Model):
+    order = models.ForeignKey('crmapp.Order', related_name='order_manager', on_delete=models.PROTECT, verbose_name=_('Заказ'))
+    cleaner = models.ForeignKey(get_user_model(), related_name='manager_report', on_delete=models.PROTECT, verbose_name=_('Клинер'))
+    salary = models.IntegerField(verbose_name=_('Заработная плата'), null=False, blank=False)
+    fine = models.IntegerField(verbose_name=_('Штраф'), null=True, blank=True, default=0)
+    bonus = models.IntegerField(verbose_name=_('Бонус'), null=True, blank=True, default=0)
+    created_at = models.DateTimeField(auto_now=True, verbose_name=_('Дата создания'))
+    updated_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата изменения'))
+
+    def get_salary(self):
+        total = self.salary + self.bonus - self.fine
+        return total
+
+    class Meta:
+        db_table = 'manager_report'
+        verbose_name = _('Отчет менеджера')
+        verbose_name_plural = _('Отчеты менеджера')
+
+
 class ObjectType(models.Model):
     name = models.CharField(max_length=255, verbose_name=_('Наименование'), null=False, blank=False)
 
@@ -264,3 +300,4 @@ class ObjectType(models.Model):
         db_table = 'object_types'
         verbose_name = _('Тип объекта')
         verbose_name_plural = _('Типы объекта')
+
