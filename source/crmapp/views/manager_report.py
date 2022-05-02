@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.forms import modelformset_factory
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView, FormView
 
@@ -19,25 +20,32 @@ class ManagerReportCreateView(FormView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         order = get_object_or_404(Order, pk=self.kwargs['pk'])
-        cleaners = User.objects.filter(orders=order)
-        ManagerFormset = modelformset_factory(ManagerReport, form=ManagerReportForm, formset=BaseManagerReportFormSet, extra=cleaners.count())
-        formset = ManagerFormset(prefix='extra', queryset=cleaners)
+        if self.model.objects.filter(order=order):
+            raise Http404
+        staff_and_salary = order.get_salary_staffs()
+        ManagerFormset = modelformset_factory(ManagerReport, form=ManagerReportForm, formset=BaseManagerReportFormSet, extra=order.cleaners.count())
+        formset = ManagerFormset(prefix='extra', queryset=order.cleaners.all())
         staff_numeric_value = 0
         for forms in formset:
-            forms.fields['cleaner'].queryset = cleaners
-            forms.initial = {"cleaner": cleaners[staff_numeric_value]}
+            forms.fields['cleaner'].queryset = order.cleaners.all()
+            forms.initial = {"cleaner": staff_and_salary[staff_numeric_value][0],  "salary": round(staff_and_salary[staff_numeric_value][1], 0)}
             staff_numeric_value += 1
         context['formset'] = formset
         return context
 
     def post(self, request, *args, **kwargs):
         order = get_object_or_404(Order, pk=self.kwargs['pk'])
-        cleaners = User.objects.filter(orders=order)
-        ManagerFormset = modelformset_factory(ManagerReport, form=ManagerReportForm, extra=cleaners.count())
+        ManagerFormset = modelformset_factory(ManagerReport, form=ManagerReportForm, extra=order.cleaners.count())
         formset = ManagerFormset(request.POST, request.FILES, prefix="extra")
         if formset.is_valid():
-            messages.success(self.request, f'Операция успешно выполнена!')
-            return self.form_valid(formset)
+            salary_all_sum = [form.instance.salary for form in [fs for fs in formset.forms]]
+            if sum(salary_all_sum) > order.get_total():  # Вместо order.get_total() указать поле зп выделенное для клинеров
+                return render(self.request, self.template_name,
+                              {"salary_errors": f"Сумма превышает допустимый лимит: {order.get_total()}",
+                               "formset": formset})# Вместо order.get_total() указать поле зп выделенное для клинеров
+            else:
+                messages.success(self.request, f'Операция успешно выполнена!')
+                return self.form_valid(formset)
         else:
             messages.warning(self.request, f'Операция не выполнена!')
             return self.form_invalid(formset)

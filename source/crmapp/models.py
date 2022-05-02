@@ -120,6 +120,48 @@ class Order(models.Model):  # Таблица самого заказа
                                     verbose_name=_('Вид оплаты'))  # вид оплаты
     total_cost = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Общая сумма заказа'))
 
+    def get_base_sum(self):
+        staff_part = int(self.get_total()) / self.cleaners.count()#Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+        base_sum = 0
+        for staff in self.cleaners.all():
+            if str(staff.experience) == "trainee":
+                base_sum += staff_part * 0.5
+            elif str(staff.experience) == "skilled":
+                base_sum += staff_part * 1
+            else:
+                base_sum += staff_part * 1.5
+        return base_sum
+
+    def get_numeric_coefficient(self):
+        staff_part = int(self.get_total()) / self.cleaners.count()#Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+        base_num = self.get_base_sum()
+        num_coefficient = []
+        for staff in self.cleaners.all():
+            if str(staff.experience) == "trainee":
+                nc = staff_part * 0.5 / base_num
+            elif str(staff.experience) == "skilled":
+                nc = staff_part * 1 / base_num
+            else:
+                nc = staff_part * 1.5 / base_num
+            num_coefficient.append(nc)
+        return num_coefficient
+
+    def get_numeric_salary(self):
+        staff_salary = []
+        num_coefficient = self.get_numeric_coefficient()
+        [staff_salary.append(int(self.get_total()) * ns) for ns in num_coefficient]#Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+        return staff_salary
+
+    def get_salary_staffs(self):
+        staff_salary = self.get_numeric_salary()
+        i = 0
+        context = []
+        for staff in self.cleaners.all():
+            result = [staff, int(staff_salary[i])]
+            i += 1
+            context.append(result)
+        return context
+
     def get_total(self):
         total = 0
         services = ServiceOrder.objects.filter(order=self)

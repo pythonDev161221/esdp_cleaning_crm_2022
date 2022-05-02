@@ -10,6 +10,10 @@
                 {{ hidden }}
             {% endfor %}
 
+            {% if salary_errors %}
+                <p style="color: red; font-size: large">{{ salary_errors }}</p>
+            {% endif %}
+
             {% for forms in formset %}
                 <div style="display: flex; flex-direction: column">
 
