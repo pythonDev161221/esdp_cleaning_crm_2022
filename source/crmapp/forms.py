@@ -90,12 +90,6 @@ class ServiceOrderForm(forms.ModelForm):
         model = ServiceOrder
         exclude = ('order',)
 
-    def __init__(self, *args, **kwargs):
-        super(ServiceOrderForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_tag = True
-        self.helper.label_class = 'visually-hidden'
-
 
 ServiceOrderFormSet = inlineformset_factory(Order, ServiceOrder, form=ServiceOrderForm,
                                             exclude=['order'], extra=3, can_delete=False)
@@ -105,12 +99,6 @@ class StaffOrderForm(forms.ModelForm):
     class Meta:
         model = StaffOrder
         exclude = ('order',)
-
-    def __init__(self, *args, **kwargs):
-        super(StaffOrderForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_tag = True
-        self.helper.label_class = 'visually-hidden'
 
 
 class OrderStaffForm(forms.ModelForm):
