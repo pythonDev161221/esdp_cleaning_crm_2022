@@ -7,6 +7,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 from django.utils.translation import gettext as _
 
 from crmapp.choice import PaymentChoices, UnitChoices, OrderStatusChoices
+from crmapp.constants import ORDER_STAFF_SALARY_COEFFICIENT
 
 
 class Service(models.Model):
@@ -120,40 +121,34 @@ class Order(models.Model):  # Таблица самого заказа
                                     verbose_name=_('Вид оплаты'))  # вид оплаты
     total_cost = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Общая сумма заказа'))
 
-    def get_base_sum(self):
+    def manager_report_base_sum(self):
         staff_part = int(self.get_total()) / self.cleaners.count()#Вместо self.get_total() вызвать поле для общей суммы зп клинеров
         base_sum = 0
         for staff in self.cleaners.all():
-            if str(staff.experience) == "trainee":
-                base_sum += staff_part * 0.5
-            elif str(staff.experience) == "skilled":
-                base_sum += staff_part * 1
-            else:
-                base_sum += staff_part * 1.5
+            for coefficient in ORDER_STAFF_SALARY_COEFFICIENT:
+                if str(staff.experience) == coefficient[0]:
+                    base_sum += staff_part * coefficient[1]
         return base_sum
 
-    def get_numeric_coefficient(self):
+    def manager_report_numeric_coefficient(self):
         staff_part = int(self.get_total()) / self.cleaners.count()#Вместо self.get_total() вызвать поле для общей суммы зп клинеров
-        base_num = self.get_base_sum()
+        base_num = self.manager_report_base_sum()
         num_coefficient = []
         for staff in self.cleaners.all():
-            if str(staff.experience) == "trainee":
-                nc = staff_part * 0.5 / base_num
-            elif str(staff.experience) == "skilled":
-                nc = staff_part * 1 / base_num
-            else:
-                nc = staff_part * 1.5 / base_num
-            num_coefficient.append(nc)
+            for coefficient in ORDER_STAFF_SALARY_COEFFICIENT:
+                if str(staff.experience) == coefficient[0]:
+                    num_coff = staff_part * coefficient[1] / base_num
+                    num_coefficient.append(num_coff)
         return num_coefficient
 
-    def get_numeric_salary(self):
+    def manager_reprot_numeric_salary(self):
         staff_salary = []
-        num_coefficient = self.get_numeric_coefficient()
-        [staff_salary.append(int(self.get_total()) * ns) for ns in num_coefficient]#Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+        num_coefficient = self.manager_report_numeric_coefficient()
+        [staff_salary.append(int(self.get_total()) * nc) for nc in num_coefficient]#Вместо self.get_total() вызвать поле для общей суммы зп клинеров
         return staff_salary
 
-    def get_salary_staffs(self):
-        staff_salary = self.get_numeric_salary()
+    def manager_report_salary_staffs(self):
+        staff_salary = self.manager_reprot_numeric_salary()
         i = 0
         context = []
         for staff in self.cleaners.all():
@@ -315,6 +310,12 @@ class ManagerReport(models.Model):
     bonus = models.IntegerField(verbose_name=_('Бонус'), null=True, blank=True, default=0)
     created_at = models.DateTimeField(auto_now=True, verbose_name=_('Дата создания'))
     updated_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата изменения'))
+
+    def get_all_expences_in_order(self):
+        expences = 0
+        for report in ManagerReport.objects.filter(order=self.order):
+            expences += report.get_salary()
+        return expences
 
     def get_salary(self):
         total = self.salary + self.bonus - self.fine

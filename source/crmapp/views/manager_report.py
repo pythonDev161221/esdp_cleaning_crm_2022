@@ -4,6 +4,7 @@ from django.db import transaction
 from django.forms import modelformset_factory
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.views.generic import ListView, FormView
 
 from crmapp.forms import ManagerReportForm, BaseManagerReportFormSet
@@ -17,12 +18,17 @@ class ManagerReportCreateView(FormView):
     form_class = ManagerReportForm
     template_name = 'manager_report/report_create.html'
 
+    def get(self, request, *args, **kwargs):
+        if self.model.objects.filter(order=self.kwargs['pk']):
+            messages.warning(self.request, f'Менеджерский отчет уже существует!')
+            return redirect("crmapp:order_detail", pk=self.kwargs['pk'])
+        else:
+            return super(ManagerReportCreateView, self).get(request, *args, **kwargs)
+
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         order = get_object_or_404(Order, pk=self.kwargs['pk'])
-        if self.model.objects.filter(order=order):
-            raise Http404
-        staff_and_salary = order.get_salary_staffs()
+        staff_and_salary = order.manager_report_salary_staffs()
         ManagerFormset = modelformset_factory(ManagerReport, form=ManagerReportForm, formset=BaseManagerReportFormSet, extra=order.cleaners.count())
         formset = ManagerFormset(prefix='extra', queryset=order.cleaners.all())
         staff_numeric_value = 0
@@ -41,7 +47,7 @@ class ManagerReportCreateView(FormView):
             salary_all_sum = [form.instance.salary for form in [fs for fs in formset.forms]]
             if sum(salary_all_sum) > order.get_total():  # Вместо order.get_total() указать поле зп выделенное для клинеров
                 return render(self.request, self.template_name,
-                              {"salary_errors": f"Сумма превышает допустимый лимит: {order.get_total()}",
+                              {"salary_errors": f"Сумма превышает общий допустимый лимит: {order.get_total()}",
                                "formset": formset})# Вместо order.get_total() указать поле зп выделенное для клинеров
             else:
                 messages.success(self.request, f'Операция успешно выполнена!')
