@@ -60,6 +60,8 @@ class OrderForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(OrderForm, self).__init__(*args, **kwargs)
+        self.fields["work_start"].widget = forms.DateTimeInput(attrs={"type": "datetime-local"})
+        self.fields["cleaning_time"].widget = forms.TimeInput(attrs={"type": "time"})
         self.helper = FormHelper()
         self.helper.form_tag = True
         self.helper.layout = Layout(
