@@ -6,7 +6,7 @@
 {% block content %}
     <div class="container mt-3">
         <p><strong>Заказ № {{ order.id }} Cтатус: {{ order.get_status_display }}</strong></p>
-        <p><strong>Дата и время:</strong> {{ order.work_start }}</p>
+        <p><strong>Дата и время:</strong>  {{ order.work_start }}, {{ order.work_start |date:'l'}}</p>
         <p><strong>Адресс:</strong> {{ order.address | capfirst }}</p>
         <p><strong>Тип объекта:</strong> {{ order.object_type | capfirst }}</p>
         {% if extra_service %}

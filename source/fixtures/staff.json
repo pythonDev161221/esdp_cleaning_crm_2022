@@ -6,8 +6,8 @@
         "password": "pbkdf2_sha256$320000$l1dgIIcLSlu3z1O84DMrd2$taL6JBtX4ziPyyXuiQ/wK+UvLcD/5G4kN4WDcgGDuqU=",
         "last_login": null,
         "is_superuser": false,
-        "first_name": "Avatar",
-        "last_name": "Aang",
+        "first_name": "Анг",
+        "last_name": "Аватар",
         "is_staff": false,
         "is_active": true,
         "date_joined": "2022-05-01T09:18:19.456Z",
@@ -64,7 +64,7 @@
     "pk": 3,
     "fields": {
         "password": "pbkdf2_sha256$320000$tInaWSCS0oS9vjEzq1dCOo$SHs7OpkxyRzQ4aJnVo91gy4hyNaoBVBk4ghq8vhfRHc=",
-        "last_login": null,
+        "last_login": "2022-05-05T13:13:34.362Z",
         "is_superuser": false,
         "first_name": "Канье",
         "last_name": "Уест",
@@ -148,6 +148,150 @@
             2,
             4,
             6
+        ]
+    }
+},
+{
+    "model": "accounts.staff",
+    "pk": 6,
+    "fields": {
+        "password": "pbkdf2_sha256$320000$8ImzUYTQsL5bhrQufZmP50$GKbLt+0DaRO+4Ya5KypmD75fzL/uSPKMxAJDi8OTXhI=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "Кайли",
+        "last_name": "Дженнер",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-05-05T13:14:27.899Z",
+        "email": "kylie@gmail.com",
+        "inn_passport": "kylieeee",
+        "phone": "+996555555555",
+        "avatar": "",
+        "address": "Жал",
+        "online_wallet": "[\"\\u042d\\u043b\\u043a\\u0430\\u0440\\u0442 2739 9023 1092 2837\", \"\\u041e\\u043f\\u0442\\u0438\\u043c\\u0430 8907 4567 4345 6754\"]",
+        "experience": "trainee",
+        "black_list": false,
+        "balance": 0,
+        "groups": [],
+        "user_permissions": [],
+        "schedule": [
+            5,
+            6
+        ]
+    }
+},
+{
+    "model": "accounts.staff",
+    "pk": 7,
+    "fields": {
+        "password": "pbkdf2_sha256$320000$VGCpSXl5p60r4OcgtzeE2k$3d0IaLlMLHWVc/2e2H3K6hBQslOcOYzFIlGc1iXTAc8=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "Кендалл",
+        "last_name": "Дженнер",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-05-05T13:15:24.695Z",
+        "email": "kendall@gmail.com",
+        "inn_passport": "kendallllll",
+        "phone": "+996700300300",
+        "avatar": "",
+        "address": "Жал",
+        "online_wallet": "[\"Optima 9483 8273 2838 2830\", \"\\u042d\\u043b\\u0441\\u043e\\u043c 0555 555 555\"]",
+        "experience": "skilled",
+        "black_list": false,
+        "balance": 0,
+        "groups": [],
+        "user_permissions": [],
+        "schedule": [
+            7
+        ]
+    }
+},
+{
+    "model": "accounts.staff",
+    "pk": 8,
+    "fields": {
+        "password": "pbkdf2_sha256$320000$gj4guxeoDsWbxX3ezQAmwd$Cy6p7LSAzaiZMX0RiJZ9bG/Bcu3Z/1CaZUl+l8kXxl0=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "Джонни",
+        "last_name": "Депп",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-05-05T13:16:24.326Z",
+        "email": "depp@gmail.com",
+        "inn_passport": "depp",
+        "phone": "+996555444333",
+        "avatar": "",
+        "address": "5-мкр д5 кв100",
+        "online_wallet": "[\"Optima 9483 3465 5475 2830\"]",
+        "experience": "expert",
+        "black_list": false,
+        "balance": 0,
+        "groups": [],
+        "user_permissions": [],
+        "schedule": [
+            2
+        ]
+    }
+},
+{
+    "model": "accounts.staff",
+    "pk": 9,
+    "fields": {
+        "password": "pbkdf2_sha256$320000$Q5wb8n9Uog5tucJud25e21$4x7Ro46PnYyFjnneS8mHeguPvjMZR3ohS1lq4hqfOYc=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "Леви",
+        "last_name": "Аккерман",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-05-05T13:18:17.451Z",
+        "email": "levi@gmail.com",
+        "inn_passport": "leviiii",
+        "phone": "+996700400800",
+        "avatar": "",
+        "address": "Сигансина",
+        "online_wallet": "[\"Demir bank 3958 2398 2823 5905\"]",
+        "experience": "expert",
+        "black_list": false,
+        "balance": 0,
+        "groups": [],
+        "user_permissions": [],
+        "schedule": [
+            1,
+            2,
+            3
+        ]
+    }
+},
+{
+    "model": "accounts.staff",
+    "pk": 10,
+    "fields": {
+        "password": "pbkdf2_sha256$320000$AGoiafnTXnmszQJWdB0YAm$jgJiL2MuY0nJ/Hqm+vtjV45I292GEbGYNHHEJ1B3Nmo=",
+        "last_login": null,
+        "is_superuser": false,
+        "first_name": "Микаса",
+        "last_name": "Аккерман",
+        "is_staff": false,
+        "is_active": true,
+        "date_joined": "2022-05-05T13:19:30.046Z",
+        "email": "mikasa@gmail.com",
+        "inn_passport": "MIKASA",
+        "phone": "+996555768786",
+        "avatar": "",
+        "address": "Сигансина",
+        "online_wallet": "[\"Optima 9483 8273 2838 9867\"]",
+        "experience": "trainee",
+        "black_list": false,
+        "balance": 0,
+        "groups": [],
+        "user_permissions": [],
+        "schedule": [
+            1,
+            5
         ]
     }
 }

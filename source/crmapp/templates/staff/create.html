@@ -1,28 +1,17 @@
-{#{% extends 'base.html' %}#}
-{##}
-{#{% block content %}#}
-{#    <div class="container">#}
-{#        <h1>Добавить сотрудника в заказ</h1>#}
-{#        <form method="POST" class="mb-5">#}
-{#            {% csrf_token %}#}
-{#            {% include 'partial/form.html' with button_text='Добавить' %}#}
-{#        </form>#}
-{#    </div>#}
-{#{% endblock content %}#}
 {% extends 'base.html' %}
 {% block content %}
 
     <div class="container">
-        <h1>Add staff for order</h1>
+        <h2>Выберите клинеров для заказа </h2>
         <form method="POST" class="mb-5">
             {{ formset.management_form }}
             {% csrf_token %}
             {% for hidden in formset.hidden_fields %}
                 {{ hidden }}
             {% endfor %}
-            <div style="display: flex; flex-direction: column">
+            <div class="w-50 fs-6">
                 {% for forms in formset %}
-                    <div style="border-bottom: 2px solid black; border-top: 2px solid black; padding: 30px 0">
+                    <div style="border-bottom: 1px solid lightgray;  padding: 10px 0">
                         {{ forms }}
                     </div>
                 {% endfor %}
