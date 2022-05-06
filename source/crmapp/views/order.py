@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.db import transaction
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, FormView, CreateView
@@ -41,7 +42,6 @@ class OrderCreateView(CreateView):
         return context
 
     def form_valid(self, form):
-        print('я тут')
         context = self.get_context_data()
         services = context['services']
         cliners = context['cliners']
@@ -52,6 +52,7 @@ class OrderCreateView(CreateView):
                 services.instance = self.object
                 cliners.save()
                 services.save()
+                messages.success(self.request, f'Заказ успешно создан!')
         return super(OrderCreateView, self).form_valid(form)
 
     def get_success_url(self):

@@ -1,15 +1,18 @@
 from django import forms
+
 from django.forms import inlineformset_factory
 
 from crmapp.custom_layout_object import Formset
-from crmapp.models import Inventory, Cleanser, Client, ForemanOrderUpdate, ServiceOrder, \
-    Order, Service, StaffOrder
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Fieldset, Row, Column, Submit
 
 from django.contrib.auth import get_user_model
 from django.forms import BaseModelFormSet
+
+from crmapp.models import Inventory, Cleanser, Client, ForemanOrderUpdate, ServiceOrder, \
+    Service, ManagerReport, StaffOrder, Order
+
 
 User = get_user_model()
 
@@ -57,6 +60,8 @@ class OrderForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(OrderForm, self).__init__(*args, **kwargs)
+        self.fields["work_start"].widget = forms.DateTimeInput(attrs={"type": "datetime-local"})
+        self.fields["cleaning_time"].widget = forms.TimeInput(attrs={"placeholder": "ЧЧ:ММ:СС", "value": "00:00:00"})
         self.helper = FormHelper()
         self.helper.form_tag = True
         self.helper.layout = Layout(
@@ -101,6 +106,18 @@ class StaffOrderForm(forms.ModelForm):
         exclude = ('order',)
 
 
+class ManagerReportForm(forms.ModelForm):
+    class Meta:
+        model = ManagerReport
+        fields = ('cleaner', 'salary', 'fine', 'bonus')
+
+
+class BaseManagerReportFormSet(BaseModelFormSet):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.queryset = User.objects.none()
+
+
 class OrderStaffForm(forms.ModelForm):
     class Meta:
         model = StaffOrder
@@ -118,6 +135,7 @@ StaffOrderFormSet = inlineformset_factory(Order, StaffOrder, form=OrderStaffForm
 
 
 class BaseStaffAddFormSet(BaseModelFormSet):
-    def init(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.queryset = User.objects.none()
+

@@ -1,11 +1,13 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+
 from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
 from django.utils.translation import gettext as _
 
 from crmapp.choice import PaymentChoices, UnitChoices, OrderStatusChoices
+from crmapp.constants import ORDER_STAFF_SALARY_COEFFICIENT
 
 
 class Service(models.Model):
@@ -91,8 +93,8 @@ class Order(models.Model):  # Таблица самого заказа
 
     # Поля связанные со временем
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата и время создания заказа'))
-    work_start = models.DateTimeField(verbose_name=_('Дата и время выполнения уборки'), null=True, blank=True)
-    cleaning_time = models.TimeField(verbose_name=_('Время выполнения работ'), null=True, blank=True)
+    work_start = models.DateTimeField(verbose_name=_('Дата и время начало уборки'), null=True, blank=True)
+    cleaning_time = models.DurationField(verbose_name=_('Время выполнения работ'), null=True, blank=True)
 
     # Информация о клиенте
     client_info = models.ForeignKey('crmapp.Client', on_delete=models.PROTECT, related_name='order_client',
@@ -118,6 +120,42 @@ class Order(models.Model):  # Таблица самого заказа
                                     choices=PaymentChoices.choices,
                                     verbose_name=_('Вид оплаты'))  # вид оплаты
     total_cost = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Общая сумма заказа'))
+
+    def manager_report_base_sum(self):
+        staff_part = int(self.get_total()) / self.cleaners.count()#Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+        base_sum = 0
+        for staff in self.cleaners.all():
+            for coefficient in ORDER_STAFF_SALARY_COEFFICIENT:
+                if str(staff.experience) == coefficient[0]:
+                    base_sum += staff_part * coefficient[1]
+        return base_sum
+
+    def manager_report_numeric_coefficient(self):
+        staff_part = int(self.get_total()) / self.cleaners.count()#Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+        base_num = self.manager_report_base_sum()
+        num_coefficient = []
+        for staff in self.cleaners.all():
+            for coefficient in ORDER_STAFF_SALARY_COEFFICIENT:
+                if str(staff.experience) == coefficient[0]:
+                    num_coff = staff_part * coefficient[1] / base_num
+                    num_coefficient.append(num_coff)
+        return num_coefficient
+
+    def manager_reprot_numeric_salary(self):
+        staff_salary = []
+        num_coefficient = self.manager_report_numeric_coefficient()
+        [staff_salary.append(int(self.get_total()) * nc) for nc in num_coefficient]#Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+        return staff_salary
+
+    def manager_report_salary_staffs(self):
+        staff_salary = self.manager_reprot_numeric_salary()
+        i = 0
+        context = []
+        for staff in self.cleaners.all():
+            result = [staff, int(staff_salary[i])]
+            i += 1
+            context.append(result)
+        return context
 
     def get_total(self):
         total = 0
@@ -215,7 +253,7 @@ class ServiceOrder(models.Model):
     total = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Стоимость услуги'))
 
     def __str__(self):
-        return f"{self.service}: {self.total} сом"
+        return f"{self.service}: {self.service_total()} сом"
 
     def service_total(self):
         return self.service.price * self.amount * self.rate
@@ -264,6 +302,31 @@ class CleanserInOrder(models.Model):
         verbose_name_plural = _('Моющие средства в заказе')
 
 
+class ManagerReport(models.Model):
+    order = models.ForeignKey('crmapp.Order', related_name='order_manager', on_delete=models.PROTECT, verbose_name=_('Заказ'))
+    cleaner = models.ForeignKey(get_user_model(), related_name='manager_report', on_delete=models.PROTECT, verbose_name=_('Клинер'))
+    salary = models.IntegerField(verbose_name=_('Заработная плата'), null=False, blank=False)
+    fine = models.IntegerField(verbose_name=_('Штраф'), null=True, blank=True, default=0)
+    bonus = models.IntegerField(verbose_name=_('Бонус'), null=True, blank=True, default=0)
+    created_at = models.DateTimeField(auto_now=True, verbose_name=_('Дата создания'))
+    updated_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата изменения'))
+
+    def get_all_expences_in_order(self):
+        expences = 0
+        for report in ManagerReport.objects.filter(order=self.order):
+            expences += report.get_salary()
+        return expences
+
+    def get_salary(self):
+        total = self.salary + self.bonus - self.fine
+        return total
+
+    class Meta:
+        db_table = 'manager_report'
+        verbose_name = _('Отчет менеджера')
+        verbose_name_plural = _('Отчеты менеджера')
+
+
 class ObjectType(models.Model):
     name = models.CharField(max_length=255, verbose_name=_('Наименование'), null=False, blank=False)
 
@@ -274,3 +337,4 @@ class ObjectType(models.Model):
         db_table = 'object_types'
         verbose_name = _('Тип объекта')
         verbose_name_plural = _('Типы объекта')
+

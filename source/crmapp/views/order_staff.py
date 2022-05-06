@@ -19,7 +19,11 @@ class OrderStaffCreateView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        staff_filter = User.objects.filter(is_staff=False, is_active=True, black_list=False)
+        order = get_object_or_404(Order, pk=self.kwargs.get("pk"))
+        exclude_staff = StaffOrder.objects.filter(order=order)
+        staff_filter = User.objects.filter(is_staff=False, is_active=True, black_list=False,
+                                           schedule=order.work_start.weekday() + 1).exclude(
+            cliner_orders__in=exclude_staff)
         StaffOrderFormset = modelformset_factory(StaffOrder, form=self.form_class, formset=self.formset, extra=5)
         formset = StaffOrderFormset(prefix="staff")
         for forms in formset:

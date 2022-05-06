@@ -29,7 +29,7 @@
                     </div>
                 {% endif %}
             </div>
-            <div class="col-md-8 p-4">
+            <div class="col-md-8">
                 <p><strong>Личный
                     кабинет: </strong> {{ user_object.first_name | capfirst }} {{ user_object.last_name | capfirst }}
                 </p>
@@ -44,17 +44,18 @@
                     {% endfor %}
                 <p><strong>Квалификация: </strong>
                     {{ user_object.get_experience_display }}</p>
-                <br>
-                <br>
                 <span><strong>График работы: </strong></span>
                 {% for day in user_object.schedule.all %}
                     {{ day }}{% if not forloop.last %}, {% else %}. {% endif %}
 
                 {% endfor %}
                 <hr>
-                <a class="btn btn-success" href="#">Мой Баланс 4352 сом</a>
+                <a class="btn btn-success" href="#">Мой Баланс {{ user_object.balance }} сом</a>
+                <a class="btn btn-dark" href="{% url 'accounts:payout_create' user_object.pk %}">Выдать заработную
+                    плату</a>
                 <a class="btn btn-dark" href="#">История заказов</a>
                 <a class="btn btn-dark" href="#">История зарплаты</a>
+                <hr>
                 <a class="btn btn-dark" href="{% url 'accounts:change_password' %}">Изменить пароль</a>
             </div>
         </div>

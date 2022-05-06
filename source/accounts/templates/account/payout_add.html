@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Новая выплата{% endblock title %}
+
+{% block content %}
+
+<div class="container text-center">
+    <form method="post">
+        <h3 class="mt-4 mb-4">Выдать зарплату ? </h3>
+        {% csrf_token %}
+        <a href="{% url 'accounts:staff-list' %}" class="btn btn-dark">Нет</a>
+        <input type="submit" name="action" value="Да" class="btn btn-danger"/>
+    </form>
+</div>
+{% endblock %}
