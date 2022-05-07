@@ -6,7 +6,7 @@
 {% block content %}
     <div class="container mt-3">
         <p><strong>Заказ № {{ order.id }} Cтатус: {{ order.get_status_display }}</strong></p>
-        <p><strong>Дата и время:</strong>  {{ order.work_start }}, {{ order.work_start |date:'l'}}</p>
+        <p><strong>Дата и время:</strong> {{ order.work_start }}, {{ order.work_start |date:'l'}}</p>
         <p><strong>Адресс:</strong> {{ order.address | capfirst }}</p>
         <p><strong>Тип объекта:</strong> {{ order.object_type | capfirst }}</p>
         {% if extra_service %}
@@ -26,7 +26,6 @@
         {% endif %}
         <p><a class="btn btn-primary" href="{% url 'crmapp:service_order_create' order.id %}">+Добавить
             услугу</a></p>
-        <p><strong>Общее время работы:</strong> {{ order.cleaning_time }} ч.</p>
         <span><strong>Клинеры на объекте:</strong></span>
         {% for cleaner in staff %}
             <ul>
@@ -40,13 +39,14 @@
         {% endfor %}
         <p><a class="btn btn-primary" href="{% url 'crmapp:order_staff_add' order.id %}">+Добавить
             клинера</a></p>
+        <p><strong>Общее время работы:</strong> {{ order.cleaning_time }} ч.</p>
+        <p><strong>Заказ будет будет выполнен в:</strong> {{ order.work_end }}</p>
         <p><strong>Вид оплаты: </strong>{{ order.get_payment_type_display }}</p>
         <h5><strong>Общая стоимость: {{ order.get_total }} с </strong></h5>
         <hr>
         <p>Менеджер: {{ order.manager.first_name }} {{ order.manager.last_name }}</p>
         <small class="text-muted">Заказ создан: {{ order.created_at }}</small>
-
-       <p><a class="btn btn-dark" href="{% url 'crmapp:manager_report_create' order.id %}">Рассчитать ЗП</a></p>
+        <p><a class="btn btn-dark" href="{% url 'crmapp:manager_report_create' order.id %}">Рассчитать ЗП</a></p>
     </div>
 
 {% endblock content %}

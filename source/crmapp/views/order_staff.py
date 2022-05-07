@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.views.generic.edit import FormView
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth import get_user_model
@@ -20,10 +21,16 @@ class OrderStaffCreateView(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         order = get_object_or_404(Order, pk=self.kwargs.get("pk"))
-        exclude_staff = StaffOrder.objects.filter(order=order)
+        orders = Order.objects.filter(Q(work_start__gte=order.work_end) | Q(work_end__gte=order.work_start),
+                                      Q(work_end__gte=order.work_end))
+        staff = []
+        for obj in orders:
+            staff += obj.cleaners.all()
+        exclude_by_time = StaffOrder.objects.filter(staff__in=staff)
+        exclude_by_order = StaffOrder.objects.filter(order=order)
         staff_filter = User.objects.filter(is_staff=False, is_active=True, black_list=False,
                                            schedule=order.work_start.weekday() + 1).exclude(
-            cliner_orders__in=exclude_staff)
+            Q(cleaner_orders__in=exclude_by_time or exclude_by_order))
         StaffOrderFormset = modelformset_factory(StaffOrder, form=self.form_class, formset=self.formset, extra=5)
         formset = StaffOrderFormset(prefix="staff")
         for forms in formset:

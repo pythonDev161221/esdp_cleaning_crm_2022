@@ -37,9 +37,6 @@
                         <li class="nav-item">
                             <a href="{% url 'accounts:payout_list' %}" class="nav-link">История выплат</a>
                         </li>
-                        <li class="nav-item">
-                            <a href="{% url 'crmapp:client_index' %}" class="nav-link">Клиенты</a>
-                        </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                                data-bs-toggle="dropdown" aria-expanded="false">
@@ -56,17 +53,18 @@
                                 <li><a class="dropdown-item" href="{% url 'crmapp:cleanser_index' %}">Мыломойка</a></li>
                                 <li><a class="dropdown-item" href="{% url 'crmapp:cleanser_create' %}">Добавить
                                     мыломойку</a></li>
+                                <li><a class="dropdown-item" href="{% url 'crmapp:client_index' %}">Клиенты</a></li>
                                 <li><a class="dropdown-item" href="{% url 'crmapp:client_create' %}">Добавить
                                     клиента</a></li>
                             </ul>
                         </li>
-                        {% else %}
+                    {% else %}
                         <li class="nav-item">
                             <a class="nav-link"
                                href="{% url 'accounts:login' %}?next={{ request.get_full_path }}">Войти</a>
                         </li>
-                        {% endif %}
-                        {% if user.is_authenticated %}
+                    {% endif %}
+                    {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link"
                                href="{% url 'accounts:profile' user.id %}">Мой профиль</a>
