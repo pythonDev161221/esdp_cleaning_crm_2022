@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.db import transaction
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, FormView, CreateView
+from django.views.generic import ListView, DetailView, CreateView
 
 from crmapp.forms import OrderForm, ServiceOrderFormSet, StaffOrderFormSet
 from crmapp.models import Order
@@ -11,6 +11,7 @@ class OrderListView(ListView):
     model = Order
     template_name = 'order/order_list.html'
     context_object_name = 'orders'
+    ordering = '-created_at'
 
 
 class OrderDetailView(DetailView):
@@ -21,7 +22,7 @@ class OrderDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['extra_service'] = self.object.order_services.all()
-        context['staff'] = self.object.order_cliners.all()
+        context['staff'] = self.object.order_cleaners.all()
         return context
 
 
