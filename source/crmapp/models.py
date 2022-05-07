@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.db.models.signals import pre_save
 
 from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
@@ -77,9 +78,9 @@ class ForemanOrderUpdate(models.Model):
 
 
 class StaffOrder(models.Model):
-    order = models.ForeignKey('crmapp.Order', related_name='order_cliners', verbose_name=_('Заказ'), null=False,
+    order = models.ForeignKey('crmapp.Order', related_name='order_cleaners', verbose_name=_('Заказ'), null=False,
                               blank=False, on_delete=models.PROTECT)
-    staff = models.ForeignKey(get_user_model(), related_name='cliner_orders', verbose_name=_('Клинер'),
+    staff = models.ForeignKey(get_user_model(), related_name='cleaner_orders', verbose_name=_('Клинер'),
                               null=False, blank=False, on_delete=models.PROTECT)
     is_brigadier = models.BooleanField(verbose_name=_('Бригадир'), default=False)
 
@@ -93,9 +94,9 @@ class Order(models.Model):  # Таблица самого заказа
 
     # Поля связанные со временем
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата и время создания заказа'))
-    work_start = models.DateTimeField(verbose_name=_('Дата и время начало уборки'), null=True, blank=True)
+    work_start = models.DateTimeField(verbose_name=_('Дата и время начала уборки'), null=True, blank=True)
     cleaning_time = models.DurationField(verbose_name=_('Время выполнения работ'), null=True, blank=True)
-
+    work_end = models.DateTimeField(null=True, blank=True, verbose_name=_('Дата и время окончания уборки'))
     # Информация о клиенте
     client_info = models.ForeignKey('crmapp.Client', on_delete=models.PROTECT, related_name='order_client',
                                     verbose_name=_('Информация клиента'))
@@ -122,7 +123,8 @@ class Order(models.Model):  # Таблица самого заказа
     total_cost = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Общая сумма заказа'))
 
     def manager_report_base_sum(self):
-        staff_part = int(self.get_total()) / self.cleaners.count()#Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+        staff_part = int(
+            self.get_total()) / self.cleaners.count()  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
         base_sum = 0
         for staff in self.cleaners.all():
             for coefficient in ORDER_STAFF_SALARY_COEFFICIENT:
@@ -131,7 +133,8 @@ class Order(models.Model):  # Таблица самого заказа
         return base_sum
 
     def manager_report_numeric_coefficient(self):
-        staff_part = int(self.get_total()) / self.cleaners.count()#Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+        staff_part = int(
+            self.get_total()) / self.cleaners.count()  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
         base_num = self.manager_report_base_sum()
         num_coefficient = []
         for staff in self.cleaners.all():
@@ -144,7 +147,8 @@ class Order(models.Model):  # Таблица самого заказа
     def manager_reprot_numeric_salary(self):
         staff_salary = []
         num_coefficient = self.manager_report_numeric_coefficient()
-        [staff_salary.append(int(self.get_total()) * nc) for nc in num_coefficient]#Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+        [staff_salary.append(int(self.get_total()) * nc) for nc in
+         num_coefficient]  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
         return staff_salary
 
     def manager_report_salary_staffs(self):
@@ -163,6 +167,10 @@ class Order(models.Model):  # Таблица самого заказа
         for service in services:
             total += service.service_total()
         return total
+
+    def save(self, *args, **kwargs):
+        self.work_end = self.work_start + self.cleaning_time
+        super(Order, self).save(*args, **kwargs)
 
 
 class FineCategory(models.Model):
@@ -303,8 +311,10 @@ class CleanserInOrder(models.Model):
 
 
 class ManagerReport(models.Model):
-    order = models.ForeignKey('crmapp.Order', related_name='order_manager', on_delete=models.PROTECT, verbose_name=_('Заказ'))
-    cleaner = models.ForeignKey(get_user_model(), related_name='manager_report', on_delete=models.PROTECT, verbose_name=_('Клинер'))
+    order = models.ForeignKey('crmapp.Order', related_name='order_manager', on_delete=models.PROTECT,
+                              verbose_name=_('Заказ'))
+    cleaner = models.ForeignKey(get_user_model(), related_name='manager_report', on_delete=models.PROTECT,
+                                verbose_name=_('Клинер'))
     salary = models.IntegerField(verbose_name=_('Заработная плата'), null=False, blank=False)
     fine = models.IntegerField(verbose_name=_('Штраф'), null=True, blank=True, default=0)
     bonus = models.IntegerField(verbose_name=_('Бонус'), null=True, blank=True, default=0)
@@ -337,4 +347,3 @@ class ObjectType(models.Model):
         db_table = 'object_types'
         verbose_name = _('Тип объекта')
         verbose_name_plural = _('Типы объекта')
-
