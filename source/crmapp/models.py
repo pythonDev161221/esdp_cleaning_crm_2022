@@ -122,6 +122,9 @@ class Order(models.Model):  # Таблица самого заказа
                                     verbose_name=_('Вид оплаты'))  # вид оплаты
     total_cost = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Общая сумма заказа'))
 
+    inventories = models.ManyToManyField("crmapp.Inventory", related_name='order_inventories', verbose_name=_('Инвентарь'),
+                                      through='crmapp.InventoryOrder')
+
     def manager_report_base_sum(self):
         staff_part = int(
             self.get_total()) / self.cleaners.count()  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
@@ -219,7 +222,6 @@ class Inventory(models.Model):
     name = models.CharField(max_length=255, verbose_name=_('Инвентарь'), null=False, blank=False)
     description = models.TextField(max_length=1000, verbose_name=_('Описание'), null=True, blank=True)
 
-    @property
     def get_absolute_url(self):
         return reverse('crmapp:inventory_index')
 
@@ -230,23 +232,6 @@ class Inventory(models.Model):
         db_table = "inventory"
         verbose_name = _("Инвентарь")
         verbose_name_plural = _("Инвентари")
-
-
-class Cleanser(models.Model):
-    name = models.CharField(max_length=255, verbose_name=_('Моющее средство'), null=False, blank=False)
-    description = models.TextField(max_length=1000, verbose_name=_('Описание товара'), null=True, blank=True)
-
-    @property
-    def get_absolute_url(self):
-        return reverse('crmapp:cleanser_index')
-
-    def __str__(self):
-        return f"{self.name}"
-
-    class Meta:
-        db_table = "cleanser"
-        verbose_name = _("Моющее средство")
-        verbose_name_plural = _("Моющие средства")
 
 
 class ServiceOrder(models.Model):
@@ -278,12 +263,15 @@ class ServiceOrder(models.Model):
         verbose_name_plural = _("Услуги заказа")
 
 
-class InventoryInOrder(models.Model):
+class InventoryOrder(models.Model):
     order = models.ForeignKey('crmapp.Order', related_name='order_inventories', verbose_name=_('Заказ'),
                               null=True, blank=True, on_delete=models.PROTECT)
     inventory = models.ForeignKey('crmapp.Inventory', related_name='inventories_order',
                                   verbose_name=_('Инвентарь'), null=True, blank=True, on_delete=models.PROTECT)
     amount = models.PositiveIntegerField(verbose_name=_('Количество'), null=True, blank=True)
+
+    def get_absolute_url(self):
+        return reverse('crmapp:inventory_index', pk=self.order.pk)
 
     def __str__(self):
         return f'{self.inventory}:{self.amount}'
@@ -292,22 +280,6 @@ class InventoryInOrder(models.Model):
         db_table = 'inventory_in_order'
         verbose_name = _('Инвентарь заказа')
         verbose_name_plural = _('Инвентари заказа')
-
-
-class CleanserInOrder(models.Model):
-    order = models.ForeignKey('crmapp.Order', related_name='order_cleanser', verbose_name=_('Заказ'),
-                              null=True, blank=True, on_delete=models.PROTECT)
-    cleanser = models.ForeignKey('crmapp.Cleanser', related_name='cleansers_order',
-                                 verbose_name=_('Моющее средство'), null=True, blank=True, on_delete=models.PROTECT)
-    amount = models.PositiveIntegerField(verbose_name=_('Количество'), null=True, blank=True)
-
-    def __str__(self):
-        return f'{self.cleanser}:{self.amount}'
-
-    class Meta:
-        db_table = 'cleanser_in_order'
-        verbose_name = _('Моющее средство в заказе')
-        verbose_name_plural = _('Моющие средства в заказе')
 
 
 class ManagerReport(models.Model):
