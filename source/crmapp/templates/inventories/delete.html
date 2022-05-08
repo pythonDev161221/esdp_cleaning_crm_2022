@@ -9,13 +9,6 @@
                 <input class="btn btn-danger" type="submit" value="Да">
                 <a class="btn btn-dark" href="{% url "crmapp:inventory_index" %}">Нет</a>
             </form>
-        {% else %}
-            <form method="POST">
-                {% csrf_token %}
-                <h2>Вы действительно хотите удалить мыломойку {{ cleansear.name }}?</h2>
-                <input class="btn btn-danger" type="submit" value="Да">
-                <a class="btn btn-dark" href="{% url "crmapp:cleanser_index" %}">Нет</a>
-            </form>
         {% endif %}
     </div>
 {% endblock %}

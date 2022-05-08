@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from crmapp.models import Service, Client, Inventory, Cleanser, Fine, Bonus, \
+from crmapp.models import Service, Client, Inventory, Fine, Bonus, \
     FineCategory, Order, ForemanReport, ForemanOrderUpdate, ServiceOrder, StaffOrder, \
-    InventoryInOrder, CleanserInOrder, ManagerReport, ObjectType
+    InventoryOrder, ManagerReport, ObjectType
 
 
 class StaffOrderInline(admin.StackedInline):
@@ -30,12 +30,10 @@ admin.site.register(FineCategory)
 admin.site.register(Bonus)
 admin.site.register(Inventory)
 admin.site.register(Order, OrderAdmin)
-admin.site.register(Cleanser)
 admin.site.register(ForemanReport)
 admin.site.register(ForemanOrderUpdate)
 admin.site.register(ServiceOrder, )
-admin.site.register(InventoryInOrder)
-admin.site.register(CleanserInOrder)
+admin.site.register(InventoryOrder)
 admin.site.register(ManagerReport)
 admin.site.register(ObjectType)
 

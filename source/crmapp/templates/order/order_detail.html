@@ -39,6 +39,19 @@
         {% endfor %}
         <p><a class="btn btn-primary" href="{% url 'crmapp:order_staff_add' order.id %}">+Добавить
             клинера</a></p>
+        <span><strong>Инвентарь:</strong></span>
+        {% for inventory in order.order_inventories.all %}
+            <ul>
+                <li>
+                    <p>{{ inventory.inventory.name }}: {{ inventory.amount }}
+                    <a class="text-danger" href="{% url 'crmapp:inventory_order_remove' inventory.pk %}"><i
+                                    class="fa-solid fa-xmark"></i></a>
+                    </p>
+
+                </li>
+            </ul>
+        {% endfor %}
+        <p><a class="btn btn-primary" href="{% url 'crmapp:inventory_order_add' order.id %}">+Добавить/Изменить инвентарь</a></p>
         <p><strong>Общее время работы:</strong> {{ order.cleaning_time }} ч.</p>
         <p><strong>Заказ будет будет выполнен в:</strong> {{ order.work_end }}</p>
         <p><strong>Вид оплаты: </strong>{{ order.get_payment_type_display }}</p>
