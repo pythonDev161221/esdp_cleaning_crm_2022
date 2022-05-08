@@ -1,7 +1,8 @@
 from django.urls import path, include
 
 from crmapp.views.client_views import ClientCreateView, ClientListView, ClientUpdateView
-from crmapp.views.foreman import ForemanOrderUpdateCreateView, InPlaceView, WorkStartView, WorkEndView
+from crmapp.views.foreman import ForemanOrderUpdateCreateView, InPlaceView, WorkStartView, WorkEndView, PhotoBeforeView, \
+    PhotoDetailView
 from crmapp.views.manager_report import ManagerReportCreateView, ManagerReportListView
 
 from crmapp.views.service_views import ServiceListView, ServiceCreateView, ServiceUpdateView, ServiceDeleteView
@@ -55,10 +56,12 @@ consumables_urlpatterns = [
 ]
 
 cleaners_urlpatterns = [
-    path('order/update/', ForemanOrderUpdateCreateView.as_view(), name='foremanorder_create'),
-    path('place/', InPlaceView.as_view(), name='cleaner_in_place'),
-    path('work/start/', WorkStartView.as_view(), name='cleaner_work_start'),
-    path('work/end/', WorkEndView.as_view(), name='cleaner_work_end'),
+    path('order/<int:pk>/update/', ForemanOrderUpdateCreateView.as_view(), name='foremanorder_create'),
+    path('order/<int:pk>/place/', InPlaceView.as_view(), name='cleaner_in_place'),
+    path('order/<int:pk>/work/start/', WorkStartView.as_view(), name='cleaner_work_start'),
+    path('order/<int:pk>/work/end/', WorkEndView.as_view(), name='cleaner_work_end'),
+    path('order/<int:pk>/photo/before/', PhotoBeforeView.as_view(), name='foreman_photo_before'),
+    path('<int:pk>/photos/', PhotoDetailView.as_view(), name='foreman_photo')
     ]
 
 manager_report_urlpatterns = [
@@ -70,7 +73,7 @@ urlpatterns = [
     path('client/', include(client_urlpatterns)),
     path('service/', include(service_urlpatterns)),
     path('consumables/', include(consumables_urlpatterns)),
-    path('cleaners/<int:pk>/', include(cleaners_urlpatterns)),
+    path('cleaners/', include(cleaners_urlpatterns)),
     path('', include(manager_report_urlpatterns)),
     path('order/', include(order_urlpatterns))
 ]

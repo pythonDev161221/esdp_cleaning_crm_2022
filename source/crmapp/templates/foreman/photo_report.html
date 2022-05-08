@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %} {% endblock title %}
+
+{% block content %}
+    {% if photos_before %}
+        <h2 class="text-center">Фото до уборки</h2>
+        <div class="row gx-3">
+            {% for photo in photos_before %}
+                <div class="col-6 mt-3">
+                    <div class="card bg-dark text-white">
+                        <img src="{{ photo.image.url }}" class="card-img" alt="Фото до уборки">
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if photos_after %}
+        <h2 class="text-center">Фото после уборки</h2>
+        <div class="row gx-3">
+            {% for photo in photos_after %}
+                <div class="col-6 mt-3">
+                    <div class="card bg-dark text-white">
+                        <img src="{{ photo.image.url }}" class="card-img" alt="Фото после уборки">
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock content %}

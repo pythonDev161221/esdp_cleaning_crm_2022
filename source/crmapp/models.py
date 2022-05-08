@@ -62,12 +62,15 @@ class ForemanReport(models.Model):
 
 
 class ForemanPhoto(models.Model):
-    photo_before = models.ForeignKey('crmapp.ForemanReport', null=True, blank=True, on_delete=models.CASCADE,
-                                     related_name='image_before', verbose_name='Фото до начала работ')
-    photo_after = models.ForeignKey('crmapp.ForemanReport', null=True, blank=True, on_delete=models.CASCADE,
-                                     related_name='image_after', verbose_name='Фото после окончания работ')
-    image = models.ImageField(upload_to='photo_before/', verbose_name=_('Фото'))
+    foreman_report = models.ForeignKey('crmapp.ForemanReport', null=False, blank=False, on_delete=models.CASCADE,
+                                     related_name='foreman_photo', verbose_name='Фото до начала работ')
+    is_after = models.BooleanField(default=False,  verbose_name='Фото после окончания работ')
+    image = models.ImageField(upload_to='photo_foreman/', verbose_name=_('Фото'))
 
+    class Meta:
+        db_table = 'foreman_photo'
+        verbose_name = _('Фотография от бригадира')
+        verbose_name_plural = _('Фотографии от бригадира')
 
 class ForemanOrderUpdate(models.Model):
     # Таблица для редактирования услуг и доп услуг в заказе для бригадира, имеет связь FK с таблицей Order
