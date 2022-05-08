@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container text-center">
+            <form method="POST">
+                {% csrf_token %}
+                <h2>Вы действительно хотите удалить инвентарь {{ inventory_order.inventory }}?</h2>
+                <input class="btn btn-danger" type="submit" value="Да">
+                <a class="btn btn-dark" href="{% url "crmapp:inventory_index" %}">Нет</a>
+            </form>
+    </div>
+{% endblock %}

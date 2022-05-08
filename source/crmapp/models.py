@@ -1,12 +1,14 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.db.models.signals import pre_save
 
 from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
 from django.utils.translation import gettext as _
 
 from crmapp.choice import PaymentChoices, UnitChoices, OrderStatusChoices
+from crmapp.constants import ORDER_STAFF_SALARY_COEFFICIENT
 
 
 class Service(models.Model):
@@ -60,6 +62,12 @@ class ForemanReport(models.Model):
         verbose_name = _('Отчёт бригадира')
         verbose_name_plural = _('Отчёты бригадира')
 
+class ForemanExpenses(models.Model):
+    amount = models.PositiveIntegerField(null=False, blank=False, verbose_name=_('Расход'))
+    name = models.CharField(max_length=100, null=False, blank=False, verbose_name=_('Название расхода'))
+    description = models.TextField(max_length=1000, null=True, blank=True, verbose_name=_('Описание расхода'))
+    foreman_report = models.ForeignKey('crmapp.ForemanReport', on_delete=models.CASCADE, null=False, blank=False,
+                                       related_name='foreman_expense', verbose_name=_('Отчёт бригадира'))
 
 class ForemanPhoto(models.Model):
     foreman_report = models.ForeignKey('crmapp.ForemanReport', null=False, blank=False, on_delete=models.CASCADE,
@@ -86,9 +94,9 @@ class ForemanOrderUpdate(models.Model):
         verbose_name_plural = _('Корректировки бригадиров')
 
 class StaffOrder(models.Model):
-    order = models.ForeignKey('crmapp.Order', related_name='order_cliners', verbose_name=_('Заказ'), null=False,
+    order = models.ForeignKey('crmapp.Order', related_name='order_cleaners', verbose_name=_('Заказ'), null=False,
                               blank=False, on_delete=models.PROTECT)
-    staff = models.ForeignKey(get_user_model(), related_name='cliner_orders', verbose_name=_('Клинер'),
+    staff = models.ForeignKey(get_user_model(), related_name='cleaner_orders', verbose_name=_('Клинер'),
                               null=False, blank=False, on_delete=models.PROTECT)
     is_brigadier = models.BooleanField(verbose_name=_('Бригадир'), default=False)
     is_accept = models.BooleanField(null=True, blank=True, default=False, verbose_name=_('Принял заказ'))
@@ -105,9 +113,9 @@ class Order(models.Model):  # Таблица самого заказа
 
     # Поля связанные со временем
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата и время создания заказа'))
-    work_start = models.DateTimeField(verbose_name=_('Дата и время выполнения уборки'), null=True, blank=True)
-    cleaning_time = models.TimeField(verbose_name=_('Время выполнения работ'), null=True, blank=True)
-
+    work_start = models.DateTimeField(verbose_name=_('Дата и время начала уборки'), null=True, blank=True)
+    cleaning_time = models.DurationField(verbose_name=_('Время выполнения работ'), null=True, blank=True)
+    work_end = models.DateTimeField(null=True, blank=True, verbose_name=_('Дата и время окончания уборки'))
     # Информация о клиенте
     client_info = models.ForeignKey('crmapp.Client', on_delete=models.PROTECT, related_name='order_client',
                                     verbose_name=_('Информация клиента'))
@@ -133,12 +141,61 @@ class Order(models.Model):  # Таблица самого заказа
                                     verbose_name=_('Вид оплаты'))  # вид оплаты
     total_cost = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Общая сумма заказа'))
 
+    inventories = models.ManyToManyField("crmapp.Inventory", related_name='order_inventories', verbose_name=_('Инвентарь'),
+                                      through='crmapp.InventoryOrder')
+
+    def manager_report_base_sum(self):
+        staff_part = int(
+            self.get_total()) / self.cleaners.count()  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+        base_sum = 0
+        for staff in self.cleaners.all():
+            for coefficient in ORDER_STAFF_SALARY_COEFFICIENT:
+                if str(staff.experience) == coefficient[0]:
+                    base_sum += staff_part * coefficient[1]
+        return base_sum
+
+    def manager_report_numeric_coefficient(self):
+        staff_part = int(
+            self.get_total()) / self.cleaners.count()  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+        base_num = self.manager_report_base_sum()
+        num_coefficient = []
+        for staff in self.cleaners.all():
+            for coefficient in ORDER_STAFF_SALARY_COEFFICIENT:
+                if str(staff.experience) == coefficient[0]:
+                    num_coff = staff_part * coefficient[1] / base_num
+                    num_coefficient.append(num_coff)
+        return num_coefficient
+
+    def manager_reprot_numeric_salary(self):
+        staff_salary = []
+        num_coefficient = self.manager_report_numeric_coefficient()
+        [staff_salary.append(int(self.get_total()) * nc) for nc in
+         num_coefficient]  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+        return staff_salary
+
+    def manager_report_salary_staffs(self):
+        staff_salary = self.manager_reprot_numeric_salary()
+        i = 0
+        context = []
+        for staff in self.cleaners.all():
+            result = [staff, int(staff_salary[i])]
+            i += 1
+            context.append(result)
+        return context
+
     def get_total(self):
         total = 0
         services = ServiceOrder.objects.filter(order=self)
         for service in services:
             total += service.service_total()
-        return total
+        if total > 2000:
+            return total
+        else:
+            return 2000
+
+    def save(self, *args, **kwargs):
+        self.work_end = self.work_start + self.cleaning_time
+        super(Order, self).save(*args, **kwargs)
 
 
 class FineCategory(models.Model):
@@ -187,7 +244,6 @@ class Inventory(models.Model):
     name = models.CharField(max_length=255, verbose_name=_('Инвентарь'), null=False, blank=False)
     description = models.TextField(max_length=1000, verbose_name=_('Описание'), null=True, blank=True)
 
-    @property
     def get_absolute_url(self):
         return reverse('crmapp:inventory_index')
 
@@ -198,23 +254,6 @@ class Inventory(models.Model):
         db_table = "inventory"
         verbose_name = _("Инвентарь")
         verbose_name_plural = _("Инвентари")
-
-
-class Cleanser(models.Model):
-    name = models.CharField(max_length=255, verbose_name=_('Моющее средство'), null=False, blank=False)
-    description = models.TextField(max_length=1000, verbose_name=_('Описание товара'), null=True, blank=True)
-
-    @property
-    def get_absolute_url(self):
-        return reverse('crmapp:cleanser_index')
-
-    def __str__(self):
-        return f"{self.name}"
-
-    class Meta:
-        db_table = "cleanser"
-        verbose_name = _("Моющее средство")
-        verbose_name_plural = _("Моющие средства")
 
 
 class ServiceOrder(models.Model):
@@ -246,12 +285,15 @@ class ServiceOrder(models.Model):
         verbose_name_plural = _("Услуги заказа")
 
 
-class InventoryInOrder(models.Model):
+class InventoryOrder(models.Model):
     order = models.ForeignKey('crmapp.Order', related_name='order_inventories', verbose_name=_('Заказ'),
                               null=True, blank=True, on_delete=models.PROTECT)
     inventory = models.ForeignKey('crmapp.Inventory', related_name='inventories_order',
                                   verbose_name=_('Инвентарь'), null=True, blank=True, on_delete=models.PROTECT)
     amount = models.PositiveIntegerField(verbose_name=_('Количество'), null=True, blank=True)
+
+    def get_absolute_url(self):
+        return reverse('crmapp:inventory_index', pk=self.order.pk)
 
     def __str__(self):
         return f'{self.inventory}:{self.amount}'
@@ -262,30 +304,22 @@ class InventoryInOrder(models.Model):
         verbose_name_plural = _('Инвентари заказа')
 
 
-class CleanserInOrder(models.Model):
-    order = models.ForeignKey('crmapp.Order', related_name='order_cleanser', verbose_name=_('Заказ'),
-                              null=True, blank=True, on_delete=models.PROTECT)
-    cleanser = models.ForeignKey('crmapp.Cleanser', related_name='cleansers_order',
-                                 verbose_name=_('Моющее средство'), null=True, blank=True, on_delete=models.PROTECT)
-    amount = models.PositiveIntegerField(verbose_name=_('Количество'), null=True, blank=True)
-
-    def __str__(self):
-        return f'{self.cleanser}:{self.amount}'
-
-    class Meta:
-        db_table = 'cleanser_in_order'
-        verbose_name = _('Моющее средство в заказе')
-        verbose_name_plural = _('Моющие средства в заказе')
-
-
 class ManagerReport(models.Model):
-    order = models.ForeignKey('crmapp.Order', related_name='order_manager', on_delete=models.PROTECT, verbose_name=_('Заказ'))
-    cleaner = models.ForeignKey(get_user_model(), related_name='manager_report', on_delete=models.PROTECT, verbose_name=_('Клинер'))
+    order = models.ForeignKey('crmapp.Order', related_name='order_manager', on_delete=models.PROTECT,
+                              verbose_name=_('Заказ'))
+    cleaner = models.ForeignKey(get_user_model(), related_name='manager_report', on_delete=models.PROTECT,
+                                verbose_name=_('Клинер'))
     salary = models.IntegerField(verbose_name=_('Заработная плата'), null=False, blank=False)
     fine = models.IntegerField(verbose_name=_('Штраф'), null=True, blank=True, default=0)
     bonus = models.IntegerField(verbose_name=_('Бонус'), null=True, blank=True, default=0)
     created_at = models.DateTimeField(auto_now=True, verbose_name=_('Дата создания'))
     updated_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата изменения'))
+
+    def get_all_expences_in_order(self):
+        expences = 0
+        for report in ManagerReport.objects.filter(order=self.order):
+            expences += report.get_salary()
+        return expences
 
     def get_salary(self):
         total = self.salary + self.bonus - self.fine
@@ -307,4 +341,3 @@ class ObjectType(models.Model):
         db_table = 'object_types'
         verbose_name = _('Тип объекта')
         verbose_name_plural = _('Типы объекта')
-

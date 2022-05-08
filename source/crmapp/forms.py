@@ -1,6 +1,6 @@
 from django import forms
 
-from django.forms import inlineformset_factory
+from django.forms import inlineformset_factory, modelformset_factory
 
 from crmapp.custom_layout_object import Formset
 
@@ -10,9 +10,8 @@ from crispy_forms.layout import Layout, Field, Fieldset, Row, Column, Submit
 from django.contrib.auth import get_user_model
 from django.forms import BaseModelFormSet
 
-from crmapp.models import Inventory, Cleanser, Client, ForemanOrderUpdate, ServiceOrder, \
-    Service, ManagerReport, StaffOrder, Order
-
+from crmapp.models import Inventory, Client, ForemanOrderUpdate, ServiceOrder, \
+    Service, ManagerReport, StaffOrder, Order, InventoryOrder
 
 User = get_user_model()
 
@@ -35,12 +34,6 @@ class InventoryForm(forms.ModelForm):
         fields = ('name', 'description')
 
 
-class CleanserForm(forms.ModelForm):
-    class Meta:
-        model = Cleanser
-        fields = ('name', 'description')
-
-
 class ForemanOrderUpdateForm(forms.ModelForm):
     class Meta:
         model = ForemanOrderUpdate
@@ -51,10 +44,12 @@ class ForemanOrderUpdateForm(forms.ModelForm):
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
-        exclude = ('services', 'cleaners',)
+        exclude = ('services', 'cleaners', "inventories")
 
     def __init__(self, *args, **kwargs):
         super(OrderForm, self).__init__(*args, **kwargs)
+        self.fields["work_start"].widget = forms.DateTimeInput(attrs={"type": "datetime-local"})
+        self.fields["cleaning_time"].widget = forms.TimeInput(attrs={"placeholder": "ЧЧ:ММ:СС", "value": "00:00:00"})
         self.helper = FormHelper()
         self.helper.form_tag = True
         self.helper.layout = Layout(
@@ -144,3 +139,12 @@ class BaseStaffAddFormSet(BaseModelFormSet):
         super().__init__(*args, **kwargs)
         self.queryset = User.objects.none()
 
+
+class InventoryOrderForm(forms.ModelForm):
+    class Meta:
+        model = InventoryOrder
+        exclude = ('order',)
+
+
+InventoryOrderFormSet = modelformset_factory(InventoryOrder, form=InventoryOrderForm,
+                                              exclude=['order'], extra=3, can_delete=False)

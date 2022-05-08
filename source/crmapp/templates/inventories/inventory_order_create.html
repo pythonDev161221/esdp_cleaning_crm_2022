@@ -2,18 +2,13 @@
 
 {% block content %}
     <div class="container">
-        <h1>Отчет менеджера</h1>
+        <h1>Инвентарь</h1>
         <form method="POST" class="mb-5">
             {{ formset.management_form }}
             {% csrf_token %}
             {% for hidden in formset.hidden_fields %}
                 {{ hidden }}
             {% endfor %}
-
-            {% if salary_errors %}
-                <p style="color: red; font-size: large">{{ salary_errors }}</p>
-            {% endif %}
-
             {% for forms in formset %}
                 <div style="display: flex; flex-direction: column">
 
@@ -37,4 +32,3 @@
         </form>
     </div>
 {% endblock %}
-

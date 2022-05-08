@@ -34,7 +34,7 @@
         {% endfor %}
 
         <p><strong>Заказ № {{ order.id }} Cтатус: {{ order.get_status_display }}</strong></p>
-        <p><strong>Дата и время:</strong> {{ order.work_start }}</p>
+        <p><strong>Дата и время:</strong> {{ order.work_start }}, {{ order.work_start |date:'l'}}</p>
         <p><strong>Адресс:</strong> {{ order.address | capfirst }}</p>
         <p><strong>Тип объекта:</strong> {{ order.object_type | capfirst }}</p>
         {% if extra_service %}
@@ -54,7 +54,6 @@
         {% endif %}
         <p><a class="btn btn-primary" href="{% url 'crmapp:service_order_create' order.id %}">+Добавить
             услугу</a></p>
-
         {% if foreman_update %}
             <p><strong>Обновлённые услуги заказа:</strong></p>
                 <ol>
@@ -78,6 +77,21 @@
         {% endfor %}
         <p><a class="btn btn-primary" href="{% url 'crmapp:order_staff_add' order.id %}">+Добавить
             клинера</a></p>
+        <span><strong>Инвентарь:</strong></span>
+        {% for inventory in order.order_inventories.all %}
+            <ul>
+                <li>
+                    <p>{{ inventory.inventory.name }}: {{ inventory.amount }}
+                    <a class="text-danger" href="{% url 'crmapp:inventory_order_remove' inventory.pk %}"><i
+                                    class="fa-solid fa-xmark"></i></a>
+                    </p>
+
+                </li>
+            </ul>
+        {% endfor %}
+        <p><a class="btn btn-primary" href="{% url 'crmapp:inventory_order_add' order.id %}">+Добавить/Изменить инвентарь</a></p>
+        <p><strong>Общее время работы:</strong> {{ order.cleaning_time }} ч.</p>
+        <p><strong>Заказ будет будет выполнен в:</strong> {{ order.work_end }}</p>
         <p><strong>Вид оплаты: </strong>{{ order.get_payment_type_display }}</p>
         <h5><strong>Общая стоимость: {{ order.get_total }} с </strong></h5>
         <hr>

@@ -7,8 +7,8 @@ from crmapp.views.manager_report import ManagerReportCreateView, ManagerReportLi
 
 from crmapp.views.service_views import ServiceListView, ServiceCreateView, ServiceUpdateView, ServiceDeleteView
 
-from crmapp.views.consumables import InventoryListView, InventoryCreateView, InventoryUpdateView, InventoryDeleteView, \
-    CleanserListView, CleanserCreateView, CleanserUpdateView, CleanserDeleteView
+from crmapp.views.inventories import InventoryListView, InventoryCreateView, InventoryUpdateView, InventoryDeleteView,\
+    InventoryOrderCreateView, InventoryOrderRemoveView
 
 from crmapp.views.service_order_views import ServiceOrderCreateView, \
     ServiceOrderUpdateView, ServiceOrderDeleteView
@@ -34,6 +34,8 @@ order_urlpatterns = [
     path('delete/<int:pk>/', ServiceOrderDeleteView.as_view(), name="service_order_delete"),
     path('<int:pk>/staff/add/', OrderStaffCreateView.as_view(), name='order_staff_add'),
     path('staff/delete/<int:pk>', OrderStaffDeleteView.as_view(), name='order_staff_delete'),
+    path("<int:pk>/inventory/add/", InventoryOrderCreateView.as_view(), name="inventory_order_add"),
+    path("inventory/<int:pk>/remove/", InventoryOrderRemoveView.as_view(), name="inventory_order_remove")
 ]
 
 service_urlpatterns = [
@@ -47,12 +49,7 @@ consumables_urlpatterns = [
     path('inventory/all/', InventoryListView.as_view(), name='inventory_index'),
     path('inventory/create/', InventoryCreateView.as_view(), name='inventory_create'),
     path('inventory/up/<int:pk>/', InventoryUpdateView.as_view(), name='inventory_update'),
-    path('inventory/delete/<int:pk>/', InventoryDeleteView.as_view(), name='inventory_delete'),
-
-    path('cleanser/all/', CleanserListView.as_view(), name='cleanser_index'),
-    path('cleanser/create/', CleanserCreateView.as_view(), name='cleanser_create'),
-    path('cleanser/up/<int:pk>/', CleanserUpdateView.as_view(), name='cleanser_update'),
-    path('cleanser/delete/<int:pk>/', CleanserDeleteView.as_view(), name='cleanser_delete')
+    path('inventory/delete/<int:pk>/', InventoryDeleteView.as_view(), name='inventory_delete')
 ]
 
 cleaners_urlpatterns = [
@@ -72,8 +69,8 @@ manager_report_urlpatterns = [
 urlpatterns = [
     path('client/', include(client_urlpatterns)),
     path('service/', include(service_urlpatterns)),
-    path('consumables/', include(consumables_urlpatterns)),
     path('cleaners/', include(cleaners_urlpatterns)),
+    path('inventories/', include(consumables_urlpatterns)),
     path('', include(manager_report_urlpatterns)),
     path('order/', include(order_urlpatterns))
 ]
