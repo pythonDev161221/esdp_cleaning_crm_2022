@@ -169,7 +169,10 @@ class Order(models.Model):  # Таблица самого заказа
         services = ServiceOrder.objects.filter(order=self)
         for service in services:
             total += service.service_total()
-        return total
+        if total > 2000:
+            return total
+        else:
+            return 2000
 
     def save(self, *args, **kwargs):
         self.work_end = self.work_start + self.cleaning_time
