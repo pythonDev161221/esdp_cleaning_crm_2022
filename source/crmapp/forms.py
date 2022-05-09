@@ -11,7 +11,7 @@ from django.contrib.auth import get_user_model
 from django.forms import BaseModelFormSet
 
 from crmapp.models import Inventory, Client, ForemanOrderUpdate, ServiceOrder, \
-    Service, ManagerReport, StaffOrder, Order, InventoryOrder
+    Service, ManagerReport, StaffOrder, Order, InventoryOrder, ForemanExpenses
 
 User = get_user_model()
 
@@ -34,11 +34,10 @@ class InventoryForm(forms.ModelForm):
         fields = ('name', 'description')
 
 
-class ForemanOrderUpdateForm(forms.ModelForm):
+class ForemanExpenseForm(forms.ModelForm):
     class Meta:
-        model = ForemanOrderUpdate
-        fields = ('description',)
-
+        model = ForemanExpenses
+        exclude = ('foreman_report', )
 
 
 class OrderForm(forms.ModelForm):

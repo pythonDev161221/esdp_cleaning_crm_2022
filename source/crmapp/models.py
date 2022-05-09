@@ -63,7 +63,7 @@ class ForemanReport(models.Model):
         verbose_name_plural = _('Отчёты бригадира')
 
 class ForemanExpenses(models.Model):
-    amount = models.PositiveIntegerField(null=False, blank=False, verbose_name=_('Расход'))
+    amount = models.PositiveIntegerField(null=False, blank=False, verbose_name=_('Сумма расхода'))
     name = models.CharField(max_length=100, null=False, blank=False, verbose_name=_('Название расхода'))
     description = models.TextField(max_length=1000, null=True, blank=True, verbose_name=_('Описание расхода'))
     foreman_report = models.ForeignKey('crmapp.ForemanReport', on_delete=models.CASCADE, null=False, blank=False,
@@ -87,7 +87,6 @@ class ForemanOrderUpdate(models.Model):
                               related_name='foreman_order_update', verbose_name=_('Заказ'))
     services = models.ManyToManyField('crmapp.ServiceOrder', related_name='foreman_order_update',
                                       verbose_name=_('Услуга'))
-    description = models.TextField(max_length=500, blank=True, null=True, verbose_name=_('Причина внесения изменений'))
 
     class Meta:
         db_table = 'foreman_order_update'

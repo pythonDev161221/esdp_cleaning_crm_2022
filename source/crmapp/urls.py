@@ -2,7 +2,7 @@ from django.urls import path, include
 
 from crmapp.views.client_views import ClientCreateView, ClientListView, ClientUpdateView
 from crmapp.views.foreman import ForemanOrderUpdateCreateView, InPlaceView, WorkStartView, WorkEndView, PhotoBeforeView, \
-    PhotoDetailView
+    PhotoDetailView, ServiceForemanOrderCreateView, ForemanExpenseView
 from crmapp.views.manager_report import ManagerReportCreateView, ManagerReportListView
 
 from crmapp.views.service_views import ServiceListView, ServiceCreateView, ServiceUpdateView, ServiceDeleteView
@@ -58,7 +58,9 @@ cleaners_urlpatterns = [
     path('order/<int:pk>/work/start/', WorkStartView.as_view(), name='cleaner_work_start'),
     path('order/<int:pk>/work/end/', WorkEndView.as_view(), name='cleaner_work_end'),
     path('order/<int:pk>/photo/before/', PhotoBeforeView.as_view(), name='foreman_photo_before'),
-    path('<int:pk>/photos/', PhotoDetailView.as_view(), name='foreman_photo')
+    path('<int:pk>/photos/', PhotoDetailView.as_view(), name='foreman_photo'),
+    path('order/<int:pk>/add/service/', ServiceForemanOrderCreateView.as_view(), name='foreman_create_service'),
+    path('order/<int:pk>/add/expense/', ForemanExpenseView.as_view(), name='foreman_create_expense')
     ]
 
 manager_report_urlpatterns = [
