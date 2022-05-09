@@ -69,6 +69,7 @@ class ForemanExpenses(models.Model):
     foreman_report = models.ForeignKey('crmapp.ForemanReport', on_delete=models.CASCADE, null=False, blank=False,
                                        related_name='foreman_expense', verbose_name=_('Отчёт бригадира'))
 
+
 class ForemanPhoto(models.Model):
     foreman_report = models.ForeignKey('crmapp.ForemanReport', null=False, blank=False, on_delete=models.CASCADE,
                                      related_name='foreman_photo', verbose_name='Фото до начала работ')

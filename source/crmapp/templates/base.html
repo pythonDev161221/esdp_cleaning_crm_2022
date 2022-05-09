@@ -24,39 +24,6 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a href="{% url 'crmapp:order_create' %}" class="nav-link">Создать заказ</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'crmapp:order_index' %}" class="nav-link">Заказы</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'accounts:staff-list' %}" class="nav-link">Cотрудники</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'accounts:payout_list' %}" class="nav-link">История выплат</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'crmapp:client_index' %}" class="nav-link">Клиенты</a>
-                    </li>
-                     <li class="nav-item">
-                        <a href="{% url 'accounts:payout_list' %}" class="nav-link">{{ user }}</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                           data-bs-toggle="dropdown" aria-expanded="false">
-                            Прочее
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <li><a class="dropdown-item" href="{% url 'crmapp:service_list' %}">Услуги</a></li>
-                            <li><a class="dropdown-item" href="{% url 'crmapp:service_create' %}">Добавить услугу</a></li>
-                             <li><a class="dropdown-item" href="{% url 'crmapp:inventory_index' %}">Инвентарь</a></li>
-                            <li><a class="dropdown-item" href="{% url 'crmapp:inventory_create' %}">Добавить инвентарь</a></li>
-                            <li><a class="dropdown-item" href="{% url 'crmapp:cleanser_index' %}">Мыломойка</a></li>
-                            <li><a class="dropdown-item" href="{% url 'crmapp:cleanser_create' %}">Добавить мыломойку</a></li>
-                            <li><a class="dropdown-item" href="{% url 'crmapp:client_create' %}">Добавить клиента</a></li>
-                        </ul>
-                    </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a href="{% url 'crmapp:order_create' %}" class="nav-link">Создать заказ</a>
