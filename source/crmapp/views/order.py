@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
 
 from crmapp.forms import OrderForm, ServiceOrderFormSet, StaffOrderFormSet
-from crmapp.models import Order
+from crmapp.models import Order, ForemanOrderUpdate, ForemanReport
 
 
 class OrderListView(ListView):
@@ -23,7 +23,17 @@ class OrderDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         context['extra_service'] = self.object.order_services.all()
         context['staff'] = self.object.order_cleaners.all()
-        return context
+        context['brigadir'] = self.object.order_cleaners.get(is_brigadier=True)
+        try:
+            foreman_update = ForemanOrderUpdate.objects.get(order_id=self.object.pk)
+            foreman_report = ForemanReport.objects.get(order_id=self.object.pk)
+            foreman_expenses = foreman_report.foreman_expense.all()
+            context['foreman_update'] = foreman_update
+            context['foreman_expenses'] = foreman_expenses
+            return context
+        except:
+            return context
+
 
 
 class OrderCreateView(CreateView):
