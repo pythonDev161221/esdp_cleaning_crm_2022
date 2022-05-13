@@ -41,7 +41,7 @@
             <small class="text-muted me-5">Заказ создан: {{ order.created_at }}</small>
         </div>
          <div class="row justify-content-around">
-                <div class="card text-dark bg-light mb-3 mt-3" style="max-width: 20rem;">
+                <div class="card text-dark bg-light mb-3 mt-3 p-0" style="max-width: 20rem;">
                     <h5 class="card-header">Клиент</h5>
                     <div class="card-body">
                         <p class="card-text">{{ order.client_info }}</p>
@@ -52,7 +52,7 @@
                         <p><a class="btn btn-outline-primary btn-sm" href="{% url 'crmapp:foreman_photo' order.id %}">Просмотреть фотографии</a></p>
                     </div>
                 </div>
-                <div class="card text-dark bg-light mb-3 mt-3" style="max-width: 20rem;">
+                <div class="card text-dark bg-light mb-3 mt-3 p-0" style="max-width: 20rem;">
                     <h5 class="card-header">Даты и время</h5>
                     <div class="card-body">
                         <div class="card-title">Дата и время заказа:</div>
@@ -69,25 +69,30 @@
                             </ul>
                     </div>
                 </div>
-                <div class="card text-dark bg-light mb-3 mt-3" style="max-width: 20rem;">
+                <div class="card text-dark bg-light mb-3 mt-3 p-0" style="max-width: 20rem;">
                     <h5 class="card-header">Бригада</h5>
                     <div class="card-body">
                         <p class="card-text">
-                            {% for cleaner in staff %}
-                                <ul>
+                            <ul>
+                                {% for cleaner in staff %}
                                     <li>
+                                        {% if cleaner.is_brigadier %}
+                                        <a style="text-decoration: none" href="{% url 'accounts:profile' cleaner.id %}">{{ cleaner.staff.first_name }} {{ cleaner.staff.last_name }} </a><span><strong>Бригадир</strong></span>
+                                        <a class="text-danger" href="{% url 'crmapp:order_staff_delete' cleaner.id %}"><i class="fa-solid fa-xmark"></i></a>
+                                    {% else  %}
                                         <a style="text-decoration: none" href="{% url 'accounts:profile' cleaner.id %}"> {{ cleaner.staff.first_name }} {{ cleaner.staff.last_name }} </a>
                                         <a class="text-danger" href="{% url 'crmapp:order_staff_delete' cleaner.id %}"><i class="fa-solid fa-xmark"></i></a>
+                                    {% endif %}
                                     </li>
-                                </ul>
-                            {% endfor %}
+                                {% endfor %}
+                            </ul>
                         <div class="mb-4 ms-3"><a class="btn btn-outline-secondary btn-sm" href="{% url 'crmapp:order_staff_add' order.id %}"> + Добавить клинера</a></div>
                         <hr>
                         <p><a class="btn btn-outline-danger" href="{% url 'crmapp:manager_report_create' order.id %}">Рассчитать ЗП бригады</a></p>
                         </p>
                     </div>
                 </div>
-                <div class="card text-dark bg-light mb-3 mt-3" style="max-width: 20rem;">
+                <div class="card text-dark bg-light mb-3 mt-3 p-0" style="max-width: 20rem;">
                     <h5 class="card-header">Инвентарь</h5>
                     <div class="card-body">
                         <p class="card-text">
@@ -104,7 +109,7 @@
                         </p>
                     </div>
                 </div>
-                <div class="card text-dark bg-light mb-3 mt-3" style="max-width: 30rem;">
+                <div class="card text-dark bg-light mb-3 mt-3 p-0" style="max-width: 30rem;">
                     <h5 class="card-header">Услуги</h5>
                     <div class="card-body">
                         <p class="card-text">
