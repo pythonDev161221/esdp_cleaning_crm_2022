@@ -13,8 +13,11 @@
                     <th scope="col">Клинер</th>
                     <th scope="col">Заработная плата</th>
                     <th scope="col">Бонус</th>
+                    <th scope="col">Причина для бонуса</th>
                     <th scope="col">Штраф</th>
+                    <th scope="col">Причина штрафа</th>
                     <th scope="col">Итого</th>
+                    <th scope="col">Комментарий</th>
                 </tr>
             </thead>
             <tbody>
@@ -25,8 +28,11 @@
                         <td>{{ manager_report.cleaner }}</td>
                         <td>{{ manager_report.salary }}</td>
                         <td>{{ manager_report.bonus }}</td>
+                        <td>{{ manager_report.bonus_description|default:"" }}</td>
                         <td>{{ manager_report.fine }}</td>
+                        <td>{{ manager_report.fine_description|default:"" }}</td>
                         <td>{{ manager_report.get_salary }}</td>
+                        <td>{{ manager_report.comment|default:"" }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
