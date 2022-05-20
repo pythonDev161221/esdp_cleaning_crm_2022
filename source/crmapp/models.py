@@ -219,7 +219,7 @@ class Fine(models.Model):
     description = models.TextField(max_length=500, blank=True, null=True, verbose_name=_('Пояснение'))
 
     def __str__(self):
-        return f"{self.fine} - {self.value}"
+        return f"{self.fine}"
 
     class Meta:
         db_table = 'fine'
@@ -232,7 +232,7 @@ class Bonus(models.Model):
     value = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name=_('Сумма бонуса'))
 
     def __str__(self):
-        return f"{self.bonus} - {self.value}"
+        return f"{self.bonus}"
 
     class Meta:
         db_table = 'bonus'
@@ -311,9 +311,12 @@ class ManagerReport(models.Model):
                                 verbose_name=_('Клинер'))
     salary = models.IntegerField(verbose_name=_('Заработная плата'), null=False, blank=False)
     fine = models.IntegerField(verbose_name=_('Штраф'), null=True, blank=True, default=0)
+    fine_description = models.ForeignKey('crmapp.Fine', related_name='manager_reports', on_delete=models.PROTECT, null=True, blank=True, verbose_name=_('Причина штрафа'))
     bonus = models.IntegerField(verbose_name=_('Бонус'), null=True, blank=True, default=0)
+    bonus_description = models.ForeignKey('crmapp.Bonus', related_name='manager_reports', on_delete=models.PROTECT, null=True, blank=True, verbose_name=_('Причина для бонуса'))
     created_at = models.DateTimeField(auto_now=True, verbose_name=_('Дата создания'))
     updated_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата изменения'))
+    comment = models.CharField(max_length=255, null=True, blank=True, verbose_name=_('Комментарий'))
 
     def get_all_expences_in_order(self):
         expences = 0
@@ -322,7 +325,7 @@ class ManagerReport(models.Model):
         return expences
 
     def get_salary(self):
-        total = self.salary + self.bonus - self.fine
+        total = self.salary + abs(self.bonus) - abs(self.fine)
         return total
 
     class Meta:

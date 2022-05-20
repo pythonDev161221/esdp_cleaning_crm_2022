@@ -108,7 +108,7 @@ class StaffOrderForm(forms.ModelForm):
 class ManagerReportForm(forms.ModelForm):
     class Meta:
         model = ManagerReport
-        fields = ('cleaner', 'salary', 'fine', 'bonus')
+        fields = ('cleaner', 'salary', 'fine', 'fine_description', 'bonus', 'bonus_description', 'comment')
 
 
 class BaseManagerReportFormSet(BaseModelFormSet):
