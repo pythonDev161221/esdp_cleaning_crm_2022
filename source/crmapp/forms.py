@@ -37,7 +37,7 @@ class InventoryForm(forms.ModelForm):
 class ForemanExpenseForm(forms.ModelForm):
     class Meta:
         model = ForemanExpenses
-        exclude = ('foreman_report', )
+        exclude = ('foreman_report',)
 
 
 class OrderForm(forms.ModelForm):
@@ -108,7 +108,7 @@ class StaffOrderForm(forms.ModelForm):
 class ManagerReportForm(forms.ModelForm):
     class Meta:
         model = ManagerReport
-        fields = ('cleaner', 'salary', 'fine', 'bonus')
+        fields = ('cleaner', 'salary', 'fine', 'fine_description', 'bonus', 'bonus_description', 'comment')
 
 
 class BaseManagerReportFormSet(BaseModelFormSet):
@@ -146,4 +146,4 @@ class InventoryOrderForm(forms.ModelForm):
 
 
 InventoryOrderFormSet = modelformset_factory(InventoryOrder, form=InventoryOrderForm,
-                                              exclude=['order'], extra=3, can_delete=False)
+                                             exclude=['order'], extra=3, can_delete=False)
