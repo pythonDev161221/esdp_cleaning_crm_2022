@@ -22,6 +22,7 @@ class StaffRegistrationForm(UserCreationForm):
             "password2",
             "phone",
             "inn_passport",
+            "passport",
             "address",
             "online_wallet",
             "experience",
@@ -58,7 +59,6 @@ class StaffEditForm(forms.ModelForm):
                   "last_name",
                   "phone",
                   "address",
-                  "inn_passport",
                   "online_wallet",
                   "experience",
                   "schedule")
@@ -82,6 +82,18 @@ class EditPhotoForm(forms.ModelForm):
     class Meta:
         model = Staff
         fields = ["avatar", ]
+
+
+class StaffPassportForm(forms.ModelForm):
+    class Meta:
+        model = Staff
+        fields = ["passport", ]
+
+
+class StaffDescriptionForm(forms.ModelForm):
+    class Meta:
+        model = Staff
+        fields = ["description", ]
 
 
 class PasswordChangeForm(forms.ModelForm):
