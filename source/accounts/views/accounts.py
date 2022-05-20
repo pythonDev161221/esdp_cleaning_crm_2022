@@ -104,9 +104,6 @@ class StaffDescriptionView(UpdateView):
     template_name = "account/staff_description.html"
     context_object_name = "user_object"
 
-    def get_success_url(self):
-        return reverse('accounts:staff-list')
-
 
 class StaffDeleteView(DeleteView):
     model = Staff
