@@ -159,7 +159,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='order',
-            name='client_info',
+            name='list_client',
             field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='order_client', to='crmapp.client', verbose_name='Информация клиента'),
         ),
         migrations.AddField(
