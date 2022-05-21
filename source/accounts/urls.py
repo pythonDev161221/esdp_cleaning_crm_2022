@@ -10,7 +10,10 @@ from accounts.views.accounts import (StaffProfileView,
                                      PasswordChangeView,
                                      StaffDeleteView,
                                      AddToBlackList,
-                                     RemoveFromBlackList)
+                                     RemoveFromBlackList,
+                                     StaffDescriptionView,
+                                     StaffPassportView,
+                                     StaffPassportPhotoView)
 from accounts.views.payout import PayoutListView, PayoutCreateView
 
 app_name = 'accounts'
@@ -22,7 +25,10 @@ urlpatterns = [
     path("password_change/", PasswordChangeView.as_view(), name="change_password"),
     path('staff/', StaffListView.as_view(), name='staff-list'),
     path('staff/<int:pk>/', StaffProfileView.as_view(), name='profile'),
+    path('staff/passport/<int:pk>/', StaffPassportView.as_view(), name='staff-passport'),
+    path('staff/passport/add/<int:pk>/', StaffPassportPhotoView.as_view(), name='staff-add-passport'),
     path('staff/edit/<int:pk>/', StaffEditView.as_view(), name='staff-edit'),
+    path('staff/description/<int:pk>/', StaffDescriptionView.as_view(), name='staff-description'),
     path('staff/edit/photo/<int:pk>/', StaffEditPhoto.as_view(), name='staff-photo'),
     path('delete/staff/<int:pk>/', StaffDeleteView.as_view(), name='staff-delete'),
     path('black_list/', StaffBlackListView.as_view(), name='black-list'),

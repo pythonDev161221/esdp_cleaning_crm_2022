@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Passport{% endblock title %}
+{% load crispy_forms_tags %}
+{% block links %} {% endblock links %}
+{% block content %}
+    <div class="container m-5">
+        <form method="post" enctype='multipart/form-data'>
+            {% csrf_token %}
+            {% include "partial/form.html" with button_text="Cохранить" %}
+        </form>
+    </div>
+{% endblock content %}
