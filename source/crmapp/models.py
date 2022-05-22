@@ -31,8 +31,8 @@ class Client(models.Model):
     first_name = models.CharField(verbose_name=_('Имя'), max_length=75, blank=False, null=False)
     last_name = models.CharField(verbose_name=_('Фамилия'), max_length=75, blank=False, null=False)
     phone = PhoneNumberField(unique=True, region="KG", max_length=15, verbose_name=_('Номер телефона'))
+    organization = models.CharField(verbose_name=_('Организация'), max_length=120, null=True, blank=True)
 
-    @property
     def get_absolute_url(self):
         return reverse('crmapp:client_index')
 
