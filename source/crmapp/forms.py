@@ -25,7 +25,7 @@ class ServiceForm(forms.ModelForm):
 class ClientForm(forms.ModelForm):
     class Meta:
         model = Client
-        fields = ('first_name', 'last_name', 'phone')
+        fields = ('first_name', 'last_name', 'phone', 'organization')
 
 
 class InventoryForm(forms.ModelForm):

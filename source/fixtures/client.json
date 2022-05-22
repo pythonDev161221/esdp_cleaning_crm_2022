@@ -5,7 +5,8 @@
   "fields": {
     "first_name": "Азамат",
     "last_name": "Кожобеков",
-    "phone": "+996505999999"
+    "phone": "+996505999999",
+    "organization": "Ooco Сбер банк"
   }
 },
 {
@@ -14,7 +15,8 @@
   "fields": {
     "first_name": "Бакыт",
     "last_name": "Иванович",
-    "phone": "+996770555555"
+    "phone": "+996770555555",
+    "organization": "Компания Extra Service Order"
   }
 },
 {
@@ -23,7 +25,8 @@
   "fields": {
     "first_name": "Махмуд",
     "last_name": "Эрбатыров",
-    "phone": "+996708234311"
+    "phone": "+996708234311",
+    "organization": ""
   }
 }
 ]

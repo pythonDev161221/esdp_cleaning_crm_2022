@@ -11,6 +11,7 @@
                     <th scope="col">Фамилия</th>
                     <th scope="col">Имя</th>
                     <th scope="col">Телефон</th>
+                    <th scope="col">Организация</th>
                     <th scope="col">Редактировать</th>
                 </tr>
             </thead>
@@ -21,7 +22,8 @@
                         <td>{{ client.last_name }}</td>
                         <td>{{ client.first_name }}</td>
                         <td>{{ client.phone }}</td>
-                        <td><a href="{% url 'crmapp:client_update' client.id %}"><i class="fa-solid fa-location-pen"></i></a></td>
+                        <td>{{ client.organization|default:"" }}</td>
+                        <td><a href="{% url 'crmapp:client_update' client.id %}"><i class="fa fa-pencil text-warning" aria-hidden="true"></i></a></td>
                     </tr>
                 {% endfor %}
             </tbody>
