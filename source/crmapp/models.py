@@ -6,7 +6,7 @@ from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
 from django.utils.translation import gettext as _
 
-from crmapp.choice import PaymentChoices, UnitChoices, OrderStatusChoices
+from crmapp.choice import PaymentChoices, UnitChoices, OrderStatusChoices, PartUnits
 from crmapp.constants import ORDER_STAFF_SALARY_COEFFICIENT
 
 
@@ -84,45 +84,40 @@ class StaffOrder(models.Model):
     is_brigadier = models.BooleanField(verbose_name=_('Бригадир'), default=False)
 
 
-class Order(models.Model):  # Таблица самого заказа
-    # Поле для сортировки незавершённых работ
+class Order(models.Model):
     status = models.CharField(max_length=50, default='new', verbose_name=_('Статус заказа'),
-                              choices=OrderStatusChoices.choices, null=False, blank=False)
+                              choices=OrderStatusChoices.choices, null=True, blank=True)
     object_type = models.ForeignKey('crmapp.ObjectType', on_delete=models.PROTECT, related_name='orders',
                                     verbose_name=_('Тип объекта'), null=True, blank=True)
-
-    # Поля связанные со временем
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата и время создания заказа'))
     work_start = models.DateTimeField(verbose_name=_('Дата и время начало уборки'), null=True, blank=True)
     cleaning_time = models.DurationField(verbose_name=_('Время выполнения работ'), null=True, blank=True)
-
-    # Информация о клиенте
     client_info = models.ForeignKey('crmapp.Client', on_delete=models.PROTECT, related_name='order_client',
                                     verbose_name=_('Информация клиента'))
     address = models.CharField(max_length=256, null=False, blank=False, verbose_name=_('Адрес'))
-
-    # Уборки
     services = models.ManyToManyField('crmapp.Service', related_name='orders',
                                       verbose_name=_('Услуга'), through='crmapp.ServiceOrder',
                                       through_fields=('order', 'service'))
-
-    # Поля для Staff
     manager = models.ForeignKey(get_user_model(), on_delete=models.PROTECT, related_name='manager_order',
                                 verbose_name=_('Менеджер'))
     cleaners = models.ManyToManyField(get_user_model(), related_name='orders', verbose_name=_('Клинер'),
                                       through='crmapp.StaffOrder',
                                       through_fields=('order', 'staff'))
 
-    review = models.PositiveIntegerField(null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(5)],
+    review = models.PositiveIntegerField(null=True, blank=True,
+                                         validators=[MinValueValidator(1), MaxValueValidator(5)],
                                          verbose_name=_('Отзыв'))
-    # Финансовая часть
     payment_type = models.CharField(max_length=25, null=False, blank=False, default='cash',
                                     choices=PaymentChoices.choices,
-                                    verbose_name=_('Вид оплаты'))  # вид оплаты
-    total_cost = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Общая сумма заказа'))
+                                    verbose_name=_('Вид оплаты'))
+    cleaners_part = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Доля клинеров'))
+
+    part_units = models.CharField(max_length=25, null=False, blank=False, default='som', choices=PartUnits.choices,
+                                  verbose_name=_('Способ расчета'))
 
     def manager_report_base_sum(self):
-        staff_part = int(self.get_total()) / self.cleaners.count()#Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+        staff_part = int(
+            self.get_total()) / self.cleaners.count()  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
         base_sum = 0
         for staff in self.cleaners.all():
             for coefficient in ORDER_STAFF_SALARY_COEFFICIENT:
@@ -131,7 +126,8 @@ class Order(models.Model):  # Таблица самого заказа
         return base_sum
 
     def manager_report_numeric_coefficient(self):
-        staff_part = int(self.get_total()) / self.cleaners.count()#Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+        staff_part = int(
+            self.get_total()) / self.cleaners.count()  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
         base_num = self.manager_report_base_sum()
         num_coefficient = []
         for staff in self.cleaners.all():
@@ -144,7 +140,8 @@ class Order(models.Model):  # Таблица самого заказа
     def manager_reprot_numeric_salary(self):
         staff_salary = []
         num_coefficient = self.manager_report_numeric_coefficient()
-        [staff_salary.append(int(self.get_total()) * nc) for nc in num_coefficient]#Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+        [staff_salary.append(int(self.get_total()) * nc) for nc in
+         num_coefficient]  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
         return staff_salary
 
     def manager_report_salary_staffs(self):
@@ -159,7 +156,7 @@ class Order(models.Model):  # Таблица самого заказа
 
     def get_total(self):
         total = 0
-        services = ServiceOrder.objects.filter(order=self)
+        services = self.order_services.filter(order=self)
         for service in services:
             total += service.service_total()
         return total
@@ -303,8 +300,10 @@ class CleanserInOrder(models.Model):
 
 
 class ManagerReport(models.Model):
-    order = models.ForeignKey('crmapp.Order', related_name='order_manager', on_delete=models.PROTECT, verbose_name=_('Заказ'))
-    cleaner = models.ForeignKey(get_user_model(), related_name='manager_report', on_delete=models.PROTECT, verbose_name=_('Клинер'))
+    order = models.ForeignKey('crmapp.Order', related_name='order_manager', on_delete=models.PROTECT,
+                              verbose_name=_('Заказ'))
+    cleaner = models.ForeignKey(get_user_model(), related_name='manager_report', on_delete=models.PROTECT,
+                                verbose_name=_('Клинер'))
     salary = models.IntegerField(verbose_name=_('Заработная плата'), null=False, blank=False)
     fine = models.IntegerField(verbose_name=_('Штраф'), null=True, blank=True, default=0)
     bonus = models.IntegerField(verbose_name=_('Бонус'), null=True, blank=True, default=0)
@@ -337,4 +336,3 @@ class ObjectType(models.Model):
         db_table = 'object_types'
         verbose_name = _('Тип объекта')
         verbose_name_plural = _('Типы объекта')
-

@@ -60,13 +60,13 @@
                                     клиента</a></li>
                             </ul>
                         </li>
-                        {% else %}
+                    {% else %}
                         <li class="nav-item">
                             <a class="nav-link"
                                href="{% url 'accounts:login' %}?next={{ request.get_full_path }}">Войти</a>
                         </li>
-                        {% endif %}
-                        {% if user.is_authenticated %}
+                    {% endif %}
+                    {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link"
                                href="{% url 'accounts:profile' user.id %}">Мой профиль</a>

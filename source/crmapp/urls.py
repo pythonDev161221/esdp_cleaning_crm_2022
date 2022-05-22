@@ -13,7 +13,7 @@ from crmapp.views.service_order_views import ServiceOrderCreateView, \
 
 from crmapp.views.order_staff import OrderStaffCreateView, OrderStaffDeleteView
 
-from crmapp.views.order import OrderListView, OrderDetailView, OrderCreateView
+from crmapp.views.order import OrderListView, OrderDetailView, FirstStepOrderCreateView, CleanersAddView
 
 app_name = 'crmapp'
 
@@ -26,7 +26,8 @@ client_urlpatterns = [
 order_urlpatterns = [
     path('', OrderListView.as_view(), name='order_index'),
     path('<int:pk>/', OrderDetailView.as_view(), name='order_detail'),
-    path('create/', OrderCreateView.as_view(), name='order_create'),
+    path('create/', FirstStepOrderCreateView.as_view(), name='order_create'),
+    path('<int:pk>/add_cleaners/', CleanersAddView.as_view(), name='cleaners_add'),
     path('<int:pk>/service/create/', ServiceOrderCreateView.as_view(), name="service_order_create"),
     path('<int:pk>/service/update/', ServiceOrderUpdateView.as_view(), name="service_order_update"),
     path('delete/<int:pk>/', ServiceOrderDeleteView.as_view(), name="service_order_delete"),

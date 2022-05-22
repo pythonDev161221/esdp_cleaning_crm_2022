@@ -12,6 +12,7 @@ django-phonenumber-field = "*"
 phonenumbers = "*"
 fontawesomefree = "*"
 crispy-bootstrap5 = "*"
+django-extra-views = "*"
 
 [dev-packages]
 
