@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     # custom
     'crmapp',
     'accounts',
+    'tgbot'
 
     # lib app
     'phonenumber_field',
@@ -147,3 +148,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_ROOT = BASE_DIR.joinpath("uploads")
 MEDIA_URL = "media/"
+
+TELEGRAM_TOKEN = env('TELEGRAM_TOKEN')

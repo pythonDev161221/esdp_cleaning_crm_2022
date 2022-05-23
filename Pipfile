@@ -12,6 +12,8 @@ django-phonenumber-field = "*"
 phonenumbers = "*"
 fontawesomefree = "*"
 crispy-bootstrap5 = "*"
+python-telegram-bot = "*"
+celery = "*"
 
 [dev-packages]
 
