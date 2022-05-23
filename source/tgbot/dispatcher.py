@@ -8,13 +8,12 @@ from telegram.ext import (
     ChosenInlineResultHandler, PollAnswerHandler,
 )
 
-from main.celery import app
 from main.settings import TELEGRAM_TOKEN
+
 
 
 def setup_dispatcher(dp):
     #регистрируете ваши функции
-
 
     return dp
 
@@ -34,13 +33,8 @@ def run_pooling():
     updater.idle()
 
 
-@app.task(ignore_result=True)
-def process_telegram_event(update_json):
-    update = Update.de_json(update_json, bot)
-    dispatcher.process_update(update)
-
-
 bot = telegram.Bot(TELEGRAM_TOKEN)
 # bot.setWebhook(url=) # вставить в url https:// Ngrok или путь с протоколом https + telegram-bot/cleaning-serice-bot/update/
+#n_workers = 0 if DEBUG else 4
 dispatcher = setup_dispatcher(Dispatcher(bot, None, workers=1, use_context=True))
 TELEGRAM_BOT_USERNAME = bot.get_me()["username"]
