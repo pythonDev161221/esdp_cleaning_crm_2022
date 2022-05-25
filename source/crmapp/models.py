@@ -53,7 +53,6 @@ class ForemanReport(models.Model):
     # Таблица для отчёта бригадира имеет связь FK с таблицей Order
     order = models.ForeignKey('crmapp.Order', on_delete=models.PROTECT, null=False, blank=False,
                               related_name='foreman_order_report', verbose_name=_('Заказ'))
-    expenses = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Расходы'))
     start_at = models.DateTimeField(null=True, blank=True, verbose_name=_('Дата и время начала работы'))
     end_at = models.DateTimeField(null=True, blank=True, verbose_name=_('Дата и время окончания работы'))
 
@@ -62,8 +61,15 @@ class ForemanReport(models.Model):
         verbose_name = _('Отчёт бригадира')
         verbose_name_plural = _('Отчёты бригадира')
 
+    def get_total_expenses(self):
+        total = 0
+        for expense in self.foreman_expense.all():
+            total += expense.amount
+        return total
+
+
 class ForemanExpenses(models.Model):
-    amount = models.PositiveIntegerField(null=False, blank=False, verbose_name=_('Сумма расхода'))
+    amount = models.PositiveIntegerField(null=True, blank=True, default=0, verbose_name=_('Сумма расхода'))
     name = models.CharField(max_length=100, null=False, blank=False, verbose_name=_('Название расхода'))
     description = models.TextField(max_length=1000, null=True, blank=True, verbose_name=_('Описание расхода'))
     foreman_report = models.ForeignKey('crmapp.ForemanReport', on_delete=models.CASCADE, null=False, blank=False,
@@ -143,6 +149,21 @@ class Order(models.Model):  # Таблица самого заказа
 
     inventories = models.ManyToManyField("crmapp.Inventory", related_name='order_inventories', verbose_name=_('Инвентарь'),
                                       through='crmapp.InventoryOrder')
+
+    def get_all_staff_expenses(self):
+        expenses = 0
+        for expense in self.order_manager.all():
+            expenses += expense.get_salary()
+        return expenses
+
+    def get_foreman_expenses(self):
+        if self.foreman_order_report:
+            for report in self.foreman_order_report.all():
+                return report.get_total_expenses()
+        return 0
+
+    def get_income_outcome(self):
+        return self.get_total() - self.get_all_staff_expenses() - self.get_foreman_expenses()
 
     def manager_report_base_sum(self):
         staff_part = int(
@@ -317,12 +338,6 @@ class ManagerReport(models.Model):
     created_at = models.DateTimeField(auto_now=True, verbose_name=_('Дата создания'))
     updated_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата изменения'))
     comment = models.CharField(max_length=255, null=True, blank=True, verbose_name=_('Комментарий'))
-
-    def get_all_expences_in_order(self):
-        expences = 0
-        for report in ManagerReport.objects.filter(order=self.order):
-            expences += report.get_salary()
-        return expences
 
     def get_salary(self):
         total = self.salary + abs(self.bonus) - abs(self.fine)
