@@ -5,5 +5,5 @@ from crmapp.models import Order
 
 class IncomeOutcomeReportView(ListView):
     model = Order
-    template_name = 'income_outcome_report/income_outcome_report.html'
+    template_name = '../../templates/income_outcome_report/income_outcome_report.html'
     context_object_name = 'orders'

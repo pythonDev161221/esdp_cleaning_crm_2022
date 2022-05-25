@@ -35,7 +35,6 @@ class OrderDetailView(DetailView):
             return context
 
 
-
 class OrderCreateView(CreateView):
     model = Order
     form_class = OrderForm

@@ -2,7 +2,6 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView
 
-
 from crmapp.forms import InventoryForm, InventoryOrderForm, InventoryOrderFormSet
 from crmapp.models import Inventory, InventoryOrder, Order
 
@@ -31,6 +30,7 @@ class InventoryDeleteView(DeleteView):
 
     def get_success_url(self):
         return reverse("crmapp:inventory_index")
+
 
 class InventoryOrderCreateView(FormView):
     model = InventoryOrder

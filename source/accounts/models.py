@@ -65,7 +65,7 @@ class Staff(AbstractUser):
         return reverse('accounts:profile', kwargs={'pk': self.pk})
 
     class Meta:
-        db_table = 'Staff'
+        db_table = 'staff'
         verbose_name = _('Сотрудник')
         verbose_name_plural = _('Сотрудники')
 
@@ -78,7 +78,7 @@ class WorkDay(models.Model):
         return self.get_day_display()
 
     class Meta:
-        db_table = 'WorkDays'
+        db_table = 'work_days'
         verbose_name = _('День недели')
         verbose_name_plural = _('Дни недели')
 
@@ -97,6 +97,6 @@ class Payout(models.Model):
         return f"{self.date_payout}{self.staff}{self.salary}"
 
     class Meta:
-        db_table = 'Payouts'
+        db_table = 'payout'
         verbose_name = _('Выплата')
         verbose_name_plural = _('Выплаты')
