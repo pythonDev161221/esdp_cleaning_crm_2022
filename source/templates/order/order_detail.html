@@ -74,7 +74,7 @@
                     <div class="card-body">
                         <p class="card-text">
                             <ul>
-                                {% for cleaner in staff %}
+                                 {% for cleaner in order.order_cleaners.all %}
                                     <li>
                                         {% if cleaner.is_brigadier %}
                                         <a style="text-decoration: none" href="{% url 'accounts:profile' cleaner.id %}">{{ cleaner.staff.first_name }} {{ cleaner.staff.last_name }} </a><span><strong>Бригадир</strong></span>
@@ -113,13 +113,13 @@
                     <h5 class="card-header">Услуги</h5>
                     <div class="card-body">
                         <p class="card-text">
-                            {% if extra_service %}
-                                {% for extra in extra_service %}
+                            {% if order.order_services %}
+                                {% for service in order.order_services.all %}
                                     <ul>
                                         <li>
-                                            <p {% if foreman_update %} class="text-muted" {% endif %}>{{ extra | capfirst }}
-                                                <a href="{% url 'crmapp:service_order_update' extra.id %}"><i class="fa-solid fa-pen-to-square"></i></a>
-                                                <a class="text-danger" href="{% url 'crmapp:service_order_delete' extra.id %}"><i class="fa-solid fa-xmark"></i></a>
+                                            <p {% if foreman_update %} class="text-muted" {% endif %}>{{ service | capfirst }}
+                                                <a href="{% url 'crmapp:service_order_update' service.id %}"><i class="fa-solid fa-pen-to-square"></i></a>
+                                                <a class="text-danger" href="{% url 'crmapp:service_order_delete' service.id %}"><i class="fa-solid fa-xmark"></i></a>
                                             </p>
                                         </li>
                                     </ul>
