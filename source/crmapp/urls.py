@@ -1,17 +1,32 @@
 from django.urls import path, include
 
-from crmapp.views.client_views import ClientCreateView, ClientListView, ClientUpdateView
-from crmapp.views.foreman import ForemanOrderUpdateCreateView, InPlaceView, WorkStartView, WorkEndView, PhotoBeforeView, \
-    PhotoDetailView, ServiceForemanOrderCreateView, ForemanExpenseView
-from crmapp.views.manager_report import ManagerReportCreateView, ManagerReportListView
+from crmapp.views.client_views import (ClientCreateView,
+                                       ClientListView,
+                                       ClientUpdateView)
+
+from crmapp.views.service_order_views import (ServiceOrderCreateView,
+                                              ServiceOrderUpdateView,
+                                              ServiceOrderDeleteView)
+
+from crmapp.views.inventories import (InventoryListView,
+                                      InventoryCreateView,
+                                      InventoryUpdateView,
+                                      InventoryDeleteView,
+                                      InventoryOrderCreateView,
+                                      InventoryOrderRemoveView)
+
+from crmapp.views.foreman import (ForemanOrderUpdateCreateView,
+                                  InPlaceView,
+                                  WorkStartView,
+                                  WorkEndView,
+                                  PhotoBeforeView,
+                                  PhotoDetailView,
+                                  ServiceForemanOrderCreateView,
+                                  ForemanExpenseView)
 
 from crmapp.views.service_views import ServiceListView, ServiceCreateView, ServiceUpdateView, ServiceDeleteView
 
-from crmapp.views.inventories import InventoryListView, InventoryCreateView, InventoryUpdateView, InventoryDeleteView,\
-    InventoryOrderCreateView, InventoryOrderRemoveView
-
-from crmapp.views.service_order_views import ServiceOrderCreateView, \
-    ServiceOrderUpdateView, ServiceOrderDeleteView
+from crmapp.views.manager_report import ManagerReportCreateView, ManagerReportListView
 
 from crmapp.views.order_staff import OrderStaffCreateView, OrderStaffDeleteView
 
@@ -45,7 +60,7 @@ service_urlpatterns = [
     path('delete/<int:pk>/', ServiceDeleteView.as_view(), name='service_delete'),
 ]
 
-consumables_urlpatterns = [
+inventory_urlpatterns = [
     path('inventory/all/', InventoryListView.as_view(), name='inventory_index'),
     path('inventory/create/', InventoryCreateView.as_view(), name='inventory_create'),
     path('inventory/up/<int:pk>/', InventoryUpdateView.as_view(), name='inventory_update'),
@@ -61,7 +76,7 @@ cleaners_urlpatterns = [
     path('<int:pk>/photos/', PhotoDetailView.as_view(), name='foreman_photo'),
     path('order/<int:pk>/add/service/', ServiceForemanOrderCreateView.as_view(), name='foreman_create_service'),
     path('order/<int:pk>/add/expense/', ForemanExpenseView.as_view(), name='foreman_create_expense')
-    ]
+]
 
 manager_report_urlpatterns = [
     path('order/<int:pk>/manager_report/create/', ManagerReportCreateView.as_view(), name='manager_report_create'),
@@ -72,7 +87,7 @@ urlpatterns = [
     path('client/', include(client_urlpatterns)),
     path('service/', include(service_urlpatterns)),
     path('cleaners/', include(cleaners_urlpatterns)),
-    path('inventories/', include(consumables_urlpatterns)),
+    path('inventories/', include(inventory_urlpatterns)),
     path('', include(manager_report_urlpatterns)),
     path('order/', include(order_urlpatterns))
 ]

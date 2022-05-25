@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.db.models.signals import pre_save
 
 from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
@@ -22,9 +21,9 @@ class Service(models.Model):
         return f'{self.name}'
 
     class Meta:
-        db_table = 'extra_services'
-        verbose_name = _('Дополнительная услуга')
-        verbose_name_plural = _('Дополнительные услуги')
+        db_table = 'service'
+        verbose_name = _('Услуга')
+        verbose_name_plural = _('Услуги')
 
 
 class Client(models.Model):
@@ -58,9 +57,10 @@ class ForemanReport(models.Model):
     end_at = models.DateTimeField(null=True, blank=True, verbose_name=_('Дата и время окончания работы'))
 
     class Meta:
-        db_table ='foreman_report'
+        db_table = 'foreman_report'
         verbose_name = _('Отчёт бригадира')
         verbose_name_plural = _('Отчёты бригадира')
+
 
 class ForemanExpenses(models.Model):
     amount = models.PositiveIntegerField(null=False, blank=False, verbose_name=_('Сумма расхода'))
@@ -69,17 +69,22 @@ class ForemanExpenses(models.Model):
     foreman_report = models.ForeignKey('crmapp.ForemanReport', on_delete=models.CASCADE, null=False, blank=False,
                                        related_name='foreman_expense', verbose_name=_('Отчёт бригадира'))
 
+    db_table = 'foreman_expense'
+    verbose_name = _('Расход бригадира')
+    verbose_name_plural = _('Расходы бригадира')
+
 
 class ForemanPhoto(models.Model):
     foreman_report = models.ForeignKey('crmapp.ForemanReport', null=False, blank=False, on_delete=models.CASCADE,
-                                     related_name='foreman_photo', verbose_name='Фото до начала работ')
-    is_after = models.BooleanField(default=False,  verbose_name='Фото после окончания работ')
+                                       related_name='foreman_photo', verbose_name='Фото до начала работ')
+    is_after = models.BooleanField(default=False, verbose_name='Фото после окончания работ')
     image = models.ImageField(upload_to='photo_foreman/', verbose_name=_('Фото'))
 
     class Meta:
         db_table = 'foreman_photo'
         verbose_name = _('Фотография от бригадира')
         verbose_name_plural = _('Фотографии от бригадира')
+
 
 class ForemanOrderUpdate(models.Model):
     # Таблица для редактирования услуг и доп услуг в заказе для бригадира, имеет связь FK с таблицей Order
@@ -93,6 +98,7 @@ class ForemanOrderUpdate(models.Model):
         verbose_name = _('Корректировка бригадира')
         verbose_name_plural = _('Корректировки бригадиров')
 
+
 class StaffOrder(models.Model):
     order = models.ForeignKey('crmapp.Order', related_name='order_cleaners', verbose_name=_('Заказ'), null=False,
                               blank=False, on_delete=models.PROTECT)
@@ -102,6 +108,11 @@ class StaffOrder(models.Model):
     is_accept = models.BooleanField(null=True, blank=True, default=False, verbose_name=_('Принял заказ'))
     in_place = models.DateTimeField(null=True, blank=True, verbose_name=_('Время прибытия на заказ'))
     work_start = models.DateTimeField(null=True, blank=True, verbose_name=_('Время старта выполнения работ'))
+
+    class Meta:
+        db_table = 'staff_order'
+        verbose_name = _('Сотрудник в заказе')
+        verbose_name_plural = _('Сотрудники в заказе')
 
 
 class Order(models.Model):  # Таблица самого заказа
@@ -141,8 +152,9 @@ class Order(models.Model):  # Таблица самого заказа
                                     verbose_name=_('Вид оплаты'))  # вид оплаты
     total_cost = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Общая сумма заказа'))
 
-    inventories = models.ManyToManyField("crmapp.Inventory", related_name='order_inventories', verbose_name=_('Инвентарь'),
-                                      through='crmapp.InventoryOrder')
+    inventories = models.ManyToManyField("crmapp.Inventory", related_name='order_inventories',
+                                         verbose_name=_('Инвентарь'),
+                                         through='crmapp.InventoryOrder')
 
     def manager_report_base_sum(self):
         staff_part = int(
@@ -196,6 +208,11 @@ class Order(models.Model):  # Таблица самого заказа
     def save(self, *args, **kwargs):
         self.work_end = self.work_start + self.cleaning_time
         super(Order, self).save(*args, **kwargs)
+
+    class Meta:
+        db_table = 'order'
+        verbose_name = _('Заказ')
+        verbose_name_plural = _('Заказы')
 
 
 class FineCategory(models.Model):
@@ -311,9 +328,11 @@ class ManagerReport(models.Model):
                                 verbose_name=_('Клинер'))
     salary = models.IntegerField(verbose_name=_('Заработная плата'), null=False, blank=False)
     fine = models.IntegerField(verbose_name=_('Штраф'), null=True, blank=True, default=0)
-    fine_description = models.ForeignKey('crmapp.Fine', related_name='manager_reports', on_delete=models.PROTECT, null=True, blank=True, verbose_name=_('Причина штрафа'))
+    fine_description = models.ForeignKey('crmapp.Fine', related_name='manager_reports', on_delete=models.PROTECT,
+                                         null=True, blank=True, verbose_name=_('Причина штрафа'))
     bonus = models.IntegerField(verbose_name=_('Бонус'), null=True, blank=True, default=0)
-    bonus_description = models.ForeignKey('crmapp.Bonus', related_name='manager_reports', on_delete=models.PROTECT, null=True, blank=True, verbose_name=_('Причина для бонуса'))
+    bonus_description = models.ForeignKey('crmapp.Bonus', related_name='manager_reports', on_delete=models.PROTECT,
+                                          null=True, blank=True, verbose_name=_('Причина для бонуса'))
     created_at = models.DateTimeField(auto_now=True, verbose_name=_('Дата создания'))
     updated_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата изменения'))
     comment = models.CharField(max_length=255, null=True, blank=True, verbose_name=_('Комментарий'))

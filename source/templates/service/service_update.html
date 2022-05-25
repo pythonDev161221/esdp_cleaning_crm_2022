@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Service Update{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <h1>Изменение услуги</h1>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <input type="submit" value="Сохранить" class="btn btn-primary">
+            </form>
+        </div>
+    </div>
+{% endblock content %}

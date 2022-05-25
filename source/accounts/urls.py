@@ -19,7 +19,7 @@ from accounts.views.payout import PayoutListView, PayoutCreateView
 app_name = 'accounts'
 
 urlpatterns = [
-    path('login/', LoginView.as_view(template_name="account/login.html"), name='login'),
+    path('login/', LoginView.as_view(template_name="../templates/account/login.html"), name='login'),
     path('logout/', LogoutView.as_view(), name="logout"),
     path('register/', StaffRegisterView.as_view(), name='register'),
     path("password_change/", PasswordChangeView.as_view(), name="change_password"),

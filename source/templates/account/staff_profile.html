@@ -38,7 +38,6 @@
                 <a class="btn btn-dark" href="#">История заказов</a>
                 <a class="btn btn-dark" href="#">История зарплаты</a>
                 <hr>
-{#                <a class="btn btn-dark" href="{% url 'accounts:change_password' %}">Изменить пароль</a>#}
             </div>
             <div class="col-md-4">
                 {% if not user_object.avatar %}
@@ -47,21 +46,25 @@
                             <a style="margin-left: 15px" class="btn btn-outline-dark"
                                href="{% url 'accounts:staff-photo' user_object.pk %}">Выбрать
                                 фото</a>
-                             <a class="btn btn-outline-dark" href="{% url 'accounts:change_password' %}">Изменить пароль</a>
+                            <a class="btn btn-outline-dark" href="{% url 'accounts:change_password' %}">Изменить
+                                пароль</a>
                         </div>
                         <img class="cart-img-top rounded " style="height: 300px; width: 300px"
                              src="{% static 'img/no_pic.jpg' %}" alt="no photo">
                     </div>
                 {% else %}
-                    <div class="position-relative ms-4">
-                        <div class="position-absolute bottom-0">
-                            <a style="margin-left: 15px" class="btn btn-outline-dark"
+                    <div class="position-relative ms-2">
+                        <div class="position-absolute bottom-0 m-1">
+                            <a style="margin-left: 31px;" class="btn btn-outline-secondary"
                                href="{% url 'accounts:staff-photo' user_object.pk %}">Изменить
                                 фото</a>
-                             <a class="btn btn-outline-dark" href="{% url 'accounts:change_password' %}">Изменить пароль</a>
+                            <a class="btn btn-outline-secondary" href="{% url 'accounts:change_password' %}">Изменить
+                                пароль</a>
                         </div>
-                        <img class="cart-img-top rounded" style="height: 300px; width: 300px"
-                             src="{{ user_object.avatar.url }}" alt="user avatar">
+                        <div class="box" style="width: 300px; height: 300px; margin-left: 32px">
+                            <img class="cart-img-top rounded" style="height:100%;width:100%;"
+                                 src="{{ user_object.avatar.url }}" alt="user avatar">
+                        </div>
                     </div>
                 {% endif %}
                 <hr>
