@@ -1,8 +1,10 @@
+import uuid
+
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404, render
 from django.urls import reverse, reverse_lazy
 
 from django.views.generic import DetailView, CreateView, ListView, UpdateView, DeleteView
@@ -14,6 +16,7 @@ from accounts.forms import (LoginForm,
                             StaffDescriptionForm,
                             StaffPassportForm)
 from accounts.models import Staff
+from tgbot.dispatcher import TELEGRAM_BOT_USERNAME
 
 
 class StaffProfileView(DetailView):
@@ -163,3 +166,9 @@ class StaffPassportView(DetailView):
     model = Staff
     template_name = 'account/staff_passport.html'
     context_object_name = 'user_object'
+
+
+def get_auth_token_telegram(request, pk):
+    user = get_object_or_404(Staff, pk=pk)
+    if request.method == "GET":
+        return render(request, "account/staff_tg_auth_token.html", {"token": user.set_auth_tg_token()})

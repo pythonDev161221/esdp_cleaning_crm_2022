@@ -27,7 +27,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -154,3 +154,4 @@ MEDIA_ROOT = BASE_DIR.joinpath("uploads")
 MEDIA_URL = "media/"
 
 TELEGRAM_TOKEN = env('TELEGRAM_TOKEN')
+TELEGRAM_BOT_USERNAME = env("TELEGRAM_BOT_USERNAME")

@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
@@ -7,6 +9,8 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 from .managers import CustomUserManager
 from .choice import StaffCategoryChoices, WorkDayChoices
+from main.settings import TELEGRAM_BOT_USERNAME
+
 
 
 class Staff(AbstractUser):
@@ -31,6 +35,8 @@ class Staff(AbstractUser):
     balance = models.IntegerField(verbose_name=_('Деньги работника'), default=0,
                                   null=False, blank=False)
     description = models.TextField(max_length=2000, null=True, blank=True, verbose_name=_('Примечание'))
+    telegram_id = models.CharField(max_length=120, null=True, blank=True)
+    telegram_auth_token = models.CharField(max_length=21, null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -57,6 +63,12 @@ class Staff(AbstractUser):
     def add_salary(self, value):
         self.balance += value
         self.save()
+
+    def set_auth_tg_token(self):
+        token = str(uuid.uuid4().hex)[:20]
+        self.telegram_auth_token = token
+        self.save()
+        return f"https://t.me/{TELEGRAM_BOT_USERNAME}?start={token}"
 
     def __str__(self):
         return f' {self.last_name} {self.first_name}'

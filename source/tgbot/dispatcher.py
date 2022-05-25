@@ -1,6 +1,7 @@
 import telegram
+from typing import Dict
 
-from telegram import Update
+from telegram import Update, BotCommand, Bot
 from telegram.ext import (
     Updater, Dispatcher, Filters,
     CommandHandler, MessageHandler,
@@ -9,11 +10,12 @@ from telegram.ext import (
 )
 
 from main.settings import TELEGRAM_TOKEN
-
+from tgbot.handlers.login import tg_login
 
 
 def setup_dispatcher(dp):
-    #регистрируете ваши функции
+    # регистрируете ваши функции
+    dp.add_handler(CommandHandler("start", tg_login.start_and_auth))
 
     return dp
 
@@ -33,8 +35,27 @@ def run_pooling():
     updater.idle()
 
 
+def set_up_commands(bot_instance: Bot) -> None:
+    bot_commands = {
+        'ru': {
+            'balance': 'Мой баланс',
+            'my_order': 'Мои заказы',
+            'order': 'Показать действующие заказы️',
+            'info': 'Информация о профиле',
+        }
+    }
+    bot_instance.delete_my_commands()
+    bot_instance.set_my_commands(
+        commands=[
+            BotCommand(command, description) for command, description in bot_commands["ru"].items()
+        ]
+    )
+
+
 bot = telegram.Bot(TELEGRAM_TOKEN)
+set_up_commands(bot)
+bot.setWebhook(url="https://af33-212-112-118-122.in.ngrok.io/telegram-bot/cleaning-serice-bot/update/")
 # bot.setWebhook(url=) # вставить в url https:// Ngrok или путь с протоколом https + telegram-bot/cleaning-serice-bot/update/
-#n_workers = 0 if DEBUG else 4
+# n_workers = 0 if DEBUG else 4
 dispatcher = setup_dispatcher(Dispatcher(bot, None, workers=1, use_context=True))
 TELEGRAM_BOT_USERNAME = bot.get_me()["username"]
