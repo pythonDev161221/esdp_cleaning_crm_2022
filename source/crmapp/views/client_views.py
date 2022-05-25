@@ -9,10 +9,12 @@ class ClientCreateView(CreateView):
     form_class = ClientForm
     template_name = 'client/client_form.html'
 
+
 class ClientListView(ListView):
     model = Client
     template_name = 'client/client_index.html'
     context_object_name = 'clients'
+
 
 class ClientUpdateView(UpdateView):
     model = Client
