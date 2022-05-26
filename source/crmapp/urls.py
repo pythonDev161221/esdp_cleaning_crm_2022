@@ -32,6 +32,8 @@ from crmapp.views.order_staff import OrderStaffCreateView, OrderStaffDeleteView
 
 from crmapp.views.order import OrderListView, OrderDetailView, OrderCreateView
 
+from crmapp.views.income_outcome_report import IncomeOutcomeReportView
+
 app_name = 'crmapp'
 
 client_urlpatterns = [
@@ -89,5 +91,6 @@ urlpatterns = [
     path('cleaners/', include(cleaners_urlpatterns)),
     path('inventories/', include(inventory_urlpatterns)),
     path('', include(manager_report_urlpatterns)),
-    path('order/', include(order_urlpatterns))
+    path('order/', include(order_urlpatterns)),
+    path('income_outcome_report', IncomeOutcomeReportView.as_view(), name='income_outcome_report')
 ]
