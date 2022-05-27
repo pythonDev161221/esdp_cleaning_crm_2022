@@ -14,6 +14,7 @@ from accounts.views.accounts import (StaffProfileView,
                                      StaffDescriptionView,
                                      StaffPassportView,
                                      StaffPassportPhotoView,
+                                     get_auth_token_telegram,
                                      StaffPayoutDetailView,)
 from accounts.views.payout import PayoutListView, PayoutCreateView
 
@@ -37,6 +38,4 @@ urlpatterns = [
     path('black_list/remove/<int:pk>/', RemoveFromBlackList.as_view(), name='black-list-remove'),
     path('payout/', PayoutListView.as_view(), name='payout_list'),
     path('payout/<int:pk>/', PayoutCreateView.as_view(), name='payout_create'),
-    path('staff/<int:pk>/payout/', StaffPayoutDetailView.as_view(), name='staff_payout'),
-
 ]

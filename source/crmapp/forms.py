@@ -13,6 +13,7 @@ from django.forms import BaseModelFormSet
 from crmapp.models import Inventory, Client, ForemanOrderUpdate, ServiceOrder, \
     Service, ManagerReport, StaffOrder, Order, InventoryOrder, ForemanExpenses
 
+
 User = get_user_model()
 
 
@@ -147,3 +148,14 @@ class InventoryOrderForm(forms.ModelForm):
 
 InventoryOrderFormSet = modelformset_factory(InventoryOrder, form=InventoryOrderForm,
                                              exclude=['order'], extra=3, can_delete=False)
+
+
+class FilterForm(forms.Form):
+    start_date = forms.DateField(required=False)
+    end_date = forms.DateField(required=False)
+
+
+
+
+
+
