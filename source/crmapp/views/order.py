@@ -41,11 +41,13 @@ class FirstStepOrderCreateView(FormView):
     )
     template_name = 'order/order_create.html'
     object = None
+    form_helper = OrderFormHelper()
+    formset_helper = ServiceFormHelper()
 
     def get_context_data(self, **kwargs):
         kwargs['formset'] = self.formset()
-        kwargs['form_helper'] = OrderFormHelper()
-        kwargs['formset_helper'] = ServiceFormHelper()
+        kwargs['form_helper'] = self.form_helper
+        kwargs['formset_helper'] = self.formset_helper
         return super().get_context_data(**kwargs)
 
     def post(self, request, *args, **kwargs):
