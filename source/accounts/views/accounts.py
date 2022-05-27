@@ -163,3 +163,11 @@ class StaffPassportView(DetailView):
     model = Staff
     template_name = 'account/staff_passport.html'
     context_object_name = 'user_object'
+
+
+class StaffPayoutDetailView(DetailView):
+    model = Staff
+    template_name = 'account/staff_payout.html'
+    context_object_name = 'staff'
+
+

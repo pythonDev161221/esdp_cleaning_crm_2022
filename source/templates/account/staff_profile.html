@@ -36,7 +36,7 @@
                 <a class="btn btn-dark" href="{% url 'accounts:payout_create' user_object.pk %}">Выдать заработную
                     плату</a>
                 <a class="btn btn-dark" href="#">История заказов</a>
-                <a class="btn btn-dark" href="#">История зарплаты</a>
+                <a class="btn btn-dark" href="{% url 'accounts:staff_payout' user_object.pk %}">История зарплаты</a>
                 <hr>
             </div>
             <div class="col-md-4">

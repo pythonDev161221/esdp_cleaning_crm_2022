@@ -84,7 +84,7 @@ class WorkDay(models.Model):
 
 
 class Payout(models.Model):
-    staff = models.ForeignKey('accounts.Staff', null=False, blank=False, related_name='staff',
+    staff = models.ForeignKey('accounts.Staff', null=False, blank=False, related_name='payouts',
                               verbose_name=_('Работник'), on_delete=models.PROTECT)
     salary = models.IntegerField(null=False, blank=False,
                                  verbose_name=_('Заработная плата'))
