@@ -7,13 +7,15 @@ from django.views.generic import ListView, DetailView, FormView
 
 from crmapp.crispy_form_helpers import OrderFormHelper, ServiceFormHelper, CleanersPartHelper, StaffFormHelper
 from crmapp.forms import OrderForm, ServiceOrderForm, OrderStaffForm, CleanersPartForm
-from crmapp.models import Order, ServiceOrder, StaffOrder
+
+from crmapp.models import Order, ForemanOrderUpdate, ForemanReport, ServiceOrder, StaffOrder
 
 
 class OrderListView(ListView):
     model = Order
     template_name = 'order/order_list.html'
     context_object_name = 'orders'
+    ordering = '-created_at'
 
 
 class OrderDetailView(DetailView):
@@ -24,8 +26,18 @@ class OrderDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['extra_service'] = self.object.order_services.all()
-        context['staff'] = self.object.order_cliners.all()
-        return context
+        context['staff'] = self.object.order_cleaners.all()
+        context['brigadir'] = self.object.order_cleaners.get(is_brigadier=True)
+        try:
+            foreman_update = ForemanOrderUpdate.objects.get(order_id=self.object.pk)
+            foreman_report = ForemanReport.objects.get(order_id=self.object.pk)
+            foreman_expenses = foreman_report.foreman_expense.all()
+            context['foreman_update'] = foreman_update
+            context['foreman_expenses'] = foreman_expenses
+            return context
+        except:
+            return context
+
 
 
 class FirstStepOrderCreateView(FormView):

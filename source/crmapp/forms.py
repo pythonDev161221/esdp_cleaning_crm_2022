@@ -1,12 +1,12 @@
 from django import forms
 
-from django.forms import inlineformset_factory
+from django.forms import inlineformset_factory, modelformset_factory
 
 from django.contrib.auth import get_user_model
 from django.forms import BaseModelFormSet
 
-from crmapp.models import Inventory, Cleanser, Client, ForemanOrderUpdate, ServiceOrder, \
-    Service, ManagerReport, StaffOrder, Order
+from crmapp.models import Inventory, Client, ForemanOrderUpdate, ServiceOrder, \
+    Service, ManagerReport, StaffOrder, Order, InventoryOrder, ForemanExpenses
 
 User = get_user_model()
 
@@ -20,7 +20,7 @@ class ServiceForm(forms.ModelForm):
 class ClientForm(forms.ModelForm):
     class Meta:
         model = Client
-        fields = ('first_name', 'last_name', 'phone')
+        fields = ('first_name', 'last_name', 'phone', 'organization')
 
 
 class InventoryForm(forms.ModelForm):
@@ -29,22 +29,10 @@ class InventoryForm(forms.ModelForm):
         fields = ('name', 'description')
 
 
-class CleanserForm(forms.ModelForm):
+class ForemanExpenseForm(forms.ModelForm):
     class Meta:
-        model = Cleanser
-        fields = ('name', 'description')
-
-
-class ForemanOrderUpdateForm(forms.ModelForm):
-    class Meta:
-        model = ForemanOrderUpdate
-        fields = ('description',)
-
-
-class ForemanService(forms.ModelForm):
-    class Meta:
-        model = ServiceOrder
-        fields = ('service', 'amount', 'rate', 'total')
+        model = ForemanExpenses
+        exclude = ('foreman_report',)
 
 
 class OrderForm(forms.ModelForm):
@@ -108,7 +96,7 @@ class CleanersPartForm(forms.ModelForm):
 class ServiceOrderForm(forms.ModelForm):
     class Meta:
         model = ServiceOrder
-        exclude = ('order',)
+        exclude = ('order', 'foreman_order', 'total')
 
     def save(self, commit=True):
         service = super().save(commit=False)
@@ -127,7 +115,7 @@ class ServiceOrderForm(forms.ModelForm):
 class ManagerReportForm(forms.ModelForm):
     class Meta:
         model = ManagerReport
-        fields = ('cleaner', 'salary', 'fine', 'bonus')
+        fields = ('cleaner', 'salary', 'fine', 'fine_description', 'bonus', 'bonus_description', 'comment')
 
 
 class BaseManagerReportFormSet(BaseModelFormSet):
@@ -150,3 +138,13 @@ class BaseStaffAddFormSet(BaseModelFormSet):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.queryset = User.objects.none()
+
+
+class InventoryOrderForm(forms.ModelForm):
+    class Meta:
+        model = InventoryOrder
+        exclude = ('order',)
+
+
+InventoryOrderFormSet = modelformset_factory(InventoryOrder, form=InventoryOrderForm,
+                                             exclude=['order'], extra=3, can_delete=False)

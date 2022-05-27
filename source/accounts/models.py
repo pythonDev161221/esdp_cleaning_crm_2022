@@ -13,6 +13,8 @@ class Staff(AbstractUser):
     username = None
     email = models.EmailField(unique=True, verbose_name=_('Email'))
     inn_passport = models.CharField(max_length=20, unique=True, null=True, blank=True, verbose_name=_('ИНН'))
+    passport = models.FileField(upload_to='passport/', null=True, blank=True,
+                                 verbose_name=_('Электронная версия паспорта'))
     phone = PhoneNumberField(region="KG", max_length=15, verbose_name=_('Номер телефона'))
     avatar = models.ImageField(upload_to="avatars/", null=True, blank=True, verbose_name=_('Фото профиля'))
     address = models.CharField(max_length=200, null=True, blank=True, verbose_name=_('Адрес'))
@@ -28,6 +30,7 @@ class Staff(AbstractUser):
     black_list = models.BooleanField(default=False, verbose_name=_('Черный список'))
     balance = models.IntegerField(verbose_name=_('Деньги работника'), default=0,
                                   null=False, blank=False)
+    description = models.TextField(max_length=2000, null=True, blank=True, verbose_name=_('Примечание'))
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -97,4 +100,3 @@ class Payout(models.Model):
         db_table = 'Payouts'
         verbose_name = _('Выплата')
         verbose_name_plural = _('Выплаты')
-

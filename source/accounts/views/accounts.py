@@ -6,7 +6,13 @@ from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 
 from django.views.generic import DetailView, CreateView, ListView, UpdateView, DeleteView
-from accounts.forms import LoginForm, StaffRegistrationForm, StaffEditForm, EditPhotoForm, PasswordChangeForm
+from accounts.forms import (LoginForm,
+                            StaffRegistrationForm,
+                            StaffEditForm,
+                            EditPhotoForm,
+                            PasswordChangeForm,
+                            StaffDescriptionForm,
+                            StaffPassportForm)
 from accounts.models import Staff
 
 
@@ -73,6 +79,10 @@ class StaffEditView(UpdateView):
     def get_success_url(self):
         return reverse('accounts:staff-list')
 
+    def form_valid(self, form):
+        user = form.save
+        return redirect(self.get_success_url())
+
 
 class StaffEditPhoto(UpdateView):
     model = Staff
@@ -80,13 +90,19 @@ class StaffEditPhoto(UpdateView):
     template_name = "account/staff_photo.html"
     context_object_name = "user_object"
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        update_session_auth_hash(self.request, self.object)
-        return response
 
-    def get_object(self, queryset=None):
-        return self.request.user
+class StaffPassportPhotoView(UpdateView):
+    model = Staff
+    form_class = StaffPassportForm
+    template_name = "account/passport.html"
+    context_object_name = "user_object"
+
+
+class StaffDescriptionView(UpdateView):
+    model = Staff
+    form_class = StaffDescriptionForm
+    template_name = "account/staff_description.html"
+    context_object_name = "user_object"
 
 
 class StaffDeleteView(DeleteView):
@@ -95,10 +111,8 @@ class StaffDeleteView(DeleteView):
     template_name = 'account/staff_delete.html'
     context_object_name = 'user_object'
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        update_session_auth_hash(self.request, self.object)
-        return response
+    def get_object(self, queryset=None):
+        return self.request.user
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -117,19 +131,15 @@ class StaffBlackListView(ListView):
         return queryset
 
 
-class AddToBlackList(DeleteView):
+class AddToBlackList(UpdateView):
     model = Staff
     success_url = reverse_lazy('accounts:staff-list')
+    form_class = StaffDescriptionForm
     template_name = 'account/black_list_add.html'
     context_object_name = 'user_object'
 
     def form_valid(self, form):
-        response = super().form_valid(form)
-        update_session_auth_hash(self.request, self.object)
-        return response
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
+        self.object = form.save()
         self.object.black_list_staff()
         messages.success(self.request, f'{self.object.last_name} {self.object.first_name} добавлен(a) в черный список!')
         return HttpResponseRedirect(self.get_success_url())
@@ -141,13 +151,15 @@ class RemoveFromBlackList(DeleteView):
     template_name = 'account/black_list_remove.html'
     context_object_name = 'user_object'
 
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        update_session_auth_hash(self.request, self.object)
-        return response
-
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.object.active_staff()
-        messages.success(self.request, f'{self.object.last_name} {self.object.first_name} больше не находится в черном списке!')
+        messages.success(self.request,
+                         f'{self.object.last_name} {self.object.first_name} больше не находится в черном списке!')
         return HttpResponseRedirect(self.get_success_url())
+
+
+class StaffPassportView(DetailView):
+    model = Staff
+    template_name = 'account/staff_passport.html'
+    context_object_name = 'user_object'

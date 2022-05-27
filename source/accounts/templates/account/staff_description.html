@@ -1,21 +1,18 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
-{% block title %}Black List add{% endblock title %}
-
 {% block content %}
     <div class="container">
         <div class="card mt-3">
             <div class="card-header">
-                <p>Пожалуйста, укажите причину занесения
-                    сотрудника {{ user_object.first_name }} {{ user_object.last_name }} в ЧЕРНЫЙ СПИСОК:</p>
+                <p>Cотрудник: {{ user_object.first_name }} {{ user_object.last_name }}</p>
             </div>
             <div class="card-body">
                 <form method="post">
                     {% csrf_token %}
                     {{ form|crispy }}
-                    <input type="submit" value="В ЧЕРНЫЙ СПИСОК" class="btn btn-outline-danger">
+                    <input type="submit" value="Сохранить" class="btn btn-primary">
                 </form>
             </div>
         </div>
     </div>
-{% endblock %}
+{% endblock content %}

@@ -1,21 +1,31 @@
 <div class="container">
-    <h1>Заказы:</h1>
-    {% for order in orders %}
-        <div class="card mb-3 w-50 text-start">
-            <h5 class="card-header">{{ order.get_status_display }}</h5>
-            <div class="card-body">
-                <span class="card-text"><small class="text-muted">Заказ №{{ order.id }}</small></span>
-                <p>Адрес: {{ order.address }}</p>
-                <p> Дата и время: {{ order.work_start }}</p>
-                <p> Сумма заказа: {{ order.get_total }} сом</p>
-                <div class=" btn-group">
-                    <a class="btn btn-dark"
-                       href="{% url 'crmapp:order_detail' order.pk %}">Просмотреть</a>
-                    <br>
-                    <a class="btn btn-warning"
-                       href="№">Редактировать</a>
+    {% if orders %}
+        <h1 class="text-center">Заказы:</h1>
+        <div class="row row-cols-1 row-cols-md-2 g-5">
+            {% for order in orders %}
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-header">{{ order.get_status_display }}</h4>
+                            <div class="card-body">
+                                <span class="card-text"><small class="text-muted">Заказ №{{ order.id }}</small></span>
+                                <p>Адрес: {{ order.address }}</p>
+                                <p> Дата и время: {{ order.work_start }}</p>
+                                <p> Сумма заказа: {{ order.get_total }} сом</p>
+                                <div class=" btn-group">
+                                    <a class="btn btn-dark"
+                                       href="{% url 'crmapp:order_detail' order.pk %}">Просмотреть</a>
+                                    <br>
+                                    <a class="btn btn-warning"
+                                       href="№">Редактировать</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            {% endfor %}
         </div>
-    {% endfor %}
+    {% else %}
+        <p>Список заказов пуст</p>
+    {% endif %}
 </div>

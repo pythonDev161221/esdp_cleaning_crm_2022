@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.db.models.signals import pre_save
 
 from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
@@ -21,17 +22,17 @@ class Service(models.Model):
         return f'{self.name}'
 
     class Meta:
-        db_table = 'services'
-        verbose_name = _('Услуга')
-        verbose_name_plural = _('Услуги')
+        db_table = 'extra_services'
+        verbose_name = _('Дополнительная услуга')
+        verbose_name_plural = _('Дополнительные услуги')
 
 
 class Client(models.Model):
     first_name = models.CharField(verbose_name=_('Имя'), max_length=75, blank=False, null=False)
     last_name = models.CharField(verbose_name=_('Фамилия'), max_length=75, blank=False, null=False)
     phone = PhoneNumberField(unique=True, region="KG", max_length=15, verbose_name=_('Номер телефона'))
+    organization = models.CharField(verbose_name=_('Организация'), max_length=120, null=True, blank=True)
 
-    @property
     def get_absolute_url(self):
         return reverse('crmapp:client_index')
 
@@ -53,35 +54,54 @@ class ForemanReport(models.Model):
     order = models.ForeignKey('crmapp.Order', on_delete=models.PROTECT, null=False, blank=False,
                               related_name='foreman_order_report', verbose_name=_('Заказ'))
     expenses = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Расходы'))
-    start_at = models.DateTimeField(verbose_name=_('Дата и время начала работы'))
-    end_at = models.DateTimeField(verbose_name=_('Дата и время окончания работы'))
-    photo_before = models.ManyToManyField('crmapp.ForemanPhoto',
-                                          related_name='foreman_photo_before', verbose_name=_('Фото до начала работ'))
-    photo_after = models.ManyToManyField('crmapp.ForemanPhoto',
-                                         related_name='foreman_photo_after',
-                                         verbose_name=_('Фото после окончания работ'))
+    start_at = models.DateTimeField(null=True, blank=True, verbose_name=_('Дата и время начала работы'))
+    end_at = models.DateTimeField(null=True, blank=True, verbose_name=_('Дата и время окончания работы'))
+
+    class Meta:
+        db_table ='foreman_report'
+        verbose_name = _('Отчёт бригадира')
+        verbose_name_plural = _('Отчёты бригадира')
+
+class ForemanExpenses(models.Model):
+    amount = models.PositiveIntegerField(null=False, blank=False, verbose_name=_('Сумма расхода'))
+    name = models.CharField(max_length=100, null=False, blank=False, verbose_name=_('Название расхода'))
+    description = models.TextField(max_length=1000, null=True, blank=True, verbose_name=_('Описание расхода'))
+    foreman_report = models.ForeignKey('crmapp.ForemanReport', on_delete=models.CASCADE, null=False, blank=False,
+                                       related_name='foreman_expense', verbose_name=_('Отчёт бригадира'))
 
 
 class ForemanPhoto(models.Model):
-    # Таблица для хранения фотографий, имеет связь m2m с таблицей ForemanReport
-    image = models.ImageField(upload_to='photo_obj', verbose_name=_('Фото'))
+    foreman_report = models.ForeignKey('crmapp.ForemanReport', null=False, blank=False, on_delete=models.CASCADE,
+                                     related_name='foreman_photo', verbose_name='Фото до начала работ')
+    is_after = models.BooleanField(default=False,  verbose_name='Фото после окончания работ')
+    image = models.ImageField(upload_to='photo_foreman/', verbose_name=_('Фото'))
 
+    class Meta:
+        db_table = 'foreman_photo'
+        verbose_name = _('Фотография от бригадира')
+        verbose_name_plural = _('Фотографии от бригадира')
 
 class ForemanOrderUpdate(models.Model):
     # Таблица для редактирования услуг и доп услуг в заказе для бригадира, имеет связь FK с таблицей Order
     order = models.ForeignKey('crmapp.Order', on_delete=models.PROTECT, null=False, blank=False,
                               related_name='foreman_order_update', verbose_name=_('Заказ'))
-    service = models.ManyToManyField('crmapp.ServiceOrder', related_name='foreman_service',
-                                     verbose_name=_('Услуга'))
-    description = models.TextField(max_length=500, blank=True, null=True, verbose_name=_('Причина внесения изменений'))
+    services = models.ManyToManyField('crmapp.ServiceOrder', related_name='foreman_order_update',
+                                      verbose_name=_('Услуга'))
 
+    class Meta:
+        db_table = 'foreman_order_update'
+        verbose_name = _('Корректировка бригадира')
+        verbose_name_plural = _('Корректировки бригадиров')
 
 class StaffOrder(models.Model):
-    order = models.ForeignKey('crmapp.Order', related_name='order_cliners', verbose_name=_('Заказ'), null=False,
+    order = models.ForeignKey('crmapp.Order', related_name='order_cleaners', verbose_name=_('Заказ'), null=False,
                               blank=False, on_delete=models.PROTECT)
-    staff = models.ForeignKey(get_user_model(), related_name='cliner_orders', verbose_name=_('Клинер'),
+    staff = models.ForeignKey(get_user_model(), related_name='cleaner_orders', verbose_name=_('Клинер'),
                               null=False, blank=False, on_delete=models.PROTECT)
     is_brigadier = models.BooleanField(verbose_name=_('Бригадир'), default=False)
+    is_accept = models.BooleanField(null=True, blank=True, default=False, verbose_name=_('Принял заказ'))
+    in_place = models.DateTimeField(null=True, blank=True, verbose_name=_('Время прибытия на заказ'))
+    work_start = models.DateTimeField(null=True, blank=True, verbose_name=_('Время старта выполнения работ'))
 
 
 class Order(models.Model):
@@ -90,8 +110,9 @@ class Order(models.Model):
     object_type = models.ForeignKey('crmapp.ObjectType', on_delete=models.PROTECT, related_name='orders',
                                     verbose_name=_('Тип объекта'), null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата и время создания заказа'))
-    work_start = models.DateTimeField(verbose_name=_('Дата и время начало уборки'), null=True, blank=True)
+    work_start = models.DateTimeField(verbose_name=_('Дата и время начала уборки'), null=True, blank=True)
     cleaning_time = models.DurationField(verbose_name=_('Время выполнения работ'), null=True, blank=True)
+    work_end = models.DateTimeField(null=True, blank=True, verbose_name=_('Дата и время окончания уборки'))
     client_info = models.ForeignKey('crmapp.Client', on_delete=models.PROTECT, related_name='order_client',
                                     verbose_name=_('Информация клиента'))
     address = models.CharField(max_length=256, null=False, blank=False, verbose_name=_('Адрес'))
@@ -114,6 +135,9 @@ class Order(models.Model):
 
     part_units = models.CharField(max_length=25, null=False, blank=False, default='som', choices=PartUnits.choices,
                                   verbose_name=_('Способ расчета'))
+
+    inventories = models.ManyToManyField("crmapp.Inventory", related_name='order_inventories', verbose_name=_('Инвентарь'),
+                                      through='crmapp.InventoryOrder')
 
     def manager_report_base_sum(self):
         staff_part = int(
@@ -159,7 +183,14 @@ class Order(models.Model):
         services = self.order_services.filter(order=self)
         for service in services:
             total += service.service_total()
-        return total
+        if total > 2000:
+            return total
+        else:
+            return 2000
+
+    def save(self, *args, **kwargs):
+        self.work_end = self.work_start + self.cleaning_time
+        super(Order, self).save(*args, **kwargs)
 
 
 class FineCategory(models.Model):
@@ -183,7 +214,7 @@ class Fine(models.Model):
     description = models.TextField(max_length=500, blank=True, null=True, verbose_name=_('Пояснение'))
 
     def __str__(self):
-        return f"{self.fine} - {self.value}"
+        return f"{self.fine}"
 
     class Meta:
         db_table = 'fine'
@@ -196,7 +227,7 @@ class Bonus(models.Model):
     value = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name=_('Сумма бонуса'))
 
     def __str__(self):
-        return f"{self.bonus} - {self.value}"
+        return f"{self.bonus}"
 
     class Meta:
         db_table = 'bonus'
@@ -208,7 +239,6 @@ class Inventory(models.Model):
     name = models.CharField(max_length=255, verbose_name=_('Инвентарь'), null=False, blank=False)
     description = models.TextField(max_length=1000, verbose_name=_('Описание'), null=True, blank=True)
 
-    @property
     def get_absolute_url(self):
         return reverse('crmapp:inventory_index')
 
@@ -221,26 +251,9 @@ class Inventory(models.Model):
         verbose_name_plural = _("Инвентари")
 
 
-class Cleanser(models.Model):
-    name = models.CharField(max_length=255, verbose_name=_('Моющее средство'), null=False, blank=False)
-    description = models.TextField(max_length=1000, verbose_name=_('Описание товара'), null=True, blank=True)
-
-    @property
-    def get_absolute_url(self):
-        return reverse('crmapp:cleanser_index')
-
-    def __str__(self):
-        return f"{self.name}"
-
-    class Meta:
-        db_table = "cleanser"
-        verbose_name = _("Моющее средство")
-        verbose_name_plural = _("Моющие средства")
-
-
 class ServiceOrder(models.Model):
-    order = models.ForeignKey('crmapp.Order', related_name='order_services', verbose_name=_('Заказ'), null=False,
-                              blank=False, on_delete=models.PROTECT)
+    order = models.ForeignKey('crmapp.Order', related_name='order_services', verbose_name=_('Заказ'), null=True,
+                              blank=True, on_delete=models.PROTECT)
     service = models.ForeignKey('crmapp.Service', related_name='service_orders', verbose_name=_('Услуга'),
                                 null=False, blank=False, on_delete=models.PROTECT)
     amount = models.IntegerField(verbose_name=_('Объем работы'), null=False, blank=False)
@@ -267,12 +280,15 @@ class ServiceOrder(models.Model):
         verbose_name_plural = _("Услуги заказа")
 
 
-class InventoryInOrder(models.Model):
+class InventoryOrder(models.Model):
     order = models.ForeignKey('crmapp.Order', related_name='order_inventories', verbose_name=_('Заказ'),
                               null=True, blank=True, on_delete=models.PROTECT)
     inventory = models.ForeignKey('crmapp.Inventory', related_name='inventories_order',
                                   verbose_name=_('Инвентарь'), null=True, blank=True, on_delete=models.PROTECT)
     amount = models.PositiveIntegerField(verbose_name=_('Количество'), null=True, blank=True)
+
+    def get_absolute_url(self):
+        return reverse('crmapp:inventory_index', pk=self.order.pk)
 
     def __str__(self):
         return f'{self.inventory}:{self.amount}'
@@ -283,22 +299,6 @@ class InventoryInOrder(models.Model):
         verbose_name_plural = _('Инвентари заказа')
 
 
-class CleanserInOrder(models.Model):
-    order = models.ForeignKey('crmapp.Order', related_name='order_cleanser', verbose_name=_('Заказ'),
-                              null=True, blank=True, on_delete=models.PROTECT)
-    cleanser = models.ForeignKey('crmapp.Cleanser', related_name='cleansers_order',
-                                 verbose_name=_('Моющее средство'), null=True, blank=True, on_delete=models.PROTECT)
-    amount = models.PositiveIntegerField(verbose_name=_('Количество'), null=True, blank=True)
-
-    def __str__(self):
-        return f'{self.cleanser}:{self.amount}'
-
-    class Meta:
-        db_table = 'cleanser_in_order'
-        verbose_name = _('Моющее средство в заказе')
-        verbose_name_plural = _('Моющие средства в заказе')
-
-
 class ManagerReport(models.Model):
     order = models.ForeignKey('crmapp.Order', related_name='order_manager', on_delete=models.PROTECT,
                               verbose_name=_('Заказ'))
@@ -306,9 +306,12 @@ class ManagerReport(models.Model):
                                 verbose_name=_('Клинер'))
     salary = models.IntegerField(verbose_name=_('Заработная плата'), null=False, blank=False)
     fine = models.IntegerField(verbose_name=_('Штраф'), null=True, blank=True, default=0)
+    fine_description = models.ForeignKey('crmapp.Fine', related_name='manager_reports', on_delete=models.PROTECT, null=True, blank=True, verbose_name=_('Причина штрафа'))
     bonus = models.IntegerField(verbose_name=_('Бонус'), null=True, blank=True, default=0)
+    bonus_description = models.ForeignKey('crmapp.Bonus', related_name='manager_reports', on_delete=models.PROTECT, null=True, blank=True, verbose_name=_('Причина для бонуса'))
     created_at = models.DateTimeField(auto_now=True, verbose_name=_('Дата создания'))
     updated_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата изменения'))
+    comment = models.CharField(max_length=255, null=True, blank=True, verbose_name=_('Комментарий'))
 
     def get_all_expences_in_order(self):
         expences = 0
@@ -317,7 +320,7 @@ class ManagerReport(models.Model):
         return expences
 
     def get_salary(self):
-        total = self.salary + self.bonus - self.fine
+        total = self.salary + abs(self.bonus) - abs(self.fine)
         return total
 
     class Meta:
