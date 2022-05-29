@@ -12,7 +12,6 @@ from .choice import StaffCategoryChoices, WorkDayChoices
 from main.settings import TELEGRAM_BOT_USERNAME
 
 
-
 class Staff(AbstractUser):
     username = None
     email = models.EmailField(unique=True, verbose_name=_('Email'))
