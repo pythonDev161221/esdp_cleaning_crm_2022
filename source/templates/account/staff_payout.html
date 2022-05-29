@@ -2,25 +2,12 @@
 {% block title %}Выплаты{% endblock title %}
 
 {% block content %}
-        <h2 class="text-center">Выплаты сотруднику {{ staff }}</h2>
-        <div class="container">
-            <table class="table">
-                <thead>
-                <tr>
-<!--                    <th scope="col">ФИО Сотрудника</th>-->
-                    <th scope="col">Дата выплаты</th>
-                    <th scope="col">Сумма (сом)</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for payout in staff.payouts.all %}
-                    <tr>
-<!--                        <td>{{ payout.staff }}</td>-->
-                        <td>{{ payout.date_payout }}</td>
-                        <td>{{ payout.salary }}</td>
-                    </tr>
-                    </tbody>
-                {% endfor %}
-            </table>
-        </div>
+{% if payouts %}
+        <h2 class="text-center">История выплат {{ staff }}</h2>
+        {% include "partial/payouts.html" %}
+{% else %}
+        <h2 class="text-center">История выплат {{ staff }} пуста</h2>
+{% endif %}
 {% endblock content %}
+
+

@@ -178,3 +178,9 @@ class StaffPayoutDetailView(DetailView):
     model = Staff
     context_object_name = 'staff'
     template_name = 'account/staff_payout.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        payouts = context['staff'].payouts.all().order_by('-date_payout')
+        context['payouts'] = payouts
+        return context
