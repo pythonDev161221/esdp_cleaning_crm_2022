@@ -172,3 +172,9 @@ def get_auth_token_telegram(request, pk):
     user = get_object_or_404(Staff, pk=pk)
     if request.method == "GET":
         return render(request, "account/staff_tg_auth_token.html", {"token": user.set_auth_tg_token()})
+
+
+class StaffPayoutDetailView(DetailView):
+    model = Staff
+    context_object_name = 'staff'
+    template_name = 'account/staff_payout.html'
