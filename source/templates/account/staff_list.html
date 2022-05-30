@@ -7,8 +7,8 @@
     </li>
 {% endblock links %}
 {% block content %}
-
     {% if user_objects %}
+        {% include '../partial/simple_search.html' %}
         <div class="container">
             <table class="table">
                 <thead>

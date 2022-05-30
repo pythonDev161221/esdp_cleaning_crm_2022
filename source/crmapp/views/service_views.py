@@ -1,14 +1,17 @@
 from django.urls import reverse_lazy, reverse
-from django.views.generic import CreateView, ListView, UpdateView, DeleteView
+from django.views.generic import CreateView, UpdateView, DeleteView
 
 from crmapp.forms import ServiceForm
 from crmapp.models import Service
 
+from crmapp.views.search_view import SearchView
 
-class ServiceListView(ListView):
+
+class ServiceListView(SearchView):
     model = Service
     template_name = 'service/service_list.html'
     context_object_name = 'services'
+    search_fields = ["name__icontains"]
 
 
 class ServiceCreateView(CreateView):
