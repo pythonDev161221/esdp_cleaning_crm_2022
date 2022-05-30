@@ -221,3 +221,27 @@ def get_auth_token_telegram(request, pk):
     user = get_object_or_404(Staff, pk=pk)
     if request.method == "GET":
         return render(request, "account/staff_tg_auth_token.html", {"token": user.set_auth_tg_token()})
+
+
+class StaffPayoutDetailView(DetailView):
+    model = Staff
+    context_object_name = 'staff'
+    template_name = 'account/staff_payouts.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        payouts = context['staff'].payouts.all().order_by('-date_payout')
+        context['payouts'] = payouts
+        return context
+
+
+class StaffOrderDetailView(DetailView):
+    model = Staff
+    context_object_name = 'staff'
+    template_name = 'account/staff_orders.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        print(context['staff'].orders.all())
+        return context
+

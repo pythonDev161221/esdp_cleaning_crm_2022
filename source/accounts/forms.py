@@ -131,3 +131,4 @@ class PayoutForm(forms.ModelForm):
     class Meta:
         model = Payout
         fields = ['staff', ]
+
