@@ -129,17 +129,23 @@
                             {% if foreman_update %}
                                 <p><strong>Обновлённые услуги заказа:</strong></p>
                                 <ol>
-                                    {% for service in foreman_update.services.all %}
-                                        <li>{{ service | capfirst }}</li>
+                                    {% for foreman_update in order.foreman_order_update.all %}
+                                        {% for service in foreman_update.services.all %}
+                                            <li>{{ service | capfirst }}</li>
+                                        {% endfor %}
                                     {% endfor %}
                                 </ol>
                             {% endif %}
                             <hr>
                             <h5><strong>Общая стоимость: {{ order.get_total }} с </strong></h5>
-                            <p><small class="text-muted">Расходы:</small></p>
-                                {% for expense in foreman_expenses %}
-                                    <p>{{ expense.name }} = {{ expense.amount }} {% if expense.description %}({{ expense.description }}){% endif %}</p>
+                            {% for report in order.foreman_order_report.all %}
+                                {% if report.foreman_expense.all %}
+                                    <p><small class="text-muted">Расходы:</small></p>
+                                {% endif %}
+                                {% for expense in report.foreman_expense.all %}
+                                    <p>Расход {{ expense.name }}: {{ expense.amount }} сом {% if expense.description %}({{ expense.description }}){% endif %}</p>
                                 {% endfor %}
+                            {% endfor %}
                         </p>
                     </div>
                 </div>
