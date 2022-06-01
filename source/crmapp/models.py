@@ -111,6 +111,7 @@ class StaffOrder(models.Model):
                               null=False, blank=False, on_delete=models.PROTECT)
     is_brigadier = models.BooleanField(verbose_name=_('Бригадир'), default=False)
     is_accept = models.BooleanField(null=True, blank=True, default=False, verbose_name=_('Принял заказ'))
+    is_refuse = models.BooleanField(null=True, blank=True, default=False, verbose_name=_('Отказался от заказа'))
     in_place = models.DateTimeField(null=True, blank=True, verbose_name=_('Время прибытия на заказ'))
     work_start = models.DateTimeField(null=True, blank=True, verbose_name=_('Время старта выполнения работ'))
 

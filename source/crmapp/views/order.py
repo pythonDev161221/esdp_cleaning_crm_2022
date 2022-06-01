@@ -8,6 +8,8 @@ from crmapp.models import Order, ForemanOrderUpdate, ForemanReport
 
 from crmapp.views.search_view import SearchView
 
+from tgbot.handlers.orders.tg_order_staff import staff_accept_order
+
 
 class OrderListView(SearchView):
     model = Order
@@ -63,6 +65,7 @@ class OrderCreateView(CreateView):
                 services.instance = self.object
                 cliners.save()
                 services.save()
+                staff_accept_order(self.object)
                 messages.success(self.request, f'Заказ успешно создан!')
         return super(OrderCreateView, self).form_valid(form)
 
