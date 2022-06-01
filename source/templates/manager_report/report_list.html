@@ -3,6 +3,11 @@
 {% block tittle %}Отчет менеджера{% endblock tittle %}
 
 {% block content %}
+    <form class="text-center mt-3" action="" method="GET">
+        <label>с: </label><input name="start_date" type="date">
+        <label>по: </label><input name="end_date" type="date">
+        <input type="submit" value="Поиск">
+    </form>
     <div class="container">
     <h1>Отчет менеджера</h1>
         <table class="table">

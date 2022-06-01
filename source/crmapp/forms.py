@@ -155,7 +155,5 @@ class FilterForm(forms.Form):
     end_date = forms.DateField(required=False)
 
 
-
-
-
-
+class SearchForm(forms.Form):
+    search = forms.CharField(max_length=30, required=False, label="Найти")

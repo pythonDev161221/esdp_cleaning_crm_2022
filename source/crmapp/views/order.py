@@ -6,12 +6,15 @@ from django.views.generic import ListView, DetailView, CreateView
 from crmapp.forms import OrderForm, ServiceOrderFormSet, StaffOrderFormSet
 from crmapp.models import Order, ForemanOrderUpdate, ForemanReport
 
+from crmapp.views.search_view import SearchView
 
-class OrderListView(ListView):
+
+class OrderListView(SearchView):
     model = Order
     template_name = 'order/order_list.html'
     context_object_name = 'orders'
     ordering = '-created_at'
+    search_fields = ["status__icontains", "work_start__icontains", "address__icontains"]
 
 
 class OrderDetailView(DetailView):
