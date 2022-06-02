@@ -61,42 +61,47 @@ class OrderForm(forms.ModelForm):
             }
         )
         self.fields["cleaning_time"].widget = forms.TimeInput(attrs={"placeholder": "ЧЧ:ММ:СС", "value": "00:00:00"})
-    # def is_percent(self):
-    #     return True if self.cleaned_data.get('part_units') == 'percent' else False
-    #
-    # def get_cleaners_part(self):
-    #     return self.cleaned_data.get('cleaners_part')
-    #
-    # def save(self, commit=True):
-    #     order = super().save(commit=False)
-    #     cleaners_part = self.get_cleaners_part()
-    #     if self.is_percent():
-    #         cleaners_part = int(order.get_total()) * (cleaners_part / 100)
-    #     self.instance.cleaners_part = cleaners_part
-    #     if commit:
-    #         order.save()
-    #     return order
-
-    # def clean_cleaners_part(self):
-    #     cleaners_part = self.get_cleaners_part()
-    #     if self.is_percent() and cleaners_part > 50:
-    #         raise forms.ValidationError('Доля клинеров не может быть больше 50%')
-    #     return cleaners_part
 
 
 class CleanersPartForm(forms.ModelForm):
     class Meta:
         model = Order
         fields = (
-            'cleaners_part',
             'part_units',
+            'cleaners_part',
         )
+
+    def is_percent(self):
+        return True if self.cleaned_data.get('part_units') == 'percent' else False
+
+    def get_cleaners_part(self):
+        return self.cleaned_data.get('cleaners_part')
+
+    def save(self, commit=True):
+        order = super().save(commit=False)
+        cleaners_part = self.get_cleaners_part()
+        if self.is_percent():
+            cleaners_part = int(order.get_total()) * (cleaners_part / 100)
+        self.instance.cleaners_part = cleaners_part
+        if commit:
+            order.save()
+        return order
+
+    def clean_cleaners_part(self):
+        cleaners_part = self.get_cleaners_part()
+        if self.is_percent() and cleaners_part > 50:
+            raise forms.ValidationError('Доля клинеров не может быть больше 50%')
+        return cleaners_part
 
 
 class ServiceOrderForm(forms.ModelForm):
     class Meta:
         model = ServiceOrder
-        exclude = ('order', 'foreman_order', 'total')
+        exclude = (
+            'order',
+            'foreman_order',
+            'total'
+        )
 
     def save(self, commit=True):
         service = super().save(commit=False)
@@ -128,10 +133,6 @@ class OrderStaffForm(forms.ModelForm):
     class Meta:
         model = StaffOrder
         fields = ("staff", "is_brigadier")
-
-
-StaffOrderFormSet = inlineformset_factory(Order, StaffOrder, form=OrderStaffForm,
-                                          exclude=['order'], extra=3, can_delete=False)
 
 
 class BaseStaffAddFormSet(BaseModelFormSet):

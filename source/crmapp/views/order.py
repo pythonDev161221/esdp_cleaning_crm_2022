@@ -1,14 +1,15 @@
 from django.contrib import messages
-from django.forms import inlineformset_factory
+from django.contrib.auth import get_user_model
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
-from django.views.generic import ListView, DetailView, FormView
+from django.views.generic import ListView, DetailView
 
-from crmapp.crispy_form_helpers import OrderFormHelper, ServiceFormHelper, CleanersPartHelper, StaffFormHelper
-from crmapp.forms import OrderForm, ServiceOrderForm, OrderStaffForm, CleanersPartForm
+from crmapp.helpers.crispy_form_helpers import OrderFormHelper, ServiceFormHelper, CleanersPartHelper, StaffFormHelper
+from crmapp.forms import CleanersPartForm, OrderForm
+from crmapp.helpers.order_helpers import BaseOrderCreateView, ServiceFormset, StaffFormset
 
-from crmapp.models import Order, ForemanOrderUpdate, ForemanReport, ServiceOrder, StaffOrder
+from crmapp.models import Order, ForemanOrderUpdate, ForemanReport
 
 
 class OrderListView(ListView):
@@ -39,36 +40,13 @@ class OrderDetailView(DetailView):
             return context
 
 
-
-class FirstStepOrderCreateView(FormView):
+class FirstStepOrderCreateView(BaseOrderCreateView):
     model = Order
     form_class = OrderForm
-    formset = inlineformset_factory(
-        Order,
-        ServiceOrder,
-        form=ServiceOrderForm,
-        exclude=['order'],
-        extra=3,
-        can_delete=False
-    )
+    formset = ServiceFormset
     template_name = 'order/order_create.html'
-    object = None
-    form_helper = OrderFormHelper()
-    formset_helper = ServiceFormHelper()
-
-    def get_context_data(self, **kwargs):
-        kwargs['formset'] = self.formset()
-        kwargs['form_helper'] = self.form_helper
-        kwargs['formset_helper'] = self.formset_helper
-        return super().get_context_data(**kwargs)
-
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(self.request.POST)
-        formset = self.formset(self.request.POST)
-        if form.is_valid() and formset.is_valid():
-            return self.form_valid(form, formset)
-        else:
-            return self.form_invalid(form, formset)
+    form_helper = OrderFormHelper
+    formset_helper = ServiceFormHelper
 
     def form_valid(self, form, formset=None):
         form.instance.manager = self.request.user
@@ -77,46 +55,17 @@ class FirstStepOrderCreateView(FormView):
         formset.save()
         return HttpResponseRedirect(self.get_success_url())
 
-    def form_invalid(self, form, formset=None):
-        return self.render_to_response(
-            self.get_context_data(
-                form=form,
-                formset=formset,
-            )
-        )
-
     def get_success_url(self):
         return reverse_lazy('crmapp:cleaners_add', kwargs={'pk': self.object.pk})
 
 
-class CleanersAddView(FormView):
+class SecondStepOrderCreateView(BaseOrderCreateView):
     model = Order
     form_class = CleanersPartForm
-    formset = inlineformset_factory(
-        Order,
-        StaffOrder,
-        form=OrderStaffForm,
-        fields=['staff', 'is_brigadier'],
-        extra=5,
-        can_delete=False
-    )
     template_name = 'order/cleaners_add.html'
-    object = None
-
-    def get_context_data(self, **kwargs):
-        context = super(CleanersAddView, self).get_context_data(**kwargs)
-        context['formset'] = self.formset()
-        context['form_helper'] = CleanersPartHelper()
-        context['formset_helper'] = StaffFormHelper()
-        return context
-
-    def post(self, request, *args, **kwargs):
-        formset = self.formset(request.POST)
-        form = self.form_class(request.POST)
-        if form.is_valid() and formset.is_valid():
-            return self.form_valid(form, formset)
-        else:
-            return self.form_invalid(form, formset)
+    formset = StaffFormset
+    form_helper = CleanersPartHelper
+    formset_helper = StaffFormHelper
 
     def form_valid(self, form, formset=None):
         order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
@@ -127,14 +76,6 @@ class CleanersAddView(FormView):
         formset.save()
         messages.success(self.request, f'Заказ успешно создан!')
         return HttpResponseRedirect(self.get_success_url())
-
-    def form_invalid(self, form, formset=None):
-        return self.render_to_response(
-            self.get_context_data(
-                form=form,
-                formset=formset,
-            )
-        )
 
     def get_success_url(self):
         return reverse('crmapp:order_index')
