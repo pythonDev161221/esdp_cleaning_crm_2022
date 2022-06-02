@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.db.models.signals import pre_save
 
 from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
@@ -22,9 +21,9 @@ class Service(models.Model):
         return f'{self.name}'
 
     class Meta:
-        db_table = 'extra_services'
-        verbose_name = _('Дополнительная услуга')
-        verbose_name_plural = _('Дополнительные услуги')
+        db_table = 'service'
+        verbose_name = _('Услуга')
+        verbose_name_plural = _('Услуги')
 
 
 class Client(models.Model):
@@ -53,33 +52,44 @@ class ForemanReport(models.Model):
     # Таблица для отчёта бригадира имеет связь FK с таблицей Order
     order = models.ForeignKey('crmapp.Order', on_delete=models.PROTECT, null=False, blank=False,
                               related_name='foreman_order_report', verbose_name=_('Заказ'))
-    expenses = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Расходы'))
     start_at = models.DateTimeField(null=True, blank=True, verbose_name=_('Дата и время начала работы'))
     end_at = models.DateTimeField(null=True, blank=True, verbose_name=_('Дата и время окончания работы'))
 
     class Meta:
-        db_table ='foreman_report'
+        db_table = 'foreman_report'
         verbose_name = _('Отчёт бригадира')
         verbose_name_plural = _('Отчёты бригадира')
 
+    def get_total_expenses(self):
+        total = 0
+        for expense in self.foreman_expense.all():
+            total += expense.amount
+        return total
+
+
 class ForemanExpenses(models.Model):
-    amount = models.PositiveIntegerField(null=False, blank=False, verbose_name=_('Сумма расхода'))
+    amount = models.PositiveIntegerField(null=True, blank=True, default=0, verbose_name=_('Сумма расхода'))
     name = models.CharField(max_length=100, null=False, blank=False, verbose_name=_('Название расхода'))
     description = models.TextField(max_length=1000, null=True, blank=True, verbose_name=_('Описание расхода'))
     foreman_report = models.ForeignKey('crmapp.ForemanReport', on_delete=models.CASCADE, null=False, blank=False,
                                        related_name='foreman_expense', verbose_name=_('Отчёт бригадира'))
 
+    db_table = 'foreman_expense'
+    verbose_name = _('Расход бригадира')
+    verbose_name_plural = _('Расходы бригадира')
+
 
 class ForemanPhoto(models.Model):
     foreman_report = models.ForeignKey('crmapp.ForemanReport', null=False, blank=False, on_delete=models.CASCADE,
-                                     related_name='foreman_photo', verbose_name='Фото до начала работ')
-    is_after = models.BooleanField(default=False,  verbose_name='Фото после окончания работ')
+                                       related_name='foreman_photo', verbose_name='Фото до начала работ')
+    is_after = models.BooleanField(default=False, verbose_name='Фото после окончания работ')
     image = models.ImageField(upload_to='photo_foreman/', verbose_name=_('Фото'))
 
     class Meta:
         db_table = 'foreman_photo'
         verbose_name = _('Фотография от бригадира')
         verbose_name_plural = _('Фотографии от бригадира')
+
 
 class ForemanOrderUpdate(models.Model):
     # Таблица для редактирования услуг и доп услуг в заказе для бригадира, имеет связь FK с таблицей Order
@@ -93,6 +103,7 @@ class ForemanOrderUpdate(models.Model):
         verbose_name = _('Корректировка бригадира')
         verbose_name_plural = _('Корректировки бригадиров')
 
+
 class StaffOrder(models.Model):
     order = models.ForeignKey('crmapp.Order', related_name='order_cleaners', verbose_name=_('Заказ'), null=False,
                               blank=False, on_delete=models.PROTECT)
@@ -102,6 +113,11 @@ class StaffOrder(models.Model):
     is_accept = models.BooleanField(null=True, blank=True, default=False, verbose_name=_('Принял заказ'))
     in_place = models.DateTimeField(null=True, blank=True, verbose_name=_('Время прибытия на заказ'))
     work_start = models.DateTimeField(null=True, blank=True, verbose_name=_('Время старта выполнения работ'))
+
+    class Meta:
+        db_table = 'staff_order'
+        verbose_name = _('Сотрудник в заказе')
+        verbose_name_plural = _('Сотрудники в заказе')
 
 
 class Order(models.Model):
@@ -136,8 +152,24 @@ class Order(models.Model):
     part_units = models.CharField(max_length=25, null=False, blank=False, default='som', choices=PartUnits.choices,
                                   verbose_name=_('Способ расчета'))
 
-    inventories = models.ManyToManyField("crmapp.Inventory", related_name='order_inventories', verbose_name=_('Инвентарь'),
-                                      through='crmapp.InventoryOrder')
+    inventories = models.ManyToManyField("crmapp.Inventory", related_name='order_inventories',
+                                         verbose_name=_('Инвентарь'),
+                                         through='crmapp.InventoryOrder')
+
+    def get_all_staff_expenses(self):
+        expenses = 0
+        for expense in self.order_manager.all():
+            expenses += expense.get_salary()
+        return expenses
+
+    def get_foreman_expenses(self):
+        if self.foreman_order_report:
+            for report in self.foreman_order_report.all():
+                return report.get_total_expenses()
+        return 0
+
+    def get_income_outcome(self):
+        return self.get_total() - self.get_all_staff_expenses() - self.get_foreman_expenses()
 
     def manager_report_base_sum(self):
         staff_part = int(
@@ -191,6 +223,11 @@ class Order(models.Model):
     def save(self, *args, **kwargs):
         self.work_end = self.work_start + self.cleaning_time
         super(Order, self).save(*args, **kwargs)
+
+    class Meta:
+        db_table = 'order'
+        verbose_name = _('Заказ')
+        verbose_name_plural = _('Заказы')
 
 
 class FineCategory(models.Model):
@@ -306,18 +343,14 @@ class ManagerReport(models.Model):
                                 verbose_name=_('Клинер'))
     salary = models.IntegerField(verbose_name=_('Заработная плата'), null=False, blank=False)
     fine = models.IntegerField(verbose_name=_('Штраф'), null=True, blank=True, default=0)
-    fine_description = models.ForeignKey('crmapp.Fine', related_name='manager_reports', on_delete=models.PROTECT, null=True, blank=True, verbose_name=_('Причина штрафа'))
+    fine_description = models.ForeignKey('crmapp.Fine', related_name='manager_reports', on_delete=models.PROTECT,
+                                         null=True, blank=True, verbose_name=_('Причина штрафа'))
     bonus = models.IntegerField(verbose_name=_('Бонус'), null=True, blank=True, default=0)
-    bonus_description = models.ForeignKey('crmapp.Bonus', related_name='manager_reports', on_delete=models.PROTECT, null=True, blank=True, verbose_name=_('Причина для бонуса'))
+    bonus_description = models.ForeignKey('crmapp.Bonus', related_name='manager_reports', on_delete=models.PROTECT,
+                                          null=True, blank=True, verbose_name=_('Причина для бонуса'))
     created_at = models.DateTimeField(auto_now=True, verbose_name=_('Дата создания'))
     updated_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата изменения'))
     comment = models.CharField(max_length=255, null=True, blank=True, verbose_name=_('Комментарий'))
-
-    def get_all_expences_in_order(self):
-        expences = 0
-        for report in ManagerReport.objects.filter(order=self.order):
-            expences += report.get_salary()
-        return expences
 
     def get_salary(self):
         total = self.salary + abs(self.bonus) - abs(self.fine)

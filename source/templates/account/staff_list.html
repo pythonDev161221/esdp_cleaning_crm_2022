@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block title %}Staff{% endblock title %}
+
+{% block links %}
+    <li class="nav-item">
+        <a href="{% url 'accounts:black-list' %}" class="nav-link">Черный список</a>
+    </li>
+{% endblock links %}
+{% block content %}
+    {% if user_objects %}
+        {% include '../partial/simple_search.html' %}
+        <div class="container">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">ФИО Сотрудника</th>
+                    <th scope="col">Баланс</th>
+                    <th scope="col">Телефон</th>
+                    <th scope="col">Квалификация</th>
+                    <th scope="col">График работы</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for staff in user_objects %}
+                    <tr>
+                        <td><a style="text-decoration: none" href="{% url 'accounts:profile' staff.pk %}">
+                            {{ staff.last_name | capfirst }} {{ staff.first_name | capfirst }} </a></td>
+                        <td>{{ staff.balance }}</td>
+                        <td>{{ staff.phone }}</td>
+                        <td>{{ staff.get_experience_display }}</td>
+                        <td>
+                            {% for day in staff.schedule.all %}
+                                <span>{{ day }}{% if not forloop.last %}, {% else %}. {% endif %}</span>
+                            {% endfor %}
+                        </td>
+                        <td><a class="btn btn-outline-primary" href="{% url 'accounts:staff-edit' staff.pk %}"><i
+                                class="fa-solid fa-pen-to-square"></i></a>
+                            <a class="btn btn-outline-dark" href="{% url 'accounts:black-list-add' staff.pk %}"><i
+                                    class="fa-solid fa-file-excel"></i></a>
+                            <a class="btn btn-outline-danger" href="{% url 'accounts:staff-delete' staff.pk %}"><i
+                                    class="fa-solid fa-trash"></i></a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="p-5">Список сотрудников пуст</p>
+    {% endif %}
+    <div class="container text-center">
+        <a class="btn btn-primary" href="{% url 'accounts:register' %}">Добавить сотрудника</a>
+    </div>
+{% endblock content %}

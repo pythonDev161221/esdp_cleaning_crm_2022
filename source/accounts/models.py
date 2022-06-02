@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
@@ -7,6 +9,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 from .managers import CustomUserManager
 from .choice import StaffCategoryChoices, WorkDayChoices
+from main.settings import TELEGRAM_BOT_USERNAME
 
 
 class Staff(AbstractUser):
@@ -31,6 +34,8 @@ class Staff(AbstractUser):
     balance = models.IntegerField(verbose_name=_('Деньги работника'), default=0,
                                   null=False, blank=False)
     description = models.TextField(max_length=2000, null=True, blank=True, verbose_name=_('Примечание'))
+    telegram_id = models.CharField(max_length=120, null=True, blank=True)
+    telegram_auth_token = models.CharField(max_length=21, null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -58,6 +63,12 @@ class Staff(AbstractUser):
         self.balance += value
         self.save()
 
+    def set_auth_tg_token(self):
+        token = str(uuid.uuid4().hex)[:20]
+        self.telegram_auth_token = token
+        self.save()
+        return f"https://t.me/{TELEGRAM_BOT_USERNAME}?start={token}"
+
     def __str__(self):
         return f' {self.last_name} {self.first_name}'
 
@@ -65,7 +76,7 @@ class Staff(AbstractUser):
         return reverse('accounts:profile', kwargs={'pk': self.pk})
 
     class Meta:
-        db_table = 'Staff'
+        db_table = 'staff'
         verbose_name = _('Сотрудник')
         verbose_name_plural = _('Сотрудники')
 
@@ -78,13 +89,13 @@ class WorkDay(models.Model):
         return self.get_day_display()
 
     class Meta:
-        db_table = 'WorkDays'
+        db_table = 'work_days'
         verbose_name = _('День недели')
         verbose_name_plural = _('Дни недели')
 
 
 class Payout(models.Model):
-    staff = models.ForeignKey('accounts.Staff', null=False, blank=False, related_name='staff',
+    staff = models.ForeignKey('accounts.Staff', null=False, blank=False, related_name='payouts',
                               verbose_name=_('Работник'), on_delete=models.PROTECT)
     salary = models.IntegerField(null=False, blank=False,
                                  verbose_name=_('Заработная плата'))
@@ -97,6 +108,6 @@ class Payout(models.Model):
         return f"{self.date_payout}{self.staff}{self.salary}"
 
     class Meta:
-        db_table = 'Payouts'
+        db_table = 'payout'
         verbose_name = _('Выплата')
         verbose_name_plural = _('Выплаты')

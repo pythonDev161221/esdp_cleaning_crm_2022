@@ -1,9 +1,8 @@
 from django.contrib import messages
-from django.contrib.auth import get_user_model
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
-from django.views.generic import ListView, DetailView
+from django.views.generic import DetailView
 
 from crmapp.helpers.crispy_form_helpers import OrderFormHelper, ServiceFormHelper, CleanersPartHelper, StaffFormHelper
 from crmapp.forms import CleanersPartForm, OrderForm
@@ -11,12 +10,15 @@ from crmapp.helpers.order_helpers import BaseOrderCreateView, ServiceFormset, St
 
 from crmapp.models import Order, ForemanOrderUpdate, ForemanReport
 
+from crmapp.views.search_view import SearchView
 
-class OrderListView(ListView):
+
+class OrderListView(SearchView):
     model = Order
     template_name = 'order/order_list.html'
     context_object_name = 'orders'
     ordering = '-created_at'
+    search_fields = ["status__icontains", "work_start__icontains", "address__icontains"]
 
 
 class OrderDetailView(DetailView):
@@ -26,8 +28,6 @@ class OrderDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['extra_service'] = self.object.order_services.all()
-        context['staff'] = self.object.order_cleaners.all()
         context['brigadir'] = self.object.order_cleaners.get(is_brigadier=True)
         try:
             foreman_update = ForemanOrderUpdate.objects.get(order_id=self.object.pk)

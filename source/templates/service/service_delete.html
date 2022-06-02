@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Удаление услуги{% endblock title %}
+
+{% block content %}
+<div class="container">
+
+<h1>Вы уверены что хототе удалить услугу <u>"{{ service }}"</u> ?</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="submit" value="Да" class="btn btn-danger my-3">
+    </form>
+    <a href="{% url 'crmapp:service_list' %}">
+        <button type="button" class="btn-secondary my-4">Нет</button>
+    </a>
+</div>
+{% endblock content %}
+

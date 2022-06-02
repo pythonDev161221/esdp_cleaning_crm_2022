@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Adding service to order{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <h3>Добавить услугу в заказ</h3>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <input type="submit" value="Добавить" class="btn btn-primary">
+            </form>
+        </div>
+    </div>
+{% endblock content %}

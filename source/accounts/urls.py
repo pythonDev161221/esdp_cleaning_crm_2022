@@ -13,13 +13,17 @@ from accounts.views.accounts import (StaffProfileView,
                                      RemoveFromBlackList,
                                      StaffDescriptionView,
                                      StaffPassportView,
-                                     StaffPassportPhotoView)
+                                     StaffPassportPhotoView,
+                                     get_auth_token_telegram,
+                                     StaffPayoutDetailView,
+                                     StaffOrderDetailView,)
 from accounts.views.payout import PayoutListView, PayoutCreateView
+
 
 app_name = 'accounts'
 
 urlpatterns = [
-    path('login/', LoginView.as_view(template_name="account/login.html"), name='login'),
+    path('login/', LoginView.as_view(template_name="../templates/account/login.html"), name='login'),
     path('logout/', LogoutView.as_view(), name="logout"),
     path('register/', StaffRegisterView.as_view(), name='register'),
     path("password_change/", PasswordChangeView.as_view(), name="change_password"),
@@ -36,4 +40,7 @@ urlpatterns = [
     path('black_list/remove/<int:pk>/', RemoveFromBlackList.as_view(), name='black-list-remove'),
     path('payout/', PayoutListView.as_view(), name='payout_list'),
     path('payout/<int:pk>/', PayoutCreateView.as_view(), name='payout_create'),
+    path('staff/<int:pk>/payout/', StaffPayoutDetailView.as_view(), name='staff_payout'),
+    path("staff/<int:pk>/telegram/token/", get_auth_token_telegram, name="auth_tg_token"),
+    path('staff/<int:pk>/order/', StaffOrderDetailView.as_view(), name='staff_orders'),
 ]

@@ -2,13 +2,13 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.forms import modelformset_factory
-from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
 from django.views.generic import ListView, FormView
 
 from crmapp.forms import ManagerReportForm, BaseManagerReportFormSet
 from crmapp.models import ManagerReport, Order
+
+from crmapp.forms import FilterForm
 
 User = get_user_model()
 
@@ -29,12 +29,14 @@ class ManagerReportCreateView(FormView):
         context = super().get_context_data(*args, **kwargs)
         order = get_object_or_404(Order, pk=self.kwargs['pk'])
         staff_and_salary = order.manager_report_salary_staffs()
-        ManagerFormset = modelformset_factory(ManagerReport, form=ManagerReportForm, formset=BaseManagerReportFormSet, extra=order.cleaners.count())
+        ManagerFormset = modelformset_factory(ManagerReport, form=ManagerReportForm, formset=BaseManagerReportFormSet,
+                                              extra=order.cleaners.count())
         formset = ManagerFormset(prefix='extra', queryset=order.cleaners.all())
         staff_numeric_value = 0
         for forms in formset:
             forms.fields['cleaner'].queryset = order.cleaners.all()
-            forms.initial = {"cleaner": staff_and_salary[staff_numeric_value][0],  "salary": round(staff_and_salary[staff_numeric_value][1], 0)}
+            forms.initial = {"cleaner": staff_and_salary[staff_numeric_value][0],
+                             "salary": round(staff_and_salary[staff_numeric_value][1], 0)}
             staff_numeric_value += 1
         context['formset'] = formset
         return context
@@ -48,7 +50,7 @@ class ManagerReportCreateView(FormView):
             if sum(salary_all_sum) > order.get_total():  # Вместо order.get_total() указать поле зп выделенное для клинеров
                 return render(self.request, self.template_name,
                               {"salary_errors": f"Сумма превышает общий допустимый лимит: {order.get_total()}",
-                               "formset": formset})# Вместо order.get_total() указать поле зп выделенное для клинеров
+                               "formset": formset})  # Вместо order.get_total() указать поле зп выделенное для клинеров
             else:
                 messages.success(self.request, f'Операция успешно выполнена!')
                 return self.form_valid(formset)
@@ -76,10 +78,32 @@ class ManagerReportListView(ListView):
     model = ManagerReport
     template_name = 'manager_report/report_list.html'
     context_object_name = 'manager_reports'
+    filter_form_class = FilterForm
 
+    def get(self, request, *args, **kwargs):
+        self.form = self.get_form()
+        self.search_value_first = self.get_search_value_first()
+        self.search_value_last = self.get_search_value_last()
+        return super().get(request, *args, **kwargs)
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.search_value_first and self.search_value_last:
+            queryset = queryset.filter(created_at__range=(self.search_value_first, self.search_value_last))
+        return queryset
 
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context['form'] = self.filter_form_class()
+        return context
 
+    def get_form(self):
+        return self.filter_form_class(self.request.GET)
 
+    def get_search_value_first(self):
+        if self.form.is_valid():
+            return self.form.cleaned_data.get("start_date")
 
-
+    def get_search_value_last(self):
+        if self.form.is_valid():
+            return self.form.cleaned_data.get("end_date")
