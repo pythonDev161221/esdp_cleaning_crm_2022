@@ -42,6 +42,7 @@ class ForemanOrderUpdateCreateView(FormView):
             foreman_order.save()
         return redirect('crmapp:foremanorder_create', order.id)
 
+
 class ServiceForemanOrderCreateView(CreateView):
     model = ServiceOrder
     template_name = 'service/service_order/service_order_create.html'
@@ -60,6 +61,7 @@ class ServiceForemanOrderCreateView(CreateView):
     def get_success_url(self):
         return reverse('crmapp:order_detail', kwargs={'pk': self.object.order.pk})
 
+
 class ForemanExpenseView(CreateView):
     model = ForemanExpenses
     form_class = ForemanExpenseForm
@@ -76,6 +78,7 @@ class ForemanExpenseView(CreateView):
     # def get_success_url(self):
     #     return reverse('crmapp:order_detail', kwargs={'pk': self.object.order.pk})
 
+
 class InPlaceView(View):
     def get(self, request, *args, **kwargs):
         order = Order.objects.get(pk=kwargs['pk'])
@@ -86,6 +89,7 @@ class InPlaceView(View):
             staff.in_place = datetime.datetime.now()
             staff.save()
         return redirect('crmapp:order_detail', kwargs['pk'])
+
 
 class WorkStartView(View):
     def get(self, request, *args, **kwargs):
@@ -99,6 +103,7 @@ class WorkStartView(View):
             staff.work_start = datetime.datetime.now()
             staff.save()
         return redirect('crmapp:order_detail', kwargs['pk'])
+
 
 class WorkEndView(View):
     def get(self, request, *args, **kwargs):

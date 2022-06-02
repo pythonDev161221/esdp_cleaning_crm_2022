@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Black List{% endblock title %}
+
+{% block content %}
+    {% if user_objects %}
+        {% include '../partial/simple_search.html' %}
+        <div class="m-3">
+            <table class="table mb-4">
+                <thead>
+                <tr>
+                    <th scope="col">ФИО Сотрудника</th>
+                    <th scope="col">ИНН</th>
+                    <th scope="col">Телефон</th>
+                    <th scope="col">Примечание</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for staff in user_objects %}
+                    <tr>
+                        <td><a style="text-decoration: none" href="{% url 'accounts:profile' staff.pk %}">
+                            {{ staff.last_name | capfirst }} {{ staff.first_name | capfirst }} </a></td>
+                        <td>{{ staff.inn_passport }}</td>
+                        <td>{{ staff.phone }}</td>
+                        <td>{{ staff.description }}</td>
+                        <td><a class="btn btn-outline-primary" href="{% url 'accounts:black-list-remove' staff.pk %}">Вернуть
+                            из ЧEРНОГО СПИСКА</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="p-5">Черный список пуст</p>
+    {% endif %}
+{% endblock content %}

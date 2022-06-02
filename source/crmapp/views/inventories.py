@@ -1,16 +1,18 @@
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView, FormView
-
+from django.views.generic import CreateView, UpdateView, DeleteView, FormView
 
 from crmapp.forms import InventoryForm, InventoryOrderForm, InventoryOrderFormSet
 from crmapp.models import Inventory, InventoryOrder, Order
 
+from crmapp.views.search_view import SearchView
 
-class InventoryListView(ListView):
+
+class InventoryListView(SearchView):
     model = Inventory
     context_object_name = 'inventories'
     template_name = 'inventories/inventory_list.html'
+    search_fields = ["name__icontains", "description__icontains"]
 
 
 class InventoryCreateView(CreateView):
@@ -31,6 +33,7 @@ class InventoryDeleteView(DeleteView):
 
     def get_success_url(self):
         return reverse("crmapp:inventory_index")
+
 
 class InventoryOrderCreateView(FormView):
     model = InventoryOrder

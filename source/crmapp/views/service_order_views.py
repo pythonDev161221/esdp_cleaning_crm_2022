@@ -9,7 +9,7 @@ from crmapp.models import ServiceOrder, Order
 
 class ServiceOrderCreateView(CreateView):
     model = ServiceOrder
-    template_name = 'service/service_order/service_order_create.html'
+    template_name = 'service_order/service_order_create.html'
     form_class = ServiceOrderForm
 
     def form_valid(self, form):
@@ -26,7 +26,7 @@ class ServiceOrderCreateView(CreateView):
 
 class ServiceOrderUpdateView(UpdateView):
     model = ServiceOrder
-    template_name = 'service/service_order/service_order_update.html'
+    template_name = 'service_order/service_order_update.html'
     form_class = ServiceOrderForm
     context_object_name = 'service_order'
 
@@ -41,7 +41,7 @@ class ServiceOrderUpdateView(UpdateView):
 
 class ServiceOrderDeleteView(DeleteView):
     model = ServiceOrder
-    template_name = 'service/service_order/service_order_delete.html'
+    template_name = 'service_order/service_order_delete.html'
     context_object_name = 'service_order'
 
     def get_success_url(self):

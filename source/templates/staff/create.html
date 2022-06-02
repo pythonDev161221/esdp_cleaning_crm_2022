@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% block content %}
+
+    <div class="container">
+        <h2>Выберите клинеров для заказа </h2>
+        <form method="POST" class="mb-5">
+            {{ formset.management_form }}
+            {% csrf_token %}
+            {% for hidden in formset.hidden_fields %}
+                {{ hidden }}
+            {% endfor %}
+            <div class="w-50 fs-6">
+                {% for forms in formset %}
+                    <div style="border-bottom: 1px solid lightgray;  padding: 10px 0">
+                        {{ forms }}
+                    </div>
+                {% endfor %}
+            </div>
+            <input class="btn btn-primary mt-3" type="submit" value="Сохранить">
+        </form>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block tittle %}Отчет менеджера{% endblock tittle %}
+
+{% block content %}
+    <form class="text-center mt-3" action="" method="GET">
+        <label>с: </label><input name="start_date" type="date">
+        <label>по: </label><input name="end_date" type="date">
+        <input type="submit" value="Поиск">
+    </form>
+    <div class="container">
+    <h1>Отчет менеджера</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Дата создания</th>
+                    <th scope="col">id Заказа</th>
+                    <th scope="col">Клинер</th>
+                    <th scope="col">Заработная плата</th>
+                    <th scope="col">Бонус</th>
+                    <th scope="col">Причина для бонуса</th>
+                    <th scope="col">Штраф</th>
+                    <th scope="col">Причина штрафа</th>
+                    <th scope="col">Итого</th>
+                    <th scope="col">Комментарий</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for manager_report in manager_reports %}
+                    <tr>
+                        <th scope="row">{{ manager_report.created_at }}</th>
+                        <th>{{ manager_report.order.id }}</th>
+                        <td>{{ manager_report.cleaner }}</td>
+                        <td>{{ manager_report.salary }}</td>
+                        <td>{{ manager_report.bonus }}</td>
+                        <td>{{ manager_report.bonus_description|default:"" }}</td>
+                        <td>{{ manager_report.fine }}</td>
+                        <td>{{ manager_report.fine_description|default:"" }}</td>
+                        <td>{{ manager_report.get_salary }}</td>
+                        <td>{{ manager_report.comment|default:"" }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}

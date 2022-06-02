@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Profile{% endblock title %}
+
+{% block links %} {% endblock links %}
+
+{% block content %}
+    <div class="container mb-5 text-start">
+        <br>
+        <div class="row display-flex">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header fs-5">
+                        <strong>{{ user_object.first_name | capfirst }} {{ user_object.last_name | capfirst }}</strong>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Email: </strong>{{ user_object.email }}</p>
+                        <p><strong>Телефон: </strong>{{ user_object.phone }}</p>
+                        <p><strong>Адрес: </strong>{% if user_object.address %}{{ user_object.address }}{% else %}
+                            Не указан{% endif %}</p>
+                        <p><strong>ИНН: </strong>{{ user_object.inn_passport }}</p>
+                        <p><strong>Электронные кошельки: </strong></p>
+                        {% for wallet in user_object.online_wallet %}
+                            <p>{{ wallet }}</p>
+                        {% endfor %}
+                        <p><strong>Квалификация: </strong>
+                            {{ user_object.get_experience_display }}</p>
+                        <span><strong>График работы: </strong></span>
+                        {% for day in user_object.schedule.all %}
+                            {{ day }}{% if not forloop.last %}, {% else %}. {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+                <hr>
+                <a class="btn btn-success" href="#">Баланс {{ user_object.balance }} сом</a>
+                <a class="btn btn-dark" href="{% url 'accounts:payout_create' user_object.pk %}">Выдать заработную
+                    плату</a>
+                <a class="btn btn-dark" href="{% url 'accounts:staff_orders' user_object.pk %}">История заказов</a>
+                <a class="btn btn-dark" href="{% url 'accounts:staff_payout' user_object.pk %}">История зарплаты</a>
+                <a class="btn btn-dark" href="{% url "accounts:auth_tg_token" user_object.pk %}">Получить токен
+                    авторизации для телеграмм</a>
+                <hr>
+            </div>
+            <div class="col-md-4">
+                {% if not user_object.avatar %}
+                    <div class="position-relative ms-4">
+                        <div class="position-absolute bottom-0">
+                            <a style="margin-left: 15px" class="btn btn-outline-dark"
+                               href="{% url 'accounts:staff-photo' user_object.pk %}">Выбрать
+                                фото</a>
+                            <a class="btn btn-outline-dark" href="{% url 'accounts:change_password' %}">Изменить
+                                пароль</a>
+                        </div>
+                        <img class="cart-img-top rounded " style="height: 300px; width: 300px"
+                             src="{% static 'img/no_pic.jpg' %}" alt="no photo">
+                    </div>
+                {% else %}
+                    <div class="position-relative ms-2">
+                        <div class="position-absolute bottom-0 m-1">
+                            <a style="margin-left: 31px;" class="btn btn-outline-secondary"
+                               href="{% url 'accounts:staff-photo' user_object.pk %}">Изменить
+                                фото</a>
+                            <a class="btn btn-outline-secondary" href="{% url 'accounts:change_password' %}">Изменить
+                                пароль</a>
+                        </div>
+                        <div class="box" style="width: 300px; height: 300px; margin-left: 32px">
+                            <img class="cart-img-top rounded" style="height:100%;width:100%;"
+                                 src="{{ user_object.avatar.url }}" alt="user avatar">
+                        </div>
+                    </div>
+                {% endif %}
+                <hr>
+                <div class="card p-2">
+                    <a class="text-dark text-center" style="text-decoration: none"
+                       href="{% url 'accounts:staff-passport' user_object.id %}">Электронная версия паспорта</a>
+                </div>
+                <hr>
+                {% if user_object.description %}
+                    <div class="card mb-3">
+                        <div class="card p-2">
+                            <a class="text-dark text-center" style="text-decoration: none"
+                               href="{% url 'accounts:staff-description' user_object.pk %}">Примечания <i
+                                    class="fa-solid fa-pen-to-square"></i></a>
+                        </div>
+                        <div class="card-body">
+                            <p>{{ user_object.description }}</p>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="card p-2">
+                        <a class="text-dark text-center" style="text-decoration: none;"
+                           href="{% url 'accounts:staff-description' user_object.pk %}">Примечания
+                            <i class="fa-solid fa-pen-to-square"></i></a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}
