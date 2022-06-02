@@ -13,7 +13,7 @@ class OrderListView(SearchView):
     model = Order
     template_name = 'order/order_list.html'
     context_object_name = 'orders'
-    ordering = '-created_at'
+    ordering = 'work_start'
     search_fields = ["status__icontains", "work_start__icontains", "address__icontains"]
 
 
