@@ -21,7 +21,7 @@ class OrderListView(SearchView):
     model = Order
     template_name = 'order/order_list.html'
     context_object_name = 'orders'
-    ordering = '-created_at'
+    ordering = 'work_start'
     search_fields = ["status__icontains", "work_start__icontains", "address__icontains"]
 
 
@@ -33,15 +33,7 @@ class OrderDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['brigadir'] = self.object.order_cleaners.get(is_brigadier=True)
-        try:
-            foreman_update = ForemanOrderUpdate.objects.get(order_id=self.object.pk)
-            foreman_report = ForemanReport.objects.get(order_id=self.object.pk)
-            foreman_expenses = foreman_report.foreman_expense.all()
-            context['foreman_update'] = foreman_update
-            context['foreman_expenses'] = foreman_expenses
-            return context
-        except:
-            return context
+        return context
 
 
 class FirstStepOrderCreateView(BaseOrderCreateView):
