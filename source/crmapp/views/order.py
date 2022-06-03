@@ -1,4 +1,6 @@
 from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
@@ -11,6 +13,8 @@ from crmapp.helpers.order_helpers import BaseOrderCreateView, ServiceFormset, St
 from crmapp.models import Order, ForemanOrderUpdate, ForemanReport
 
 from crmapp.views.search_view import SearchView
+
+User = get_user_model()
 
 
 class OrderListView(SearchView):
@@ -67,6 +71,11 @@ class SecondStepOrderCreateView(BaseOrderCreateView):
     form_helper = CleanersPartHelper
     formset_helper = StaffFormHelper
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["formset"] = self.get_staff_filtered_formset(context["formset"])
+        return context
+
     def form_valid(self, form, formset=None):
         order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
         order.cleaners_part = form.cleaned_data.get('cleaners_part')
@@ -76,6 +85,23 @@ class SecondStepOrderCreateView(BaseOrderCreateView):
         formset.save()
         messages.success(self.request, f'Заказ успешно создан!')
         return HttpResponseRedirect(self.get_success_url())
+
+    def get_staff_filtered_formset(self, formset):
+        order = get_object_or_404(Order, pk=self.kwargs.get("pk"))
+        staff_filter = User.objects.filter(
+            is_staff=False, is_active=True, black_list=False, schedule=order.work_start.isoweekday()
+        ).exclude(
+            Q(cleaner_orders__order=order) |
+            Q(
+                Q(cleaner_orders__order__work_start__gte=order.work_end) |
+                Q(cleaner_orders__order__work_end__gte=order.work_start) &
+                Q(cleaner_orders__order__work_end__gte=order.work_end)
+            )
+        )
+        for form in formset:
+            form.fields["staff"].queryset = staff_filter
+
+        return formset
 
     def get_success_url(self):
         return reverse('crmapp:order_index')
