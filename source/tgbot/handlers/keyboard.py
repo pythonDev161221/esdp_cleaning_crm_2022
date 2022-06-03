@@ -19,3 +19,21 @@ def get_refuses_keyboard(order_id, staff_id) -> InlineKeyboardMarkup:
         ]
     ]
     return InlineKeyboardMarkup(keyboard)
+
+def get_in_place_keyboard(order_id, staff_id) -> InlineKeyboardMarkup:
+    keyboard = [
+        [
+            InlineKeyboardButton("На месте", callback_data=f'in_place {order_id} {staff_id}'),
+            InlineKeyboardButton("Информация о заказе", callback_data=f'order_info {order_id} {staff_id}'),
+        ]
+    ]
+    return InlineKeyboardMarkup(keyboard)
+
+
+def get_order_information_keyboard(order_id, staff_id) -> InlineKeyboardMarkup:
+    keyboard = [
+        [
+            InlineKeyboardButton("Обновить", callback_data=f'info_update {order_id} {staff_id}'),
+        ]
+    ]
+    return InlineKeyboardMarkup(keyboard)

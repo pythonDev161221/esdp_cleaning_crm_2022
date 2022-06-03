@@ -177,44 +177,38 @@ class Order(models.Model):  # Таблица самого заказа
     def get_income_outcome(self):
         return self.get_total() - self.get_all_staff_expenses() - self.get_foreman_expenses()
 
-    def manager_report_base_sum(self):
+    def manager_report_base_sum(self, staff_is_accept_order):
         staff_part = int(
-            self.get_total()) / self.cleaners.count()  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+            self.get_total()) / staff_is_accept_order.count()  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
         base_sum = 0
-        for staff in self.cleaners.all():
+        for order_staff in staff_is_accept_order:
             for coefficient in ORDER_STAFF_SALARY_COEFFICIENT:
-                if str(staff.experience) == coefficient[0]:
+                if str(order_staff.staff.experience) == coefficient[0]:
                     base_sum += staff_part * coefficient[1]
         return base_sum
 
-    def manager_report_numeric_coefficient(self):
+    def manager_report_numeric_coefficient(self, staff_is_accept_order):
         staff_part = int(
-            self.get_total()) / self.cleaners.count()  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
-        base_num = self.manager_report_base_sum()
+            self.get_total()) / staff_is_accept_order.count()  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+        base_num = self.manager_report_base_sum(staff_is_accept_order)
         num_coefficient = []
-        for staff in self.cleaners.all():
+        for order_staff in staff_is_accept_order:
             for coefficient in ORDER_STAFF_SALARY_COEFFICIENT:
-                if str(staff.experience) == coefficient[0]:
+                if str(order_staff.staff.experience) == coefficient[0]:
                     num_coff = staff_part * coefficient[1] / base_num
-                    num_coefficient.append(num_coff)
+                    num_coefficient.append([order_staff.staff, num_coff])
         return num_coefficient
 
-    def manager_reprot_numeric_salary(self):
-        staff_salary = []
-        num_coefficient = self.manager_report_numeric_coefficient()
-        [staff_salary.append(int(self.get_total()) * nc) for nc in
-         num_coefficient]  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
-        return staff_salary
-
     def manager_report_salary_staffs(self):
-        staff_salary = self.manager_reprot_numeric_salary()
-        i = 0
-        context = []
-        for staff in self.cleaners.all():
-            result = [staff, int(staff_salary[i])]
-            i += 1
-            context.append(result)
-        return context
+        staff_list = self.order_cleaners.all()
+        staff_salary = []
+        if staff_list.filter(is_accept=True):
+            num_coefficient = self.manager_report_numeric_coefficient(staff_list.filter(is_accept=True))
+            [staff_salary.append([nc[0], int(self.get_total()) * nc[1]]) for nc in
+             num_coefficient]  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+        if staff_list.filter(is_refuse=True):
+            [staff_salary.append([staff_is_refuse.staff, None]) for staff_is_refuse in staff_list.filter(is_refuse=True)]
+        return staff_salary
 
     def get_total(self):
         total = 0

@@ -11,7 +11,8 @@ from telegram.ext import (
 
 from main.settings import TELEGRAM_TOKEN
 from tgbot.handlers.login import tg_login
-from tgbot.handlers.orders.order_staff_callback import order_staff_accept_callback, order_staff_refuse_callback, refuse_true_callback, refuse_false_callback
+from tgbot.handlers.orders.order_staff_callback import order_staff_accept_callback, order_staff_refuse_callback, \
+    refuse_true_callback, refuse_false_callback, order_information, order_information_update
 
 
 def setup_dispatcher(dp):
@@ -21,6 +22,8 @@ def setup_dispatcher(dp):
     dp.add_handler(CallbackQueryHandler(order_staff_refuse_callback, pattern="refuse"))
     dp.add_handler(CallbackQueryHandler(refuse_true_callback, pattern="retrue"))
     dp.add_handler(CallbackQueryHandler(refuse_false_callback, pattern="refalse"))
+    dp.add_handler(CallbackQueryHandler(order_information, pattern="order_info"))
+    dp.add_handler(CallbackQueryHandler(order_information_update, pattern="info_update"))
 
     return dp
 
@@ -59,7 +62,7 @@ def set_up_commands(bot_instance: Bot) -> None:
 
 bot = telegram.Bot(TELEGRAM_TOKEN)
 set_up_commands(bot)
-bot.setWebhook(url='https://9df4-212-112-118-122.in.ngrok.io/telegram-bot/cleaning-serice-bot/update/')
+bot.setWebhook(url='https://fc38-212-112-118-122.in.ngrok.io/telegram-bot/cleaning-serice-bot/update/')
 # bot.setWebhook(url=) # вставить в url https:// Ngrok или путь с протоколом https + telegram-bot/cleaning-serice-bot/update/
 # n_workers = 0 if DEBUG else 4
 dispatcher = setup_dispatcher(Dispatcher(bot, None, workers=1, use_context=True))
