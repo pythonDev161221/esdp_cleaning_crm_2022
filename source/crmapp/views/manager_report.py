@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from django.forms import modelformset_factory
+from django.forms import modelformset_factory, HiddenInput
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView, FormView
 
@@ -19,24 +19,33 @@ class ManagerReportCreateView(FormView):
     template_name = 'manager_report/report_create.html'
 
     def get(self, request, *args, **kwargs):
-        if self.model.objects.filter(order=self.kwargs['pk']):
+        order = get_object_or_404(Order, pk=self.kwargs['pk'])
+        if self.model.objects.filter(order=order):
             messages.warning(self.request, f'Менеджерский отчет уже существует!')
             return redirect("crmapp:order_detail", pk=self.kwargs['pk'])
         else:
-            return super(ManagerReportCreateView, self).get(request, *args, **kwargs)
+            if order.manager_report_salary_staffs():
+                return super().get(request, *args, **kwargs)
+            else:
+                messages.warning(self.request, f'Нельзя создать отчет, пока клинеры не принимут заказ!')
+                return redirect("crmapp:order_detail", pk=self.kwargs['pk'])
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         order = get_object_or_404(Order, pk=self.kwargs['pk'])
         staff_and_salary = order.manager_report_salary_staffs()
         ManagerFormset = modelformset_factory(ManagerReport, form=ManagerReportForm, formset=BaseManagerReportFormSet,
-                                              extra=order.cleaners.count())
-        formset = ManagerFormset(prefix='extra', queryset=order.cleaners.all())
+                                              extra=len(staff_and_salary))
+        formset = ManagerFormset(prefix='extra',)
         staff_numeric_value = 0
         for forms in formset:
-            forms.fields['cleaner'].queryset = order.cleaners.all()
-            forms.initial = {"cleaner": staff_and_salary[staff_numeric_value][0],
-                             "salary": round(staff_and_salary[staff_numeric_value][1], 0)}
+            if not staff_and_salary[staff_numeric_value][1] == None:
+                forms.initial = {"cleaner": staff_and_salary[staff_numeric_value][0],
+                                 "salary": round(staff_and_salary[staff_numeric_value][1], 0)}
+            else:
+                forms.fields.pop('bonus') and forms.fields.pop('bonus_description')
+                forms.fields['salary'].widget = HiddenInput(attrs={"value": 0})
+                forms.initial = {"cleaner": staff_and_salary[staff_numeric_value][0]}
             staff_numeric_value += 1
         context['formset'] = formset
         return context
