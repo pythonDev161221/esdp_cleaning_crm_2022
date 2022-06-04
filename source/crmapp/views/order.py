@@ -1,21 +1,29 @@
 from django.contrib import messages
-from django.db import transaction
-from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView
+from django.contrib.auth import get_user_model
+from django.db.models import Q
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
+from django.urls import reverse_lazy, reverse
+from django.views.generic import DetailView
 
-from crmapp.forms import OrderForm, ServiceOrderFormSet, StaffOrderFormSet
+from crmapp.helpers.crispy_form_helpers import OrderFormHelper, ServiceFormHelper, CleanersPartHelper, StaffFormHelper
+from crmapp.forms import CleanersPartForm, OrderForm
+from crmapp.helpers.order_helpers import BaseOrderCreateView, ServiceFormset, StaffFormset
+
 from crmapp.models import Order, ForemanOrderUpdate, ForemanReport
 
 from crmapp.views.search_view import SearchView
 
 from tgbot.handlers.orders.tg_order_staff import staff_accept_order
 
+User = get_user_model()
+
 
 class OrderListView(SearchView):
     model = Order
     template_name = 'order/order_list.html'
     context_object_name = 'orders'
-    ordering = '-created_at'
+    ordering = 'work_start'
     search_fields = ["status__icontains", "work_start__icontains", "address__icontains"]
 
 
@@ -27,47 +35,69 @@ class OrderDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['brigadir'] = self.object.order_cleaners.get(is_brigadier=True)
-        try:
-            foreman_update = ForemanOrderUpdate.objects.get(order_id=self.object.pk)
-            foreman_report = ForemanReport.objects.get(order_id=self.object.pk)
-            foreman_expenses = foreman_report.foreman_expense.all()
-            context['foreman_update'] = foreman_update
-            context['foreman_expenses'] = foreman_expenses
-            return context
-        except:
-            return context
-
-
-class OrderCreateView(CreateView):
-    model = Order
-    form_class = OrderForm
-    template_name = 'order/order_create.html'
-    success_url = 'crmapp:order_index'
-
-    def get_context_data(self, **kwargs):
-        context = super(OrderCreateView, self).get_context_data(**kwargs)
-        if self.request.POST:
-            context['cliners'] = StaffOrderFormSet(self.request.POST)
-            context['services'] = ServiceOrderFormSet(self.request.POST)
-        else:
-            context['cliners'] = StaffOrderFormSet()
-            context['services'] = ServiceOrderFormSet()
         return context
 
-    def form_valid(self, form):
-        context = self.get_context_data()
-        services = context['services']
-        cliners = context['cliners']
-        with transaction.atomic():
-            self.object = form.save()
-            if services.is_valid() and cliners.is_valid():
-                cliners.instance = self.object
-                services.instance = self.object
-                cliners.save()
-                services.save()
-                staff_accept_order(self.object)
-                messages.success(self.request, f'Заказ успешно создан!')
-        return super(OrderCreateView, self).form_valid(form)
+
+class FirstStepOrderCreateView(BaseOrderCreateView):
+    model = Order
+    form_class = OrderForm
+    formset = ServiceFormset
+    template_name = 'order/order_create.html'
+    form_helper = OrderFormHelper
+    formset_helper = ServiceFormHelper
+
+    def form_valid(self, form, formset=None):
+        form.instance.manager = self.request.user
+        self.object = form.save()
+        formset.instance = self.object
+        formset.save()
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse_lazy('crmapp:order_index')
+        return reverse_lazy('crmapp:cleaners_add', kwargs={'pk': self.object.pk})
+
+
+class SecondStepOrderCreateView(BaseOrderCreateView):
+    model = Order
+    form_class = CleanersPartForm
+    template_name = 'order/cleaners_add.html'
+    formset = StaffFormset
+    form_helper = CleanersPartHelper
+    formset_helper = StaffFormHelper
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["formset"] = self.get_staff_filtered_formset(context["formset"])
+        return context
+
+    def form_valid(self, form, formset=None):
+        order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
+        order.cleaners_part = form.cleaned_data.get('cleaners_part')
+        order.part_units = form.cleaned_data.get('part_units')
+        order.save()
+        formset.instance = order
+        formset.save()
+        staff_accept_order(order)
+        messages.success(self.request, f'Заказ успешно создан!')
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_staff_filtered_formset(self, formset):
+        order = get_object_or_404(Order, pk=self.kwargs.get("pk"))
+        staff_filter = User.objects.filter(
+            is_staff=False, is_active=True, black_list=False, schedule=order.work_start.isoweekday()
+        ).exclude(
+            Q(cleaner_orders__order=order) |
+            Q(
+                Q(cleaner_orders__order__work_start__gte=order.work_end) |
+                Q(cleaner_orders__order__work_end__gte=order.work_start) &
+                Q(cleaner_orders__order__work_end__gte=order.work_end)
+            )
+        )
+        for form in formset:
+            form.fields["staff"].queryset = staff_filter
+
+        return formset
+
+    def get_success_url(self):
+        return reverse('crmapp:order_index')
+
