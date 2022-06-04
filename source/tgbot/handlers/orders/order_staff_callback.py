@@ -24,13 +24,11 @@ def order_staff_accept_callback(update: Update, context: CallbackContext):
  ◉ Дата: {order.work_start.date()}
  ◉ Время: {order.work_start.time()}
  ◉ Адрес: {order.address}
- ◉ Тип объекта: {order.object_type.name}
  ◉ Время проведения работ: {order.work_end.time()}
  ◉ Вид оплаты: {order.payment_type}
 Информация о клиенте
  ◉ Имя: {order.client_info.full_name}
  ◉ Телефон: {order.client_info.phone}\n'''
-
             keyboard = get_in_place_keyboard(order_id, staff_id)
             context.bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text, reply_markup=keyboard)
 

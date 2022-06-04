@@ -6,7 +6,7 @@ from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
 from django.utils.translation import gettext as _
 
-from crmapp.choice import PaymentChoices, UnitChoices, OrderStatusChoices
+from crmapp.choice import PaymentChoices, UnitChoices, OrderStatusChoices, PartUnits
 from crmapp.constants import ORDER_STAFF_SALARY_COEFFICIENT
 
 
@@ -121,42 +121,37 @@ class StaffOrder(models.Model):
         verbose_name_plural = _('Сотрудники в заказе')
 
 
-class Order(models.Model):  # Таблица самого заказа
-    # Поле для сортировки незавершённых работ
+class Order(models.Model):
     status = models.CharField(max_length=50, default='new', verbose_name=_('Статус заказа'),
-                              choices=OrderStatusChoices.choices, null=False, blank=False)
+                              choices=OrderStatusChoices.choices, null=True, blank=True)
     object_type = models.ForeignKey('crmapp.ObjectType', on_delete=models.PROTECT, related_name='orders',
                                     verbose_name=_('Тип объекта'), null=True, blank=True)
-
-    # Поля связанные со временем
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата и время создания заказа'))
     work_start = models.DateTimeField(verbose_name=_('Дата и время начала уборки'), null=True, blank=True)
     cleaning_time = models.DurationField(verbose_name=_('Время выполнения работ'), null=True, blank=True)
     work_end = models.DateTimeField(null=True, blank=True, verbose_name=_('Дата и время окончания уборки'))
-    # Информация о клиенте
     client_info = models.ForeignKey('crmapp.Client', on_delete=models.PROTECT, related_name='order_client',
                                     verbose_name=_('Информация клиента'))
     address = models.CharField(max_length=256, null=False, blank=False, verbose_name=_('Адрес'))
-
-    # Уборки
     services = models.ManyToManyField('crmapp.Service', related_name='orders',
                                       verbose_name=_('Услуга'), through='crmapp.ServiceOrder',
                                       through_fields=('order', 'service'))
-
-    # Поля для Staff
     manager = models.ForeignKey(get_user_model(), on_delete=models.PROTECT, related_name='manager_order',
                                 verbose_name=_('Менеджер'))
     cleaners = models.ManyToManyField(get_user_model(), related_name='orders', verbose_name=_('Клинер'),
                                       through='crmapp.StaffOrder',
                                       through_fields=('order', 'staff'))
 
-    review = models.PositiveIntegerField(null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(5)],
+    review = models.PositiveIntegerField(null=True, blank=True,
+                                         validators=[MinValueValidator(1), MaxValueValidator(5)],
                                          verbose_name=_('Отзыв'))
-    # Финансовая часть
     payment_type = models.CharField(max_length=25, null=False, blank=False, default='cash',
                                     choices=PaymentChoices.choices,
-                                    verbose_name=_('Вид оплаты'))  # вид оплаты
-    total_cost = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Общая сумма заказа'))
+                                    verbose_name=_('Вид оплаты'))
+    cleaners_part = models.PositiveIntegerField(null=True, blank=True, verbose_name=_('Доля клинеров'))
+
+    part_units = models.CharField(max_length=25, null=False, blank=False, default='som', choices=PartUnits.choices,
+                                  verbose_name=_('Способ расчета'))
 
     inventories = models.ManyToManyField("crmapp.Inventory", related_name='order_inventories',
                                          verbose_name=_('Инвентарь'),
@@ -212,7 +207,7 @@ class Order(models.Model):  # Таблица самого заказа
 
     def get_total(self):
         total = 0
-        services = ServiceOrder.objects.filter(order=self)
+        services = self.order_services.filter(order=self)
         for service in services:
             total += service.service_total()
         if total > 2000:

@@ -7,6 +7,11 @@ class PaymentChoices(TextChoices):
     VISA = 'visa', _('Безналичная оплата')
 
 
+class PartUnits(TextChoices):
+    SOM = 'som', _('В сомах')
+    PERCENT = 'percent', _('В процентах')
+
+
 class UnitChoices(TextChoices):
     SQUARE_METER = 'square_meter', _('м²')
     PIECE = 'piece', _('шт.')
@@ -22,4 +27,3 @@ class OrderStatusChoices(TextChoices):
     DISPUTABLE = 'disputable', _('Спорный')
     TO_FIX = 'to_fix', _('Переделывается')
     FINISHED = 'finished', _('Завершен')
-

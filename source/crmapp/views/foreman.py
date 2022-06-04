@@ -40,7 +40,7 @@ class ForemanOrderUpdateCreateView(FormView):
                     foreman_order.services.add(f)
             service_form.save()
             foreman_order.save()
-        return redirect('crmapp:foremanorder_create', order.id)
+        return redirect('crmapp:order_detail', order.id)
 
 
 class ServiceForemanOrderCreateView(CreateView):
