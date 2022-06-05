@@ -30,6 +30,8 @@
             ],
             "markers": "python_version >= '3.7'",
             "version": "==3.5.2"
+<<<<<<< HEAD
+=======
         },
         "cachetools": {
             "hashes": [
@@ -46,6 +48,7 @@
             ],
             "markers": "python_version >= '3.6'",
             "version": "==2022.5.18.1"
+>>>>>>> developer
         },
         "crispy-bootstrap5": {
             "hashes": [
@@ -78,6 +81,13 @@
             ],
             "index": "pypi",
             "version": "==0.8.1"
+        },
+        "django-extra-views": {
+            "hashes": [
+                "sha256:2b9daf99c79e91035aa3f269232afcb3ccf837f0f49f2dc6da6916fe34bc1e0a"
+            ],
+            "index": "pypi",
+            "version": "==0.14.0"
         },
         "django-phonenumber-field": {
             "hashes": [

@@ -8,6 +8,8 @@ from django.views.generic import ListView, FormView
 from crmapp.forms import ManagerReportForm, BaseManagerReportFormSet
 from crmapp.models import ManagerReport, Order, StaffOrder
 
+from crmapp.forms import FilterForm
+
 User = get_user_model()
 
 
@@ -79,3 +81,32 @@ class ManagerReportListView(ListView):
     model = ManagerReport
     template_name = 'manager_report/report_list.html'
     context_object_name = 'manager_reports'
+    filter_form_class = FilterForm
+
+    def get(self, request, *args, **kwargs):
+        self.form = self.get_form()
+        self.search_value_first = self.get_search_value_first()
+        self.search_value_last = self.get_search_value_last()
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.search_value_first and self.search_value_last:
+            queryset = queryset.filter(created_at__range=(self.search_value_first, self.search_value_last))
+        return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context['form'] = self.filter_form_class()
+        return context
+
+    def get_form(self):
+        return self.filter_form_class(self.request.GET)
+
+    def get_search_value_first(self):
+        if self.form.is_valid():
+            return self.form.cleaned_data.get("start_date")
+
+    def get_search_value_last(self):
+        if self.form.is_valid():
+            return self.form.cleaned_data.get("end_date")

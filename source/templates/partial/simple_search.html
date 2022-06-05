@@ -1,0 +1,15 @@
+<form class="mt-3 mb-2" action="" method="GET">
+    <div class="lab input-group mb-3 w-50 mx-auto">
+      <label class="form-control" style="width: 50px" for="{{ form.search.id_for_label }}" aria-describedby="button-addon2">{{ form.search.label }}:</label>
+        {{ form.search }}
+      <button class="btn btn-outline-success" type="submit" id="button-addon2">Поиск</button>
+        {% for error in form.search.errors %}
+            <p class="form-error">{{ error }}</p>
+        {% endfor %}
+    </div>
+</form>
+<style>
+    .lab input{
+        width: 500px;
+    }
+</style>

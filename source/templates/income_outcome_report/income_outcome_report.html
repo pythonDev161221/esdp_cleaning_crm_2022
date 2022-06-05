@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block tittle %}Отчет {% endblock tittle %}
+
+{% block content %}
+    <form class="text-center mt-3" action="" method="GET">
+        <label>с: </label><input name="start_date" type="date">
+        <label>по: </label><input name="end_date" type="date">
+        <input type="submit" value="Поиск">
+    </form>
+    <div class="container">
+    <h1>Отчет по доходам и расходам</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Адресс Заказа</th>
+                    <th scope="col">Сумма заказа</th>
+                    <th scope="col">Расходы на клинеров</th>
+                    <th scope="col">Прочие расходы</th>
+                    <th scope="col">Итого</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                    <tr>
+                        <th scope="row">{{ order.work_start }}</th>
+{#                        created_at Дата должна быть на момент завершения заказа, и статус у заказов- заверщенные#}
+                        <th>{{ order.address }}</th>
+                        <td>{{ order.get_total }}</td>
+                        <td>{{ order.get_all_staff_expenses }}</td>
+                        <td>{{ order.get_foreman_expenses}}</td>
+                        {% if  order.get_income_outcome < 0 %}
+                        <td class="text-danger">{{ order.get_income_outcome }}</td>
+                        {% else %}<td>{{ order.get_income_outcome }}</td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}

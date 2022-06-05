@@ -35,8 +35,8 @@
                 <a class="btn btn-success" href="#">Баланс {{ user_object.balance }} сом</a>
                 <a class="btn btn-dark" href="{% url 'accounts:payout_create' user_object.pk %}">Выдать заработную
                     плату</a>
-                <a class="btn btn-dark" href="#">История заказов</a>
-                <a class="btn btn-dark" href="#">История зарплаты</a>
+                <a class="btn btn-dark" href="{% url 'accounts:staff_orders' user_object.pk %}">История заказов</a>
+                <a class="btn btn-dark" href="{% url 'accounts:staff_payout' user_object.pk %}">История зарплаты</a>
                 <a class="btn btn-dark" href="{% url "accounts:auth_tg_token" user_object.pk %}">Получить токен
                     авторизации для телеграмм</a>
                 <hr>

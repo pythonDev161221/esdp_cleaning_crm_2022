@@ -30,7 +30,9 @@ from crmapp.views.manager_report import ManagerReportCreateView, ManagerReportLi
 
 from crmapp.views.order_staff import OrderStaffCreateView, OrderStaffDeleteView
 
-from crmapp.views.order import OrderListView, OrderDetailView, OrderCreateView
+from crmapp.views.order import OrderListView, OrderDetailView, FirstStepOrderCreateView, SecondStepOrderCreateView
+
+from crmapp.views.income_outcome_report import IncomeOutcomeReportView
 
 app_name = 'crmapp'
 
@@ -43,7 +45,8 @@ client_urlpatterns = [
 order_urlpatterns = [
     path('', OrderListView.as_view(), name='order_index'),
     path('<int:pk>/', OrderDetailView.as_view(), name='order_detail'),
-    path('create/', OrderCreateView.as_view(), name='order_create'),
+    path('create/', FirstStepOrderCreateView.as_view(), name='order_create'),
+    path('<int:pk>/add_cleaners/', SecondStepOrderCreateView.as_view(), name='cleaners_add'),
     path('<int:pk>/service/create/', ServiceOrderCreateView.as_view(), name="service_order_create"),
     path('<int:pk>/service/update/', ServiceOrderUpdateView.as_view(), name="service_order_update"),
     path('delete/<int:pk>/', ServiceOrderDeleteView.as_view(), name="service_order_delete"),
@@ -89,5 +92,6 @@ urlpatterns = [
     path('cleaners/', include(cleaners_urlpatterns)),
     path('inventories/', include(inventory_urlpatterns)),
     path('', include(manager_report_urlpatterns)),
-    path('order/', include(order_urlpatterns))
+    path('order/', include(order_urlpatterns)),
+    path('income_outcome_report', IncomeOutcomeReportView.as_view(), name='income_outcome_report')
 ]
