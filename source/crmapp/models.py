@@ -107,7 +107,8 @@ class StaffOrder(models.Model):
     is_brigadier = models.BooleanField(verbose_name=_('Бригадир'), default=False)
     is_accept = models.BooleanField(null=True, blank=True, default=False, verbose_name=_('Принял заказ'))
     in_place = models.DateTimeField(null=True, blank=True, verbose_name=_('Время прибытия на заказ'))
-    work_start = models.DateTimeField(null=True, blank=True, verbose_name=_('Время старта выполнения работ'))
+    work_start = models.DateTimeField(null=True, blank=True, verbose_name=_('Начало выполнения работ'))
+    work_end = models.DateTimeField(null=True, blank=True, verbose_name=_('Конец выполнения работ'))
 
     class Meta:
         db_table = 'staff_order'

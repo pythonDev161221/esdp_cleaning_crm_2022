@@ -6,6 +6,8 @@ from django.views.generic import ListView, DetailView, CreateView
 from crmapp.forms import OrderForm, ServiceOrderFormSet, StaffOrderFormSet
 from crmapp.models import Order, ForemanOrderUpdate, ForemanReport
 
+from tgbot.handlers.orders.tg_order_staff import staff_accept_order
+
 
 class OrderListView(ListView):
     model = Order
@@ -62,6 +64,7 @@ class OrderCreateView(CreateView):
                 services.instance = self.object
                 cliners.save()
                 services.save()
+                staff_accept_order(self.object)
                 messages.success(self.request, f'Заказ успешно создан!')
         return super(OrderCreateView, self).form_valid(form)
 
