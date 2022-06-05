@@ -11,8 +11,6 @@ from tgbot.handlers.keyboard import (get_refuses_keyboard,
                                      get_brigadier_end_keyboard,
                                      get_order_information_keyboard)
 
-DELTA = datetime.timedelta(hours=6, minutes=0)
-
 
 @is_staff_in_order
 def order_staff_accept_callback(update: Update, context: CallbackContext):
@@ -177,10 +175,10 @@ def in_place_callback(update: Update, context: CallbackContext):
         staff.in_place = datetime.datetime.now().replace(second=0, microsecond=0)
         staff.save()
         for item in service:
-            service_info = f'''◉ {item.service.name}, Oбъем: {item.amount} (м2/шт), Сложность: {item.rate}'''
+            service_info = f'''◉ {item.service.name}\n --Oбъем: {item.amount} (м2/шт)\n --Сложность: {item.rate}'''
             service_list.append(service_info)
             services = '\n'.join(map(str, service_list))
-        text = f"Список услуг:\n{services}\nГотовы начать работу?"
+        text = f"Список услуг заказа №{order.id}:\n{services}\nГотовы начать работу?"
         keyboard = get_brigadier_start_keyboard(order_id, staff_id)
         context.bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text,
                                       reply_markup=keyboard)
@@ -200,10 +198,10 @@ def work_start_callback(update: Update, context: CallbackContext):
         staff.work_start = datetime.datetime.now().replace(second=0, microsecond=0)
         staff.save()
         for item in service:
-            service_info = f'''-{item.service.name}'''
+            service_info = f'''◉ {item.service.name}'''
             service_list.append(service_info)
             services = '\n'.join(map(str, service_list))
-        text = f'Заказ №{order.id}\nУслуги: \n{services}'
+        text = f'Вы начали выполнять заказ №{order.id}\nУслуги: \n{services}'
         if staff.is_brigadier:
             keyboard = get_brigadier_end_keyboard(order_id, staff_id)
             context.bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text,
@@ -227,5 +225,5 @@ def work_end_callback(update: Update, context: CallbackContext):
             service_info = f'''-{item.service.name} ✔'''
             service_list.append(service_info)
             services = '\n'.join(map(str, service_list))
-        text = f'Заказ №{order.id}\nВыполнены следующие услуги:\n{services}\nРабота завершена!'
+        text = f'Услуги заказа №{order.id}:\n{services}\nРабота завершена!'
         context.bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text)
