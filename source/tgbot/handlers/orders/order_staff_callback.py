@@ -1,10 +1,11 @@
+import datetime
+
 from telegram import Update
 from telegram.ext import CallbackContext
-from crmapp.models import Order, ManagerReport
-
+from crmapp.models import Order, ManagerReport, ServiceOrder
 from tgbot.handlers.utils import is_staff_in_order
 from tgbot.handlers.keyboard import get_refuses_keyboard, get_staff_order_keyboard, get_in_place_keyboard, \
-    get_order_information_keyboard
+    get_order_information_keyboard, get_brigadier_start_keyboard, get_brigadier_end_keyboard
 
 
 @is_staff_in_order
@@ -147,3 +148,71 @@ def order_information_update(update: Update, context: CallbackContext):
         except:
             text = "Обновление информации о заказе отсутвуют!"
             context.bot.send_message(chat_id=chat_id, text=text)
+
+
+@is_staff_in_order
+def in_place_callback(update: Update, context: CallbackContext):
+    service_list = []
+    chat_id = update.callback_query.message.chat.id
+    message_id = update.callback_query.message.message_id
+    data = update.callback_query.data
+    call, order_id, staff_id = data.split(" ")
+    order = Order.objects.get(pk=order_id)
+    staff = order.order_cleaners.get(staff=staff_id)
+    service = ServiceOrder.objects.filter(order=order)
+    if call == "in_place":
+        staff.in_place = datetime.datetime.now().replace(second=0, microsecond=0)
+        staff.save()
+        for item in service:
+            service_info = f'''◉ {item.service.name}\n --Oбъем: {item.amount} (м2/шт)\n --Сложность: {item.rate}'''
+            service_list.append(service_info)
+            services = '\n'.join(map(str, service_list))
+        text = f"Список услуг заказа №{order.id}:\n{services}\nГотовы начать работу?"
+        keyboard = get_brigadier_start_keyboard(order_id, staff_id)
+        context.bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text,
+                                      reply_markup=keyboard)
+
+
+@is_staff_in_order
+def work_start_callback(update: Update, context: CallbackContext):
+    service_list = []
+    chat_id = update.callback_query.message.chat.id
+    message_id = update.callback_query.message.message_id
+    data = update.callback_query.data
+    call, order_id, staff_id = data.split(" ")
+    order = Order.objects.get(pk=order_id)
+    staff = order.order_cleaners.get(staff=staff_id)
+    service = ServiceOrder.objects.filter(order=order)
+    if call == "work_start":
+        staff.work_start = datetime.datetime.now().replace(second=0, microsecond=0)
+        staff.save()
+        for item in service:
+            service_info = f'''◉ {item.service.name}'''
+            service_list.append(service_info)
+            services = '\n'.join(map(str, service_list))
+        text = f'Вы начали выполнять заказ №{order.id}\nУслуги: \n{services}'
+        if staff.is_brigadier:
+            keyboard = get_brigadier_end_keyboard(order_id, staff_id)
+            context.bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text,
+                                          reply_markup=keyboard)
+
+
+@is_staff_in_order
+def work_end_callback(update: Update, context: CallbackContext):
+    service_list = []
+    chat_id = update.callback_query.message.chat.id
+    message_id = update.callback_query.message.message_id
+    data = update.callback_query.data
+    call, order_id, staff_id = data.split(" ")
+    order = Order.objects.get(pk=order_id)
+    staff = order.order_cleaners.get(staff=staff_id)
+    service = ServiceOrder.objects.filter(order=order)
+    if call == "work_end":
+        staff.work_end = datetime.datetime.now().replace(second=0, microsecond=0)
+        staff.save()
+        for item in service:
+            service_info = f'''-{item.service.name} ✔'''
+            service_list.append(service_info)
+            services = '\n'.join(map(str, service_list))
+        text = f'Услуги заказа №{order.id}:\n{services}\nРабота завершена!'
+        context.bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text)

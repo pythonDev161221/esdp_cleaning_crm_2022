@@ -11,8 +11,12 @@ from telegram.ext import (
 
 from main.settings import TELEGRAM_TOKEN
 from tgbot.handlers.login import tg_login
+from tgbot.handlers.balance import staff_balance
+from tgbot.handlers.info import staff_info
+from tgbot.handlers.orders import order
 from tgbot.handlers.orders.order_staff_callback import order_staff_accept_callback, order_staff_refuse_callback, \
-    refuse_true_callback, refuse_false_callback, order_information, order_information_update
+    refuse_true_callback, refuse_false_callback, order_information, order_information_update, work_start_callback, \
+    work_end_callback, in_place_callback
 
 
 def setup_dispatcher(dp):
@@ -24,6 +28,14 @@ def setup_dispatcher(dp):
     dp.add_handler(CallbackQueryHandler(refuse_false_callback, pattern="refalse"))
     dp.add_handler(CallbackQueryHandler(order_information, pattern="order_info"))
     dp.add_handler(CallbackQueryHandler(order_information_update, pattern="info_update"))
+    dp.add_handler(CommandHandler("balance", staff_balance.balance))
+    dp.add_handler(CommandHandler("profile", staff_info.info))
+    dp.add_handler(CommandHandler("new_orders", order.get_new_orders))
+    dp.add_handler(CommandHandler("my_order", order.get_orders))
+    dp.add_handler(CommandHandler("today", order.get_today_orders))
+    dp.add_handler(CallbackQueryHandler(in_place_callback, pattern="in_place"))
+    dp.add_handler(CallbackQueryHandler(work_start_callback, pattern="work_start"))
+    dp.add_handler(CallbackQueryHandler(work_end_callback, pattern="work_end"))
 
     return dp
 
