@@ -14,6 +14,8 @@ from crmapp.models import Order, ForemanOrderUpdate, ForemanReport
 
 from crmapp.views.search_view import SearchView
 
+from tgbot.handlers.orders.tg_order_staff import staff_accept_order
+
 User = get_user_model()
 
 
@@ -75,6 +77,7 @@ class SecondStepOrderCreateView(BaseOrderCreateView):
         order.save()
         formset.instance = order
         formset.save()
+        staff_accept_order(order)
         messages.success(self.request, f'Заказ успешно создан!')
         return HttpResponseRedirect(self.get_success_url())
 
@@ -97,3 +100,4 @@ class SecondStepOrderCreateView(BaseOrderCreateView):
 
     def get_success_url(self):
         return reverse('crmapp:order_index')
+
