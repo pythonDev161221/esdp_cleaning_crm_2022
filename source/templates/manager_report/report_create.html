@@ -1,8 +1,58 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="container">
-        <h1>Отчет менеджера</h1>
+    <div class="container mt-4">
+        <h3>Отчет менеджера по заказу № {{ order.id }}</h3>
+        <p>Начало заказа: <strong>{{ order.work_start }} </strong> Конец заказа:
+            <strong>{{ order.work_end }}</strong></p>
+        <table class="table" style="font-size: small">
+            <thead>
+            <tr>
+                <th scope="col">Клинер</th>
+                <th scope="col">Бригадир</th>
+                <th scope="col">Прибыл на место</th>
+                <th scope="col">Начало работы</th>
+                <th scope="col">Конец работы</th>
+                <th scope="col">Фото ДО</th>
+                <th scope="col">Фото ПОСЛЕ</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for staff in staff_order %}
+                <tr>
+                <td><p>{{ staff.staff.last_name | capfirst }} {{ staff.staff.first_name | capfirst }} </p></td>
+                {% if staff.is_brigadier %}
+                    <td><p class="ms-3"><i class="fa-solid fa-check"></i></p></td>
+                {% else %}
+                    <td> </td>
+                {% endif %}
+                {% if staff.in_place > order.work_start %}
+                    <td class="text-danger">{{ staff.in_place }}</td>
+                {% elif not staff.in_place %}
+                    <td><p class="ms-5"><i class="fa-solid fa-minus"></i></p></td>
+                {% else %}
+                    <td>{{ staff.in_place }}</td>
+                {% endif %}
+                {% if staff.work_start > order.work_start and staff.is_brigadier %}
+                    <td class="text-danger">{{ staff.work_start }}</td>
+                {% elif staff.is_brigadier %}
+                    <td>{{ staff.work_start }}</td>
+                {% else %}
+                    <td><p class="ms-5"><i class="fa-solid fa-minus"></i></p></td>
+                {% endif %}
+                {% if staff.work_end > order.work_end and staff.is_brigadier %}
+                    <td class="text-danger">{{ staff.work_end }}</td>
+                {% elif staff.is_brigadier %}
+                    <td>{{ staff.work_end }}</td>
+                {% else %}
+                    <td><p class="ms-5"><i class="fa-solid fa-minus"></i></p></td>
+                {% endif %}
+                <td><p class="ms-3"><i class="fa-solid fa-check"></i></p></td>
+                <td><p class="ms-4"><i class="fa-solid fa-check"></i></p></td>
+            {% endfor %}
+            </tr>
+            </tbody>
+        </table>
         <form method="POST" class="mb-5">
             {{ formset.management_form }}
             {% csrf_token %}

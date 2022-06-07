@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView, FormView
 
 from crmapp.forms import ManagerReportForm, BaseManagerReportFormSet
-from crmapp.models import ManagerReport, Order
+from crmapp.models import ManagerReport, Order, StaffOrder
 
 from crmapp.forms import FilterForm
 
@@ -33,6 +33,9 @@ class ManagerReportCreateView(FormView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         order = get_object_or_404(Order, pk=self.kwargs['pk'])
+        staff_order = StaffOrder.objects.filter(order=order)
+        context['staff_order'] = staff_order
+        context['order'] = order
         staff_and_salary = order.manager_report_salary_staffs()
         ManagerFormset = modelformset_factory(ManagerReport, form=ManagerReportForm, formset=BaseManagerReportFormSet,
                                               extra=len(staff_and_salary))
