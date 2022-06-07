@@ -26,7 +26,6 @@ from tgbot.handlers.orders.order_staff_callback import (order_staff_accept_callb
 
 
 def setup_dispatcher(dp):
-    # регистрируете ваши функции
     dp.add_handler(CommandHandler("start", tg_login.start_and_auth))
     dp.add_handler(CommandHandler("balance", staff_balance.balance))
     dp.add_handler(CommandHandler("profile", staff_info.info))

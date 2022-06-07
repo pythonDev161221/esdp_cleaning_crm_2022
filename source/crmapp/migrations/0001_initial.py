@@ -152,6 +152,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('is_brigadier', models.BooleanField(default=False, verbose_name='Бригадир')),
                 ('is_accept', models.BooleanField(blank=True, default=False, null=True, verbose_name='Принял заказ')),
+                ('is_refuse', models.BooleanField(blank=True, default=False, null=True, verbose_name='Отказался от заказа')),
                 ('in_place', models.DateTimeField(blank=True, null=True, verbose_name='Время прибытия на заказ')),
                 ('work_start', models.DateTimeField(blank=True, null=True, verbose_name='Начало выполнения работ')),
                 ('work_end', models.DateTimeField(blank=True, null=True, verbose_name='Конец выполнения работ')),

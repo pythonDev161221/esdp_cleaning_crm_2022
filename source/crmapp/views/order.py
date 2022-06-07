@@ -100,3 +100,4 @@ class SecondStepOrderCreateView(BaseOrderCreateView):
 
     def get_success_url(self):
         return reverse('crmapp:order_index')
+

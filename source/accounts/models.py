@@ -63,6 +63,10 @@ class Staff(AbstractUser):
         self.balance += value
         self.save()
 
+    def remove_salary(self, value):
+        self.balance -= value
+        self.save()
+
     def set_auth_tg_token(self):
         token = str(uuid.uuid4().hex)[:20]
         self.telegram_auth_token = token
