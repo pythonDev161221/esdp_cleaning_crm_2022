@@ -30,8 +30,6 @@
             ],
             "markers": "python_version >= '3.7'",
             "version": "==3.5.2"
-<<<<<<< HEAD
-=======
         },
         "cachetools": {
             "hashes": [
@@ -48,7 +46,6 @@
             ],
             "markers": "python_version >= '3.6'",
             "version": "==2022.5.18.1"
->>>>>>> developer
         },
         "crispy-bootstrap5": {
             "hashes": [
@@ -60,11 +57,11 @@
         },
         "django": {
             "hashes": [
-                "sha256:07c8638e7a7f548dc0acaaa7825d84b7bd42b10e8d22268b3d572946f1e9b687",
-                "sha256:4e8177858524417563cc0430f29ea249946d831eacb0068a1455686587df40b5"
+                "sha256:502ae42b6ab1b612c933fb50d5ff850facf858a4c212f76946ecd8ea5b3bf2d9",
+                "sha256:f7431a5de7277966f3785557c3928433347d998c1e6459324501378a291e5aab"
             ],
             "index": "pypi",
-            "version": "==4.0.4"
+            "version": "==4.0.5"
         },
         "django-crispy-forms": {
             "hashes": [
@@ -81,13 +78,6 @@
             ],
             "index": "pypi",
             "version": "==0.8.1"
-        },
-        "django-extra-views": {
-            "hashes": [
-                "sha256:2b9daf99c79e91035aa3f269232afcb3ccf837f0f49f2dc6da6916fe34bc1e0a"
-            ],
-            "index": "pypi",
-            "version": "==0.14.0"
         },
         "django-phonenumber-field": {
             "hashes": [
@@ -106,11 +96,11 @@
         },
         "phonenumbers": {
             "hashes": [
-                "sha256:429273b98966475d0c18ee293096eaf81c6b5727d0d55c7ba5ce9c60ec8c59ef",
-                "sha256:af0681fbfe9fa0721376ad9b729e772e5d20bf2cf50d9dd8ca2f0bdd78e9f0ce"
+                "sha256:c691661615ebdc90beff458f8fbf7c0bfb78f21a0aa40a256cc2ba6da41e393b",
+                "sha256:d169ec284ace7a82ec087fcc0c3f40da86b89a50950f143fc53a47e5f77ff805"
             ],
             "index": "pypi",
-            "version": "==8.12.48"
+            "version": "==8.12.49"
         },
         "pillow": {
             "hashes": [
@@ -175,11 +165,11 @@
         },
         "python-telegram-bot": {
             "hashes": [
-                "sha256:534f5bb0ff4ca34c9252e97e0b3bcdab81d97be0eb4821682a361cb426c00e55",
-                "sha256:baeff704baa2ac3dc17a944c02da888228ad258e89be2e5bcbd13a8a5102d573"
+                "sha256:08246ecccbb0e7b2ac43d3b545c3bdabc71194b20be9620cd0ed96a2eb66820d",
+                "sha256:daf55fb6f418b8752317fd12df824dd717e3229a87d83810a4cdd6e442f66de5"
             ],
             "index": "pypi",
-            "version": "==13.11"
+            "version": "==13.12"
         },
         "pytz": {
             "hashes": [
@@ -209,7 +199,7 @@
                 "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926",
                 "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2'",
             "version": "==1.16.0"
         },
         "sqlparse": {

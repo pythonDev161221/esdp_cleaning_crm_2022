@@ -59,4 +59,3 @@ def get_brigadier_end_keyboard(order_id, staff_id) -> InlineKeyboardMarkup:
         ]
     ]
     return InlineKeyboardMarkup(keyboard)
-

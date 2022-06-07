@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <div class="container">
     <div class="container mt-4">
         <h3>Отчет менеджера по заказу № {{ order.id }}</h3>
         <p>Начало заказа: <strong>{{ order.work_start }} </strong> Конец заказа:
@@ -24,7 +25,7 @@
                 {% if staff.is_brigadier %}
                     <td><p class="ms-3"><i class="fa-solid fa-check"></i></p></td>
                 {% else %}
-                    <td> </td>
+                    <td></td>
                 {% endif %}
                 {% if staff.in_place > order.work_start %}
                     <td class="text-danger">{{ staff.in_place }}</td>

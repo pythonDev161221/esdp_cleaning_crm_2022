@@ -51,6 +51,9 @@ class ManagerReportCreateView(FormView):
                 forms.initial = {"cleaner": staff_and_salary[staff_numeric_value][0]}
             staff_numeric_value += 1
         context['formset'] = formset
+        staff_order = StaffOrder.objects.filter(order=order)
+        context['staff_order'] = staff_order
+        context['order'] = order
         return context
 
     def post(self, request, *args, **kwargs):

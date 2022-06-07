@@ -1,15 +1,11 @@
 import datetime
+
 from telegram import Update
 from telegram.ext import CallbackContext
 from crmapp.models import Order, ManagerReport, ServiceOrder
-from django.db import transaction
 from tgbot.handlers.utils import is_staff_in_order
-from tgbot.handlers.keyboard import (get_refuses_keyboard,
-                                     get_staff_order_keyboard,
-                                     get_in_place_keyboard,
-                                     get_brigadier_start_keyboard,
-                                     get_brigadier_end_keyboard,
-                                     get_order_information_keyboard)
+from tgbot.handlers.keyboard import get_refuses_keyboard, get_staff_order_keyboard, get_in_place_keyboard, \
+    get_order_information_keyboard, get_brigadier_start_keyboard, get_brigadier_end_keyboard
 
 
 @is_staff_in_order

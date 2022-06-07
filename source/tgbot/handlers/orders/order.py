@@ -19,7 +19,7 @@ def get_orders(update: Update, context: CallbackContext):
             staff_list = StaffOrder.objects.get(order=item, staff=user)
             manager_report = ManagerReport.objects.get(order=item, cleaner=staff_list.staff)
             order_info = f'''
-    Заказ № {item.id} 
+    Заказ № {item.id}
     Адрес: {item.address}
     Дата: {_(calendar.day_name[item.work_start.isoweekday()])}, {item.work_start.date()},
     Время: {item.work_start.astimezone().time()}
@@ -52,7 +52,7 @@ def get_new_orders(update: Update, context: CallbackContext):
         orders = '\n'.join(map(str, new_orders))
         text = f'Вас ждут на этих заказах,cэр!{orders}'
     else:
-        text = 'лох'
+        text = 'Заказов нет'
     context.bot.send_message(chat_id, text=text)
 
 
@@ -79,5 +79,5 @@ def get_today_orders(update: Update, context: CallbackContext):
         orders = '\n'.join(map(str, today_orders))
         text = f'Ваши заказы на сегодня!{orders}'
     else:
-        text = 'лох'
+        text = 'Заказов нет'
     context.bot.send_message(chat_id, text=text)
