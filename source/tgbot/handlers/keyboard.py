@@ -20,6 +20,7 @@ def get_refuses_keyboard(order_id, staff_id) -> InlineKeyboardMarkup:
     ]
     return InlineKeyboardMarkup(keyboard)
 
+
 def get_in_place_keyboard(order_id, staff_id) -> InlineKeyboardMarkup:
     keyboard = [
         [
