@@ -1,34 +1,74 @@
-from tgbot.dispatcher import bot
-from tgbot.handlers.keyboard import get_staff_order_keyboard
-
-from crmapp.models import StaffOrder
-
-
-def staff_accept_order(order):
-    text = f'''
-Информация о заказе №{order.pk}
+@is_staff_in_order
+def order_staff_accept_callback(update: Update, context: CallbackContext):
+    chat_id = update.callback_query.message.chat.id
+    message_id = update.callback_query.message.message_id
+    data = update.callback_query.data
+    call, order_id, staff_id = data.split(" ")
+    if call == "accept":
+        order = Order.objects.get(pk=order_id)
+        staff = order.order_cleaners.get(staff=staff_id)
+        if staff.is_accept == False and staff.is_refuse == False:
+            staff.is_accept = True
+            staff.save()
+            text = f'''
+Информация о заказе
  ◉ Дата: {order.work_start.date()}
  ◉ Время: {order.work_start.time()}
  ◉ Адрес: {order.address}
-'''
-    for staff in order.order_cleaners.all():
-        if not staff.is_accept == True or staff.is_refuse == True:
-            keyboard = get_staff_order_keyboard(order.pk, staff.staff.pk)
-            bot.send_message(chat_id=staff.staff.telegram_id, text=text, reply_markup=keyboard)
+ ◉ Время проведения работ: {order.work_end.time()}
+ ◉ Вид оплаты: {order.payment_type}
+Информация о клиенте
+ ◉ Имя: {order.client_info.full_name}
+ ◉ Телефон: {order.client_info.phone}\n'''
+            keyboard = get_in_place_keyboard(order_id, staff_id)
+            context.bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text, reply_markup=keyboard)
 
 
-def once_staff_add_order(staff: StaffOrder):
-    text = f'''
-Информация о заказе №{staff.order.pk}
- ◉ Дата: {staff.order.work_start.date()}
- ◉ Время: {staff.order.work_start.time()}
- ◉ Адрес: {staff.order.address}
+@is_staff_in_order
+def order_staff_refuse_callback(update: Update, context: CallbackContext):
+    chat_id = update.callback_query.message.chat.id
+    message_id = update.callback_query.message.message_id
+    data = update.callback_query.data
+    call, order_id, staff_id = data.split(" ")
+    if call == "refuse":
+        text = "Вы уверены что хотите отказаться от заказа?\nВ случае отказа вы получите штраф n сом"
+        keyboard = get_refuses_keyboard(order_id, staff_id)
+        context.bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text, reply_markup=keyboard)
+
+
+@is_staff_in_order
+def refuse_true_callback(update: Update, context: CallbackContext):
+    chat_id = update.callback_query.message.chat.id
+    message_id = update.callback_query.message.message_id
+    data = update.callback_query.data
+    call, order_id, staff_id = data.split(" ")
+    order = Order.objects.get(pk=order_id)
+    staff = order.order_cleaners.get(staff=staff_id)
+    if call == "retrue":
+        if staff.is_accept == False and staff.is_refuse == False:
+            staff.is_refuse = True
+            staff.save()
+            text = f"Вы больше не участвуете в данном заказе №{order_id}"
+            context.bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text)
+
+        else:
+            text = "Даный запрос не может быть выолнен"
+            context.bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text)
+
+
+@is_staff_in_order
+def refuse_false_callback(update: Update, context: CallbackContext):
+    chat_id = update.callback_query.message.chat.id
+    message_id = update.callback_query.message.message_id
+    data = update.callback_query.data
+    call, order_id, staff_id = data.split(" ")
+    order = Order.objects.get(pk=order_id)
+    if call == "refalse":
+        text = f'''
+Информация о заказе
+ ◉ Дата: {order.work_start.date()}
+ ◉ Время: {order.work_start.time()}
+ ◉ Адрес: {order.address}
     '''
-    if not staff.is_accept == True or staff.is_refuse == True:
-        keyboard = get_staff_order_keyboard(staff.order.pk, staff.staff.pk)
-        bot.send_message(chat_id=staff.staff.telegram_id, text=text, reply_markup=keyboard)
-
-
-def once_staff_remove_order(staff: StaffOrder):
-    text = f"Вы были удалены с заказа №{staff.order.pk}"
-    bot.send_message(chat_id=staff.staff.telegram_id, text=text)
+        keyboard = get_staff_order_keyboard(order_id, staff_id)
+        context.bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text, reply_markup=keyboard)
