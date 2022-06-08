@@ -21,9 +21,7 @@ class UnitChoices(TextChoices):
 
 class OrderStatusChoices(TextChoices):
     NEW = 'new', _('Новый')
-    IN_QUEUE = 'in_queue', _('В очереди')
-    IN_PROGRES = 'in_progres', _('Выполняется')
-    DONE = 'done', _('Выполнен')
-    DISPUTABLE = 'disputable', _('Спорный')
     TO_FIX = 'to_fix', _('Переделывается')
     FINISHED = 'finished', _('Завершен')
+    CANCELED = 'canceled', _('Отменен')
+

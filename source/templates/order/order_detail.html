@@ -88,8 +88,12 @@
                             </ul>
                         <div class="mb-4 ms-3"><a class="btn btn-outline-secondary btn-sm" href="{% url 'crmapp:order_staff_add' order.id %}"> + Добавить клинера</a></div>
                         <hr>
+                        {% if order.get_total is not 0 %}
                         <p><a class="btn btn-outline-danger" href="{% url 'crmapp:manager_report_create' order.id %}">Рассчитать ЗП бригады</a></p>
+                        {% else %}
+                        {% endif %}
                         </p>
+                        <a href="{% url 'crmapp:order_finish' order.pk %}"><button>Закрытие заказа</button></a>
                     </div>
                 </div>
                 <div class="card text-dark bg-light mb-3 mt-3 p-0" style="max-width: 20rem;">
