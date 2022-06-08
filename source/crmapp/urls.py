@@ -30,7 +30,8 @@ from crmapp.views.manager_report import ManagerReportCreateView, ManagerReportLi
 
 from crmapp.views.order_staff import OrderStaffCreateView, OrderStaffDeleteView
 
-from crmapp.views.order import OrderListView, OrderDetailView, FirstStepOrderCreateView, SecondStepOrderCreateView
+from crmapp.views.order import OrderListView, OrderDetailView, FirstStepOrderCreateView,\
+    SecondStepOrderCreateView, OrderCommentUpdate
 
 from crmapp.views.income_outcome_report import IncomeOutcomeReportView
 
@@ -53,7 +54,8 @@ order_urlpatterns = [
     path('<int:pk>/staff/add/', OrderStaffCreateView.as_view(), name='order_staff_add'),
     path('staff/delete/<int:pk>', OrderStaffDeleteView.as_view(), name='order_staff_delete'),
     path("<int:pk>/inventory/add/", InventoryOrderCreateView.as_view(), name="inventory_order_add"),
-    path("inventory/<int:pk>/remove/", InventoryOrderRemoveView.as_view(), name="inventory_order_remove")
+    path("inventory/<int:pk>/remove/", InventoryOrderRemoveView.as_view(), name="inventory_order_remove"),
+    path('<int:pk>/finish/', OrderCommentUpdate.as_view(), name='order_finish'),
 ]
 
 service_urlpatterns = [

@@ -4,10 +4,10 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
-from django.views.generic import DetailView
+from django.views.generic import DetailView, UpdateView
 
 from crmapp.helpers.crispy_form_helpers import OrderFormHelper, ServiceFormHelper, CleanersPartHelper, StaffFormHelper
-from crmapp.forms import CleanersPartForm, OrderForm
+from crmapp.forms import CleanersPartForm, OrderForm, OrderCommentForm
 from crmapp.helpers.order_helpers import BaseOrderCreateView, ServiceFormset, StaffFormset
 
 from crmapp.models import Order, ForemanOrderUpdate, ForemanReport
@@ -101,3 +101,9 @@ class SecondStepOrderCreateView(BaseOrderCreateView):
     def get_success_url(self):
         return reverse('crmapp:order_index')
 
+
+class OrderCommentUpdate(UpdateView):
+    model = Order
+    form_class = OrderCommentForm
+    template_name = 'order/order_finish.html'
+    success_url = reverse_lazy('crmapp:order_index')

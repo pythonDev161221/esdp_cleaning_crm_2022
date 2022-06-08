@@ -156,7 +156,9 @@ class Order(models.Model):
 
     inventories = models.ManyToManyField("crmapp.Inventory", related_name='order_inventories',
                                          verbose_name=_('Инвентарь'),
-                                         through='crmapp.InventoryOrder')
+                                         through='crmapp.InventoryOrder'),
+    description = models.TextField(max_length=2000, null=True, blank=False, verbose_name=_('Примечание'))
+
 
     def get_all_staff_expenses(self):
         expenses = 0
@@ -208,13 +210,16 @@ class Order(models.Model):
 
     def get_total(self):
         total = 0
-        services = self.order_services.filter(order=self)
-        for service in services:
-            total += service.service_total()
-        if total > 2000:
-            return total
+        if self.status != 'canceled':
+            services = self.order_services.filter(order=self)
+            for service in services:
+                total += service.service_total()
+            if total > 2000:
+                return total
+            else:
+                return 2000
         else:
-            return 2000
+            return 0
 
     def save(self, *args, **kwargs):
         self.work_end = self.work_start + self.cleaning_time
