@@ -77,16 +77,29 @@
                                  {% for cleaner in order.order_cleaners.all %}
                                     <li>
                                         {% if cleaner.is_brigadier %}
-                                        <a style="text-decoration: none" href="{% url 'accounts:profile' cleaner.id %}">{{ cleaner.staff.first_name }} {{ cleaner.staff.last_name }} </a><span><strong>Бригадир</strong></span>
-                                        <a class="text-danger" href="{% url 'crmapp:order_staff_delete' cleaner.id %}"><i class="fa-solid fa-xmark"></i></a>
+                                        <a style="text-decoration: none" href="{% url 'accounts:profile' cleaner.staff.id %}">
+                                            {{ cleaner.staff.first_name }} {{ cleaner.staff.last_name }}
+                                        </a>
+                                        <span><strong>Бригадир</strong></span>
+                                        <a class="text-danger" href="{% url 'crmapp:order_staff_delete' cleaner.id %}">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </a>
                                     {% else  %}
-                                        <a style="text-decoration: none" href="{% url 'accounts:profile' cleaner.id %}"> {{ cleaner.staff.first_name }} {{ cleaner.staff.last_name }} </a>
-                                        <a class="text-danger" href="{% url 'crmapp:order_staff_delete' cleaner.id %}"><i class="fa-solid fa-xmark"></i></a>
+                                        <a style="text-decoration: none" href="{% url 'accounts:profile' cleaner.staff.id %}">
+                                            {{ cleaner.staff.first_name }} {{ cleaner.staff.last_name }}
+                                        </a>
+                                        <a class="text-danger" href="{% url 'crmapp:order_staff_delete' cleaner.id %}">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </a>
                                     {% endif %}
                                     </li>
                                 {% endfor %}
                             </ul>
-                        <div class="mb-4 ms-3"><a class="btn btn-outline-secondary btn-sm" href="{% url 'crmapp:order_staff_add' order.id %}"> + Добавить клинера</a></div>
+                        <div class="mb-4 ms-3">
+                            <a class="btn btn-outline-secondary btn-sm" href="{% url 'crmapp:order_staff_add' order.id %}">
+                                + Добавить клинера
+                            </a>
+                        </div>
                         <hr>
                         {% if order.get_total is not 0 %}
                         <p><a class="btn btn-outline-danger" href="{% url 'crmapp:manager_report_create' order.id %}">Рассчитать ЗП бригады</a></p>

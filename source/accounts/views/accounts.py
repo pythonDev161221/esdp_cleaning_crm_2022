@@ -139,9 +139,6 @@ class StaffDeleteView(DeleteView):
     template_name = 'account/staff_delete.html'
     context_object_name = 'user_object'
 
-    def get_object(self, queryset=None):
-        return self.request.user
-
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.object.soft_delete()
