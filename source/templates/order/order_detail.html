@@ -77,36 +77,48 @@
                                  {% for cleaner in order.order_cleaners.all %}
                                     <li>
                                         {% if cleaner.is_brigadier %}
+
                                         <a style="text-decoration: none" href="{% url 'accounts:profile' cleaner.staff.id %}">
                                             {{ cleaner.staff.first_name }} {{ cleaner.staff.last_name }}
                                         </a>
                                         <span><strong>Бригадир</strong></span>
+                                        {% if perms.crmapp.delete_stafforder and order.manager == request.user or request.user.is_staff %}
                                         <a class="text-danger" href="{% url 'crmapp:order_staff_delete' cleaner.id %}">
                                             <i class="fa-solid fa-xmark"></i>
                                         </a>
+                                        {% endif %}
                                     {% else  %}
                                         <a style="text-decoration: none" href="{% url 'accounts:profile' cleaner.staff.id %}">
                                             {{ cleaner.staff.first_name }} {{ cleaner.staff.last_name }}
                                         </a>
+                                        {% if perms.crmapp.delete_stafforder and order.manager == request.user or request.user.is_staff %}
                                         <a class="text-danger" href="{% url 'crmapp:order_staff_delete' cleaner.id %}">
                                             <i class="fa-solid fa-xmark"></i>
                                         </a>
+                                        {% endif %}
                                     {% endif %}
                                     </li>
                                 {% endfor %}
                             </ul>
+
+                        {% if perms.crmapp.add_stafforder and order.manager == request.user or request.user.is_staff %}
                         <div class="mb-4 ms-3">
                             <a class="btn btn-outline-secondary btn-sm" href="{% url 'crmapp:order_staff_add' order.id %}">
                                 + Добавить клинера
                             </a>
                         </div>
+                        {% endif %}
                         <hr>
+                        {% if perms.crmapp.add_managerreport and order.manager == request.user or request.user.is_staff %}
                         {% if order.get_total is not 0 %}
                         <p><a class="btn btn-outline-danger" href="{% url 'crmapp:manager_report_create' order.id %}">Рассчитать ЗП бригады</a></p>
+                        {% endif %}
                         {% else %}
                         {% endif %}
                         </p>
-                        <a href="{% url 'crmapp:order_finish' order.pk %}"><button>Закрытие заказа</button></a>
+                        {% if order.manager == request.user or request.user.is_staff %}
+                            <a href="{% url 'crmapp:order_finish' order.pk %}"><button>Закрытие заказа</button></a>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="card text-dark bg-light mb-3 mt-3 p-0" style="max-width: 20rem;">
@@ -117,12 +129,16 @@
                                 <ul>
                                     <li>
                                         <p>{{ inventory.inventory.name }}: {{ inventory.amount }}
-                                        <a class="text-danger" href="{% url 'crmapp:inventory_order_remove' inventory.pk %}"><i class="fa-solid fa-xmark"></i></a>
+                                        {% if perms.crmapp.delete_inventoryorder and order.manager == request.user or request.user.is_staff %}
+                                            <a class="text-danger" href="{% url 'crmapp:inventory_order_remove' inventory.pk %}"><i class="fa-solid fa-xmark"></i></a>
+                                        {% endif %}
                                         </p>
                                     </li>
                                 </ul>
                             {% endfor %}
+                        {% if perms.crmapp.add_inventoryorder and order.manager == request.user or request.user.is_staff %}
                         <div class="mb-4 ms-3"><a class="btn btn-outline-secondary btn-sm" href="{% url 'crmapp:inventory_order_add' order.id %}">+Добавить/Изменить инвентарь</a></div>
+                        {% endif %}
                         </p>
                     </div>
                 </div>
@@ -135,14 +151,20 @@
                                     <ul>
                                         <li>
                                             <p {% if foreman_update %} class="text-muted" {% endif %}>{{ service | capfirst }}
-                                                <a href="{% url 'crmapp:service_order_update' service.id %}"><i class="fa-solid fa-pen-to-square"></i></a>
+                                                {% if perms.crmapp.change_serviceorder and order.manager == request.user or request.user.is_staff %}
+                                                    <a href="{% url 'crmapp:service_order_update' service.id %}"><i class="fa-solid fa-pen-to-square"></i></a>
+                                                {% endif %}
+                                                {% if perms.crmapp.add_serviceorder and order.manager == request.user or request.user.is_staff %}
                                                 <a class="text-danger" href="{% url 'crmapp:service_order_delete' service.id %}"><i class="fa-solid fa-xmark"></i></a>
+                                                {% endif %}
                                             </p>
                                         </li>
                                     </ul>
                                 {% endfor %}
                             {% endif %}
-                            <div class="mb-4 ms-3"><a class="btn btn-outline-secondary btn-sm" href="{% url 'crmapp:service_order_create' order.id %}"> + Добавить услугу</a></div>
+                            {% if perms.crmapp.add_serviceorder and order.manager == request.user or request.user.is_staff %}
+                                <div class="mb-4 ms-3"><a class="btn btn-outline-secondary btn-sm" href="{% url 'crmapp:service_order_create' order.id %}"> + Добавить услугу</a></div>
+                            {% endif %}
                             {% if foreman_update %}
                                 <p><strong>Обновлённые услуги заказа:</strong></p>
                                 <ol>

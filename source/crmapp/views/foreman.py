@@ -45,7 +45,7 @@ class ForemanOrderUpdateCreateView(FormView):
 
 class ServiceForemanOrderCreateView(CreateView):
     model = ServiceOrder
-    template_name = 'service/service_order/service_order_create.html'
+    template_name = 'service_order/service_order_create.html'
     form_class = ServiceOrderForm
 
     def form_valid(self, form):
