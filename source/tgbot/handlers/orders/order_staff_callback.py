@@ -83,6 +83,7 @@ def refuse_false_callback(update: Update, context: CallbackContext):
         keyboard = get_staff_order_keyboard(order_id, staff_id)
         context.bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text, reply_markup=keyboard)
 
+
 @is_staff_in_order
 def order_information(update: Update, context: CallbackContext):
     chat_id = update.callback_query.message.chat.id
@@ -215,3 +216,45 @@ def work_end_callback(update: Update, context: CallbackContext):
             services = '\n'.join(map(str, service_list))
         text = f'Услуги заказа №{order.id}:\n{services}\nРабота завершена!'
         context.bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text)
+
+
+@is_staff_in_order
+def photo_before_callback(update: Update, context: CallbackContext):
+    service_list = []
+    chat_id = update.callback_query.message.chat.id
+    message_id = update.callback_query.message.message_id
+    data = update.callback_query.data
+    call, order_id, staff_id = data.split(" ")
+    order = Order.objects.get(pk=order_id)
+    staff = order.order_cleaners.get(staff=staff_id)
+    service = ServiceOrder.objects.filter(order=order)
+    if staff.is_brigadier and call == 'photo_before':
+        for item in service:
+            service_info = f'''◉ {item.service.name}'''
+            service_list.append(service_info)
+            services = '\n'.join(map(str, service_list))
+        text = f'''Заказ №{order.id}\nУслуги: \n{services}\nЧтобы добавить ФОТО ДО,перейдите по ссылке:\nhttp://127.0.0.1:8000/order/{order.id}/'''
+        keyboard = get_brigadier_start_keyboard(order_id, staff_id)
+        context.bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text,
+                                      reply_markup=keyboard)
+
+
+@is_staff_in_order
+def photo_after_callback(update: Update, context: CallbackContext):
+    service_list = []
+    chat_id = update.callback_query.message.chat.id
+    message_id = update.callback_query.message.message_id
+    data = update.callback_query.data
+    call, order_id, staff_id = data.split(" ")
+    order = Order.objects.get(pk=order_id)
+    staff = order.order_cleaners.get(staff=staff_id)
+    service = ServiceOrder.objects.filter(order=order)
+    if staff.is_brigadier and call == 'photo_after':
+        for item in service:
+            service_info = f'''◉ {item.service.name}'''
+            service_list.append(service_info)
+            services = '\n'.join(map(str, service_list))
+        text = f'''Заказ №{order.id}\nВыполнены услуги: \n{services}\nЧтобы добавить ФОТО ПОСЛЕ,перейдите по ссылке:\nhttp://127.0.0.1:8000/order/{order.id}/'''
+        keyboard = get_brigadier_end_keyboard(order_id, staff_id)
+        context.bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text,
+                                      reply_markup=keyboard)

@@ -80,7 +80,7 @@ class ForemanExpenses(models.Model):
 
 
 class ForemanPhoto(models.Model):
-    foreman_report = models.ForeignKey('crmapp.ForemanReport', null=False, blank=False, on_delete=models.CASCADE,
+    foreman_report = models.ForeignKey('crmapp.StaffOrder', null=False, blank=False, on_delete=models.CASCADE,
                                        related_name='foreman_photo', verbose_name='Фото до начала работ')
     is_after = models.BooleanField(default=False, verbose_name='Фото после окончания работ')
     image = models.ImageField(upload_to='photo_foreman/', verbose_name=_('Фото'))

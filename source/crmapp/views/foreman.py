@@ -8,7 +8,8 @@ from django.views import View
 from django.views.generic import FormView, DetailView, CreateView
 
 from crmapp.forms import ServiceOrderForm, ForemanExpenseForm
-from crmapp.models import ForemanOrderUpdate, Order, ServiceOrder, ForemanReport, ForemanPhoto, ForemanExpenses
+from crmapp.models import ForemanOrderUpdate, Order, ServiceOrder, ForemanReport, ForemanPhoto, ForemanExpenses, \
+    StaffOrder
 
 
 class ForemanOrderUpdateCreateView(FormView):
@@ -120,7 +121,7 @@ class PhotoBeforeView(View):
     def post(self, request, *args, **kwargs):
         photo_before = request.FILES.getlist('photo_before')
         photo_after = request.FILES.getlist('photo_after')
-        foreman_report, created = ForemanReport.objects.get_or_create(order_id=kwargs['pk'])
+        foreman_report, created = StaffOrder.objects.get_or_create(order_id=kwargs['pk'])
         foreman_report.save()
         for img in photo_before:
             if img.content_type == 'image/jpeg':
@@ -138,14 +139,16 @@ class PhotoBeforeView(View):
 
 
 class PhotoDetailView(DetailView):
-    model = Order
+    model = ForemanPhoto
     template_name = 'foreman/photo_report.html'
     context_object_name = 'foreman_report'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        reports = self.object.foreman_order_report.all()
-        for ph in reports:
-            context['photos_after'] = ph.foreman_photo.filter(is_after=True)
-            context['photos_before'] = ph.foreman_photo.filter(is_after=False)
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        order = StaffOrder.objects.filter(order_id=self.object.pk)
+        foreman_photo = ForemanPhoto.objects.filter(foreman_report__in=order)
+        photos_before = [i for i in foreman_photo.filter(is_after=False)]
+        photos_after = [i for i in foreman_photo.filter(is_after=True)]
+        context['photos_before'] = photos_before
+        context['photos_after'] = photos_after
         return context
