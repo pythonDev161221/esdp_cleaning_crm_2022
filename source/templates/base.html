@@ -50,8 +50,6 @@
                         <li class="nav-item">
                             <a href="{% url 'crmapp:income_outcome_report' %}" class="nav-link">Отчет</a>
                         </li>
-                        {% endif %}
-
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                                data-bs-toggle="dropdown" aria-expanded="false">
@@ -81,7 +79,7 @@
                                 {% endif %}
                             </ul>
                         </li>
-
+                    {% endif %}
                     {% else %}
                         <li class="nav-item">
                             <a class="nav-link"
