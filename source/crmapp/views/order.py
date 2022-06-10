@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -19,18 +20,20 @@ from tgbot.handlers.orders.tg_order_staff import staff_accept_order
 User = get_user_model()
 
 
-class OrderListView(SearchView):
+class OrderListView(PermissionRequiredMixin, SearchView):
     model = Order
     template_name = 'order/order_list.html'
     context_object_name = 'orders'
     ordering = 'work_start'
     search_fields = ["status__icontains", "work_start__icontains", "address__icontains"]
+    permission_required = "crmapp.view_order"
 
 
-class OrderDetailView(DetailView):
+class OrderDetailView(PermissionRequiredMixin, DetailView):
     model = Order
     template_name = 'order/order_detail.html'
     context_object_name = 'order'
+    permission_required = "crmapp.view_order"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -38,13 +41,14 @@ class OrderDetailView(DetailView):
         return context
 
 
-class FirstStepOrderCreateView(BaseOrderCreateView):
+class FirstStepOrderCreateView(PermissionRequiredMixin, BaseOrderCreateView):
     model = Order
     form_class = OrderForm
     formset = ServiceFormset
     template_name = 'order/order_create.html'
     form_helper = OrderFormHelper
     formset_helper = ServiceFormHelper
+    permission_required = "crmapp.add_order"
 
     def form_valid(self, form, formset=None):
         form.instance.manager = self.request.user
@@ -57,13 +61,14 @@ class FirstStepOrderCreateView(BaseOrderCreateView):
         return reverse_lazy('crmapp:cleaners_add', kwargs={'pk': self.object.pk})
 
 
-class SecondStepOrderCreateView(BaseOrderCreateView):
+class SecondStepOrderCreateView(PermissionRequiredMixin, BaseOrderCreateView):
     model = Order
     form_class = CleanersPartForm
     template_name = 'order/cleaners_add.html'
     formset = StaffFormset
     form_helper = CleanersPartHelper
     formset_helper = StaffFormHelper
+    permission_required = "crmapp.add_order"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -102,8 +107,11 @@ class SecondStepOrderCreateView(BaseOrderCreateView):
         return reverse('crmapp:order_index')
 
 
-class OrderCommentUpdate(UpdateView):
+class OrderCommentUpdate(PermissionRequiredMixin, UpdateView):
     model = Order
     form_class = OrderCommentForm
     template_name = 'order/order_finish.html'
     success_url = reverse_lazy('crmapp:order_index')
+
+    def has_permission(self):
+        return self.request.user == self.get_object().manager or self.request.user.is_staff
