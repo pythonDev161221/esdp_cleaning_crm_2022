@@ -233,6 +233,10 @@ class Order(models.Model):
         db_table = 'order'
         verbose_name = _('Заказ')
         verbose_name_plural = _('Заказы')
+        permissions = [
+        ('сan_view_income_outcome_report', 'Может просмотреть отчет о расходах и доходах'),
+        ('can_view_order_deleted_list', 'Может просмотреть список удаленных заказов')
+    ]
 
 
 class FineCategory(models.Model):

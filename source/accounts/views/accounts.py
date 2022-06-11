@@ -2,7 +2,7 @@ import uuid
 
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, get_object_or_404, render
@@ -22,16 +22,21 @@ from tgbot.dispatcher import TELEGRAM_BOT_USERNAME
 from crmapp.forms import SearchForm
 
 
-class StaffProfileView(DetailView):
+class StaffProfileView(PermissionRequiredMixin, DetailView):
     model = Staff
     template_name = 'account/staff_profile.html'
     context_object_name = 'user_object'
+    permission_required = "accounts.view_staff"
+
+    def has_permission(self):
+        return super().has_permission() or self.request.user.is_staff or self.request.user == self.get_object()
 
 
-class StaffRegisterView(CreateView):
+class StaffRegisterView(PermissionRequiredMixin, CreateView):
     model = Staff
     template_name = "account/registration.html"
     form_class = StaffRegistrationForm
+    permission_required = "accounts.add_staff"
 
     def form_valid(self, form):
         user = form.save()
@@ -66,11 +71,12 @@ class PasswordChangeView(LoginRequiredMixin, UpdateView):
         return reverse("accounts:profile", kwargs={"pk": self.request.user.pk})
 
 
-class StaffListView(ListView):
+class StaffListView(PermissionRequiredMixin, ListView):
     model = Staff
     template_name = 'account/staff_list.html'
     context_object_name = "user_objects"
     search_form_class = SearchForm
+    permission_required = "accounts.view_staff"
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_form()
@@ -98,11 +104,12 @@ class StaffListView(ListView):
             return self.form.cleaned_data.get("search")
 
 
-class StaffEditView(UpdateView):
+class StaffEditView(PermissionRequiredMixin, UpdateView):
     model = Staff
     form_class = StaffEditForm
     template_name = "account/staff_edit.html"
     context_object_name = "user_object"
+    permission_required = "accounts.change_staff"
 
     def get_success_url(self):
         return reverse('accounts:staff-list')
@@ -112,32 +119,38 @@ class StaffEditView(UpdateView):
         return redirect(self.get_success_url())
 
 
-class StaffEditPhoto(UpdateView):
+class StaffEditPhoto(LoginRequiredMixin, UpdateView):
     model = Staff
     form_class = EditPhotoForm
     template_name = "account/staff_photo.html"
     context_object_name = "user_object"
 
 
-class StaffPassportPhotoView(UpdateView):
+class StaffPassportPhotoView(PermissionRequiredMixin, UpdateView):
     model = Staff
     form_class = StaffPassportForm
     template_name = "account/passport.html"
     context_object_name = "user_object"
+    permission_required = "accounts.add_staff_passport_photo"
 
 
-class StaffDescriptionView(UpdateView):
+class StaffDescriptionView(PermissionRequiredMixin, UpdateView):
     model = Staff
     form_class = StaffDescriptionForm
     template_name = "account/staff_description.html"
     context_object_name = "user_object"
+    permission_required = "accounts.add_staff_description"
 
 
-class StaffDeleteView(DeleteView):
+class StaffDeleteView(PermissionRequiredMixin, DeleteView):
     model = Staff
     success_url = reverse_lazy('accounts:staff-list')
     template_name = 'account/staff_delete.html'
     context_object_name = 'user_object'
+    permission_required = "accounts.delete_staff"
+
+    def get_object(self, queryset=None):
+        return self.request.user
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -146,11 +159,13 @@ class StaffDeleteView(DeleteView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class StaffBlackListView(ListView):
+class StaffBlackListView(PermissionRequiredMixin, ListView):
     model = Staff
     template_name = 'account/black_list.html'
     context_object_name = "user_objects"
     search_form_class = SearchForm
+    permission_required = "accounts.view_staff_blacklist"
+
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_form()
@@ -180,12 +195,13 @@ class StaffBlackListView(ListView):
             return self.form.cleaned_data.get("search")
 
 
-class AddToBlackList(UpdateView):
+class AddToBlackList(PermissionRequiredMixin, UpdateView):
     model = Staff
     success_url = reverse_lazy('accounts:staff-list')
     form_class = StaffDescriptionForm
     template_name = 'account/black_list_add.html'
     context_object_name = 'user_object'
+    permission_required = "accounts.add_toBlackList"
 
     def form_valid(self, form):
         self.object = form.save()
@@ -194,11 +210,12 @@ class AddToBlackList(UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class RemoveFromBlackList(DeleteView):
+class RemoveFromBlackList(PermissionRequiredMixin, DeleteView):
     model = Staff
     success_url = reverse_lazy('accounts:staff-list')
     template_name = 'account/black_list_remove.html'
     context_object_name = 'user_object'
+    permission_required = 'accounts.delete_fromBlackList'
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -208,7 +225,7 @@ class RemoveFromBlackList(DeleteView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class StaffPassportView(DetailView):
+class StaffPassportView(LoginRequiredMixin, DetailView):
     model = Staff
     template_name = 'account/staff_passport.html'
     context_object_name = 'user_object'
@@ -220,7 +237,7 @@ def get_auth_token_telegram(request, pk):
         return render(request, "account/staff_tg_auth_token.html", {"token": user.set_auth_tg_token()})
 
 
-class StaffPayoutDetailView(DetailView):
+class StaffPayoutDetailView(LoginRequiredMixin, DetailView):
     model = Staff
     context_object_name = 'staff'
     template_name = 'account/staff_payouts.html'
@@ -232,7 +249,7 @@ class StaffPayoutDetailView(DetailView):
         return context
 
 
-class StaffOrderDetailView(DetailView):
+class StaffOrderDetailView(LoginRequiredMixin, DetailView):
     model = Staff
     context_object_name = 'staff'
     template_name = 'account/staff_orders.html'

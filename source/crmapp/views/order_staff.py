@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.views.generic.edit import FormView
@@ -14,11 +15,12 @@ from tgbot.handlers.orders.tg_order_staff import once_staff_add_order, once_staf
 User = get_user_model()
 
 
-class OrderStaffCreateView(FormView):
+class OrderStaffCreateView(PermissionRequiredMixin, FormView):
     model = StaffOrder
     formset = BaseStaffAddFormSet
     form_class = OrderStaffForm
     template_name = "staff/create.html"
+    permission_required = "crmapp.add_stafforder"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -55,8 +57,12 @@ class OrderStaffCreateView(FormView):
             once_staff_add_order(obj)
         return redirect("crmapp:order_detail", pk=order.pk)
 
+    def has_permission(self):
+        order = get_object_or_404(Order, pk=self.kwargs.get("pk"))
+        return self.request.user == order.manager or self.request.user.is_staff
 
-class OrderStaffDeleteView(DeleteView):
+
+class OrderStaffDeleteView(PermissionRequiredMixin, DeleteView):
     model = StaffOrder
     template_name = 'staff/delete.html'
     context_object_name = 'staff'
@@ -68,3 +74,6 @@ class OrderStaffDeleteView(DeleteView):
 
     def get_success_url(self):
         return reverse('crmapp:order_detail', kwargs={'pk': self.object.order.pk})
+
+    def has_permission(self):
+        return self.request.user == self.get_object().order.manager or self.request.user.is_staff

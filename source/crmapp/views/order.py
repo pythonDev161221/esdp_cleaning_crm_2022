@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
@@ -19,10 +20,11 @@ from crmapp.forms import SearchForm
 User = get_user_model()
 
 
-class OrderListView(ListView):
+class OrderListView(PermissionRequiredMixin, ListView):
     model = Order
     template_name = 'order/order_list.html'
     context_object_name = 'orders'
+    permission_required = "crmapp.view_order"
     search_form_class = SearchForm
 
     def get(self, request, *args, **kwargs):
@@ -51,10 +53,11 @@ class OrderListView(ListView):
             return self.form.cleaned_data.get("search")
 
 
-class OrderDetailView(DetailView):
+class OrderDetailView(PermissionRequiredMixin, DetailView):
     model = Order
     template_name = 'order/order_detail.html'
     context_object_name = 'order'
+    permission_required = "crmapp.view_order"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -62,7 +65,7 @@ class OrderDetailView(DetailView):
         return context
 
 
-class OrderDeleteView(DeleteView):
+class OrderDeleteView(PermissionRequiredMixin, DeleteView):
     model = Order
     success_url = reverse_lazy('crmapp:order_index')
     template_name = 'order/order_delete.html'
@@ -74,14 +77,17 @@ class OrderDeleteView(DeleteView):
         messages.success(self.request, f'Заказ № {self.object.pk } успешно удален!')
         return HttpResponseRedirect(self.get_success_url())
 
+    def has_permission(self):
+        return self.request.user == self.get_object().manager or self.request.user.is_staff
 
-class FirstStepOrderCreateView(BaseOrderCreateView):
+class FirstStepOrderCreateView(PermissionRequiredMixin, BaseOrderCreateView):
     model = Order
     form_class = OrderForm
     formset = ServiceFormset
     template_name = 'order/order_create.html'
     form_helper = OrderFormHelper
     formset_helper = ServiceFormHelper
+    permission_required = "crmapp.add_order"
 
     def form_valid(self, form, formset=None):
         form.instance.manager = self.request.user
@@ -94,13 +100,14 @@ class FirstStepOrderCreateView(BaseOrderCreateView):
         return reverse_lazy('crmapp:cleaners_add', kwargs={'pk': self.object.pk})
 
 
-class SecondStepOrderCreateView(BaseOrderCreateView):
+class SecondStepOrderCreateView(PermissionRequiredMixin, BaseOrderCreateView):
     model = Order
     form_class = CleanersPartForm
     template_name = 'order/cleaners_add.html'
     formset = StaffFormset
     form_helper = CleanersPartHelper
     formset_helper = StaffFormHelper
+    permission_required = "crmapp.add_order"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -139,19 +146,24 @@ class SecondStepOrderCreateView(BaseOrderCreateView):
         return reverse('crmapp:order_index')
 
 
-class OrderCommentUpdate(UpdateView):
+class OrderCommentUpdate(PermissionRequiredMixin, UpdateView):
     model = Order
     form_class = OrderCommentForm
     template_name = 'order/order_finish.html'
     success_url = reverse_lazy('crmapp:order_index')
 
+    def has_permission(self):
+        return self.request.user == self.get_object().manager or self.request.user.is_staff
 
-class OrderDeletedListView(ListView):
+
+class OrderDeletedListView(PermissionRequiredMixin, ListView):
     model = Order
     template_name = 'order/order_deleted_list.html'
     context_object_name = "orders"
+    permission_required = "crmapp:can_view_order_deleted_list"
 
     def get_queryset(self):
         queryset = super().get_queryset()
         queryset = Order.objects.filter(is_deleted=True)
         return queryset
+
