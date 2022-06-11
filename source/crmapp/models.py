@@ -158,7 +158,11 @@ class Order(models.Model):
                                          verbose_name=_('Инвентарь'),
                                          through='crmapp.InventoryOrder'),
     description = models.TextField(max_length=2000, null=True, blank=False, verbose_name=_('Примечание'))
+    is_deleted = models.BooleanField(null=True, blank=True, default=False, verbose_name=_('Удален'))
 
+    def soft_delete(self):
+        self.is_deleted = True
+        self.save()
 
     def get_all_staff_expenses(self):
         expenses = 0

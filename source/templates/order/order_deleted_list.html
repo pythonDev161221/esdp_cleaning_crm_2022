@@ -1,6 +1,9 @@
-<div class="container">
+{% extends 'base.html' %}
+{% block title %}Deleted Orders{% endblock title %}
+
+{% block content %}
     {% if orders %}
-        <table class="table table-striped text-center table-hover">
+    <table class="table table-striped text-center table-hover">
             <thead>
                 <tr>
                     <th scope="col">Заказ #</th>
@@ -9,7 +12,6 @@
                     <th scope="col">Адрес</th>
                     <th scope="col">Статус</th>
                     <th scope="col">Сумма</th>
-                    <th scope="col" width="15%">Действия</th>
                 </tr>
             </thead>
             <tbody>
@@ -21,17 +23,6 @@
                         <td>{{ order.address }}</td>
                         <td>{{ order.get_status_display }}</td>
                         <td>{{ order.get_total }}</td>
-                        <td><div class=" btn-group">
-                                    <a class="btn btn-success"
-                                       href="{% url 'crmapp:order_detail' order.pk %}">Просмотреть</a>
-                                    <br>
-                                    <a class="btn btn-warning"
-                                       href="№">Редактировать</a>
-                                    <br>
-                                    <a class="btn btn-danger"
-                                       href="{% url 'crmapp:order_delete' order.pk %}">Удалить</a>
-                                </div>
-</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -39,4 +30,4 @@
     {% else %}
         <p>Список заказов пуст</p>
     {% endif %}
-</div>
+{% endblock content %}
