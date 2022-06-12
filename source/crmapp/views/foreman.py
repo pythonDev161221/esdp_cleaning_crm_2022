@@ -1,6 +1,5 @@
-import datetime
-
 from django.forms import modelformset_factory
+from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, render, get_object_or_404
 from django.urls import reverse
@@ -8,7 +7,8 @@ from django.views import View
 from django.views.generic import FormView, DetailView, CreateView
 
 from crmapp.forms import ServiceOrderForm, ForemanExpenseForm
-from crmapp.models import ForemanOrderUpdate, Order, ServiceOrder, ForemanReport, ForemanPhoto, ForemanExpenses
+from crmapp.models import ForemanOrderUpdate, Order, ServiceOrder, ForemanPhoto, ForemanExpenses, \
+    StaffOrder
 
 
 class ForemanOrderUpdateCreateView(FormView):
@@ -36,7 +36,6 @@ class ForemanOrderUpdateCreateView(FormView):
             for form in service_form:
                 if form.cleaned_data:
                     f = form.save()
-                    print(f'f = {f}')
                     foreman_order.services.add(f)
             service_form.save()
             foreman_order.save()
@@ -55,6 +54,7 @@ class ServiceForemanOrderCreateView(CreateView):
         self.object.total = self.object.service_total()
         self.object.order = order
         self.object.save()
+        messages.success(self.request, f'Вы успешно добавили услугу в заказ № {order.id}!')
         foreman_order.services.add(self.object)
         return HttpResponseRedirect(self.get_success_url())
 
@@ -69,58 +69,19 @@ class ForemanExpenseView(CreateView):
 
     def form_valid(self, form):
         order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
-        foreman_report, created = ForemanReport.objects.get_or_create(order_id=order.pk)
+        foreman_report, created = StaffOrder.objects.get_or_create(order_id=order.pk)
         self.object = form.save(commit=False)
         self.object.foreman_report = foreman_report
         self.object.save()
+        messages.success(self.request, f'Вы успешно добавили услугу в заказ № {order.id}!')
         return redirect('crmapp:order_detail', order.pk)
-
-    # def get_success_url(self):
-    #     return reverse('crmapp:order_detail', kwargs={'pk': self.object.order.pk})
-
-
-class InPlaceView(View):
-    def get(self, request, *args, **kwargs):
-        order = Order.objects.get(pk=kwargs['pk'])
-        staff = order.order_cleaners.get(staff_id=request.user.id)
-        if staff.is_brigadier == True:
-            ForemanReport.objects.create(order_id=kwargs['pk'])
-        if not staff.in_place:
-            staff.in_place = datetime.datetime.now()
-            staff.save()
-        return redirect('crmapp:order_detail', kwargs['pk'])
-
-
-class WorkStartView(View):
-    def get(self, request, *args, **kwargs):
-        order = Order.objects.get(pk=kwargs['pk'])
-        staff = order.order_cleaners.get(staff_id=request.user.id)
-        foreman_report, created = ForemanReport.objects.get_or_create(order_id=kwargs['pk'])
-        if staff.is_brigadier == True:
-            foreman_report.start_at = datetime.datetime.now()
-            foreman_report.save()
-        if not staff.work_start:
-            staff.work_start = datetime.datetime.now()
-            staff.save()
-        return redirect('crmapp:order_detail', kwargs['pk'])
-
-
-class WorkEndView(View):
-    def get(self, request, *args, **kwargs):
-        order = Order.objects.get(pk=kwargs['pk'])
-        staff = order.order_cleaners.get(staff_id=request.user.id)
-        if staff.is_brigadier == True:
-            foreman_report, created = ForemanReport.objects.get_or_create(order_id=order.pk)
-            foreman_report.end_at = datetime.datetime.now()
-            foreman_report.save()
-        return redirect('crmapp:order_detail', kwargs['pk'])
 
 
 class PhotoBeforeView(View):
     def post(self, request, *args, **kwargs):
         photo_before = request.FILES.getlist('photo_before')
         photo_after = request.FILES.getlist('photo_after')
-        foreman_report, created = ForemanReport.objects.get_or_create(order_id=kwargs['pk'])
+        foreman_report, created = StaffOrder.objects.get_or_create(order_id=kwargs['pk'])
         foreman_report.save()
         for img in photo_before:
             if img.content_type == 'image/jpeg':
@@ -128,24 +89,28 @@ class PhotoBeforeView(View):
                 foreman_photo.image = img
                 foreman_photo.is_after = False
                 foreman_photo.save()
+                messages.success(self.request, f'Вы добавили ФОТО ДО')
         for img in photo_after:
             if img.content_type == 'image/jpeg':
                 foreman_photo = ForemanPhoto.objects.create(foreman_report=foreman_report)
                 foreman_photo.image = img
                 foreman_photo.is_after = True
                 foreman_photo.save()
+                messages.success(self.request, f'Вы добавили ФОТО ПОСЛЕ')
         return redirect('crmapp:order_detail', kwargs['pk'])
 
 
 class PhotoDetailView(DetailView):
-    model = Order
+    model = ForemanPhoto
     template_name = 'foreman/photo_report.html'
     context_object_name = 'foreman_report'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        reports = self.object.foreman_order_report.all()
-        for ph in reports:
-            context['photos_after'] = ph.foreman_photo.filter(is_after=True)
-            context['photos_before'] = ph.foreman_photo.filter(is_after=False)
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        order = StaffOrder.objects.filter(order_id=self.object.pk)
+        foreman_photo = ForemanPhoto.objects.filter(foreman_report__in=order)
+        photos_before = [i for i in foreman_photo.filter(is_after=False)]
+        photos_after = [i for i in foreman_photo.filter(is_after=True)]
+        context['photos_before'] = photos_before
+        context['photos_after'] = photos_after
         return context

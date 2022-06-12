@@ -48,30 +48,10 @@ class Client(models.Model):
         verbose_name_plural = _('Клиенты')
 
 
-class ForemanReport(models.Model):
-    # Таблица для отчёта бригадира имеет связь FK с таблицей Order
-    order = models.ForeignKey('crmapp.Order', on_delete=models.PROTECT, null=False, blank=False,
-                              related_name='foreman_order_report', verbose_name=_('Заказ'))
-    start_at = models.DateTimeField(null=True, blank=True, verbose_name=_('Дата и время начала работы'))
-    end_at = models.DateTimeField(null=True, blank=True, verbose_name=_('Дата и время окончания работы'))
-
-    class Meta:
-        db_table = 'foreman_report'
-        verbose_name = _('Отчёт бригадира')
-        verbose_name_plural = _('Отчёты бригадира')
-
-    def get_total_expenses(self):
-        total = 0
-        for expense in self.foreman_expense.all():
-            total += expense.amount
-        return total
-
-
 class ForemanExpenses(models.Model):
     amount = models.PositiveIntegerField(null=True, blank=True, default=0, verbose_name=_('Сумма расхода'))
-    name = models.CharField(max_length=100, null=False, blank=False, verbose_name=_('Название расхода'))
     description = models.TextField(max_length=1000, null=True, blank=True, verbose_name=_('Описание расхода'))
-    foreman_report = models.ForeignKey('crmapp.ForemanReport', on_delete=models.CASCADE, null=False, blank=False,
+    foreman_report = models.ForeignKey('crmapp.StaffOrder', on_delete=models.CASCADE, null=False, blank=False,
                                        related_name='foreman_expense', verbose_name=_('Отчёт бригадира'))
 
     db_table = 'foreman_expense'
@@ -80,7 +60,7 @@ class ForemanExpenses(models.Model):
 
 
 class ForemanPhoto(models.Model):
-    foreman_report = models.ForeignKey('crmapp.ForemanReport', null=False, blank=False, on_delete=models.CASCADE,
+    foreman_report = models.ForeignKey('crmapp.StaffOrder', null=False, blank=False, on_delete=models.CASCADE,
                                        related_name='foreman_photo', verbose_name='Фото до начала работ')
     is_after = models.BooleanField(default=False, verbose_name='Фото после окончания работ')
     image = models.ImageField(upload_to='photo_foreman/', verbose_name=_('Фото'))
@@ -92,7 +72,6 @@ class ForemanPhoto(models.Model):
 
 
 class ForemanOrderUpdate(models.Model):
-    # Таблица для редактирования услуг и доп услуг в заказе для бригадира, имеет связь FK с таблицей Order
     order = models.ForeignKey('crmapp.Order', on_delete=models.PROTECT, null=False, blank=False,
                               related_name='foreman_order_update', verbose_name=_('Заказ'))
     services = models.ManyToManyField('crmapp.ServiceOrder', related_name='foreman_order_update',
@@ -120,6 +99,12 @@ class StaffOrder(models.Model):
         db_table = 'staff_order'
         verbose_name = _('Сотрудник в заказе')
         verbose_name_plural = _('Сотрудники в заказе')
+
+    def get_total_expenses(self):
+        total = 0
+        for expense in self.foreman_expense.all():
+            total += expense.amount
+        return total
 
 
 class Order(models.Model):

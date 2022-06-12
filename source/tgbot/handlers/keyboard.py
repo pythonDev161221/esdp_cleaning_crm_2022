@@ -45,7 +45,7 @@ def get_brigadier_start_keyboard(order_id, staff_id) -> InlineKeyboardMarkup:
         [
             InlineKeyboardButton("Фото ДО", callback_data=f'photo_before {order_id} {staff_id}'),
             InlineKeyboardButton("Начать работу", callback_data=f'work_start {order_id} {staff_id}'),
-            InlineKeyboardButton("Внести изменения", callback_data=f'edit_service {order_id} {staff_id}'),
+            InlineKeyboardButton("Редактировать", callback_data=f'edit_service {order_id} {staff_id}'),
         ]
     ]
     return InlineKeyboardMarkup(keyboard)

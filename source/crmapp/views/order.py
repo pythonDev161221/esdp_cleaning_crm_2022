@@ -11,7 +11,7 @@ from crmapp.helpers.crispy_form_helpers import OrderFormHelper, ServiceFormHelpe
 from crmapp.forms import CleanersPartForm, OrderForm, OrderCommentForm
 from crmapp.helpers.order_helpers import BaseOrderCreateView, ServiceFormset, StaffFormset
 
-from crmapp.models import Order, ForemanOrderUpdate, ForemanReport
+from crmapp.models import Order, ForemanOrderUpdate
 
 from tgbot.handlers.orders.tg_order_staff import staff_accept_order
 

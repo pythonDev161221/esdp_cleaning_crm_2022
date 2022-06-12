@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView, FormView
 
 from crmapp.forms import ManagerReportForm, BaseManagerReportFormSet
-from crmapp.models import ManagerReport, Order, StaffOrder
+from crmapp.models import ManagerReport, Order, StaffOrder, ForemanPhoto
 
 from crmapp.forms import FilterForm
 
@@ -35,13 +35,10 @@ class ManagerReportCreateView(PermissionRequiredMixin, FormView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         order = get_object_or_404(Order, pk=self.kwargs['pk'])
-        staff_order = StaffOrder.objects.filter(order=order)
-        context['staff_order'] = staff_order
-        context['order'] = order
         staff_and_salary = order.manager_report_salary_staffs()
         ManagerFormset = modelformset_factory(ManagerReport, form=ManagerReportForm, formset=BaseManagerReportFormSet,
                                               extra=len(staff_and_salary))
-        formset = ManagerFormset(prefix='extra',)
+        formset = ManagerFormset(prefix='extra', )
         staff_numeric_value = 0
         for forms in formset:
             if not staff_and_salary[staff_numeric_value][1] == None:
@@ -54,6 +51,11 @@ class ManagerReportCreateView(PermissionRequiredMixin, FormView):
             staff_numeric_value += 1
         context['formset'] = formset
         staff_order = StaffOrder.objects.filter(order=order)
+        foreman_photo = ForemanPhoto.objects.filter(foreman_report__in=staff_order)
+        photos_before = [i for i in foreman_photo.filter(is_after=False)]
+        photos_after = [i for i in foreman_photo.filter(is_after=True)]
+        context['photos_before'] = photos_before
+        context['photos_after'] = photos_after
         context['staff_order'] = staff_order
         context['order'] = order
         return context
