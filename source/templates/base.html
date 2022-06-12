@@ -76,6 +76,7 @@
                                 {% if perms.crmapp.add_client %}
                                     <li><a class="dropdown-item" href="{% url 'crmapp:client_create' %}">Добавить
                                     клиента</a></li>
+                                <li><a class="dropdown-item" href="{% url 'crmapp:order_deleted_list' %}">Удаленные заказы</a></li>
                                 {% endif %}
                             </ul>
                         </li>

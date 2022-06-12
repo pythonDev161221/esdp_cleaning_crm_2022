@@ -158,7 +158,11 @@ class Order(models.Model):
                                          verbose_name=_('Инвентарь'),
                                          through='crmapp.InventoryOrder'),
     description = models.TextField(max_length=2000, null=True, blank=False, verbose_name=_('Примечание'))
+    is_deleted = models.BooleanField(null=True, blank=True, default=False, verbose_name=_('Удален'))
 
+    def soft_delete(self):
+        self.is_deleted = True
+        self.save()
 
     def get_all_staff_expenses(self):
         expenses = 0
@@ -230,7 +234,8 @@ class Order(models.Model):
         verbose_name = _('Заказ')
         verbose_name_plural = _('Заказы')
         permissions = [
-        ('сan_view_income_outcome_report', 'Может просмотреть отчет о расходах и доходах')
+        ('сan_view_income_outcome_report', 'Может просмотреть отчет о расходах и доходах'),
+        ('can_view_order_deleted_list', 'Может просмотреть список удаленных заказов')
     ]
 
 

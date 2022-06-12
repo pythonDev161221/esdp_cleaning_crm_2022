@@ -21,6 +21,7 @@ class IncomeOutcomeReportView(PermissionRequiredMixin, ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
+        queryset = Order.objects.order_by('work_start').exclude(is_deleted=True)
         if self.search_value_first and self.search_value_last:
             queryset = queryset.filter(work_start__range=(self.search_value_first, self.search_value_last))
         return queryset
