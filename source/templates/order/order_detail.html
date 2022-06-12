@@ -169,8 +169,8 @@
                             {% for service in order.order_services.all %}
                                 <ul>
                                     <li>
-                                        <p {% if foreman_update %}
-                                            class="text-muted" {% endif %}>{{ service | capfirst }}
+                                        {% if service.foreman_order_update.all %}
+                                            <p>{{ service | capfirst }}
                                             {% if perms.crmapp.change_serviceorder and order.manager == request.user or request.user.is_staff %}
                                                 <a href="{% url 'crmapp:service_order_update' service.id %}"><i
                                                         class="fa-solid fa-pen-to-square"></i></a>
@@ -180,7 +180,19 @@
                                                    href="{% url 'crmapp:service_order_delete' service.id %}"><i
                                                         class="fa-solid fa-xmark"></i></a>
                                             {% endif %}
-                                        </p>
+                                        {% endif %}
+                                        {% if not service.foreman_order_update.all %}
+                                            <p class="text-muted">{{ service | capfirst }}</p>
+                                            {% if perms.crmapp.change_serviceorder and order.manager == request.user or request.user.is_staff %}
+                                                <a href="{% url 'crmapp:service_order_update' service.id %}"><i
+                                                        class="fa-solid fa-pen-to-square"></i></a>
+                                            {% endif %}
+                                            {% if perms.crmapp.add_serviceorder and order.manager == request.user or request.user.is_staff %}
+                                                <a class="text-danger"
+                                                   href="{% url 'crmapp:service_order_delete' service.id %}"><i
+                                                        class="fa-solid fa-xmark"></i></a>
+                                            {% endif %}
+                                        {% endif %}
                                     </li>
                                 </ul>
                             {% endfor %}
