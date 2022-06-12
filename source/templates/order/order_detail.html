@@ -7,29 +7,28 @@
     <div class="container mt-3">
         {% for staff in order.order_cleaners.all %}
             {% if staff.staff == user %}
-                {% if not staff.in_place %}
-                    <a href="{% url 'crmapp:cleaner_in_place' order.id %}" class="btn btn-dark">На месте</a>
-                {% elif staff.in_place and not staff.work_start %}
-                    <a href="{% url 'crmapp:cleaner_work_start' order.id %}" class="btn btn-success">Начать работу</a>
+                {% if staff.in_place %}
                     {% if user == brigadir.staff %}
-                        <a href="{% url 'crmapp:foremanorder_create' order.id %}" class="btn btn-warning">Внести изменения в заказ</a>
-                            <form class="mt-3" action="{% url 'crmapp:foreman_photo_before' order.id %}" method="POST" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <input class="btn btn-secondary" type="file" name="photo_before" multiple>
-                                <button type="submit" class="btn btn-primary">Отправить фото до</button>
-                            </form>
-                    {% endif %}
-                {% elif staff.in_place and staff.work_start %}
-                    {% if user == brigadir.staff %}
-                        <a href="{% url 'crmapp:foreman_create_service' order.id %}" class="btn btn-info">Добавить услугу в заказ</a>
-                        <a href="{% url 'crmapp:foreman_create_expense' order.id %}" class="btn btn-info">Добавить расход</a>
-                        <a href="{% url 'crmapp:cleaner_work_end' order.id %}" class="btn btn-danger">Закончить работу</a>
-                        <form class="mt-3" action="{% url 'crmapp:foreman_photo_before' order.id %}" method="POST" enctype="multipart/form-data">
+                        <a href="{% url 'crmapp:foremanorder_create' order.id %}" class="btn btn-outline-success">Внести
+                            изменения в заказ</a>
+                        <a href="{% url 'crmapp:foreman_create_service' order.id %}" class="btn btn-outline-success">Добавить
+                            услугу в заказ</a>
+                        <a href="{% url 'crmapp:foreman_create_expense' order.id %}" class="btn btn-outline-success">Добавить
+                            расход</a>
+                        <form class="mt-3" action="{% url 'crmapp:foreman_photo_before' order.id %}" method="POST"
+                              enctype="multipart/form-data">
                             {% csrf_token %}
-                            <input class="btn btn-secondary" type="file" name="photo_after" multiple>
-                            <button type="submit" class="btn btn-primary">Отправить фото после</button>
+                            <input class="btn btn-outline-success" type="file" name="photo_before" multiple>
+                            <button type="submit" class="btn btn-success">Отправить фото до</button>
                         </form>
                     {% endif %}
+                {% elif staff.work_start %}
+                    <form class="mt-3" action="{% url 'crmapp:foreman_photo_before' order.id %}" method="POST"
+                          enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input class="btn btn-outline-success" type="file" name="photo_after" multiple>
+                        <button type="submit" class="btn btn-success">Отправить фото после</button>
+                    </form>
                 {% endif %}
             {% endif %}
         {% endfor %}
@@ -37,118 +36,142 @@
         <h3 class="mt-3">Заказ № {{ order.id }}<span class="label success">{{ order.get_status_display }}</span></h3>
         <hr>
         <div>
-           <p><small class="text-muted">Менеджер: {{ order.manager.first_name }} {{ order.manager.last_name }}</small></p>
+            <p><small class="text-muted">Менеджер: {{ order.manager.first_name }} {{ order.manager.last_name }}</small>
+            </p>
             <small class="text-muted me-5">Заказ создан: {{ order.created_at }}</small>
         </div>
-         <div class="row justify-content-around">
-                <div class="card text-dark bg-light mb-3 mt-3 p-0" style="max-width: 20rem;">
-                    <h5 class="card-header">Клиент</h5>
-                    <div class="card-body">
-                        <p class="card-text">{{ order.client_info }}</p>
-                        <p>Адресс: <strong>{{ order.address | capfirst }}</strong></p>
-                        <p>Тип объекта: {{ order.object_type | capfirst }}</p>
-                        <p>Вид оплаты: <strong>{{ order.get_payment_type_display }}</strong></p>
-                        <hr>
-                        <p><a class="btn btn-outline-primary btn-sm" href="{% url 'crmapp:foreman_photo' order.id %}">Просмотреть фотографии</a></p>
-                    </div>
+        <div class="row justify-content-around">
+            <div class="card text-dark bg-light mb-3 mt-3 p-0" style="max-width: 20rem;">
+                <h5 class="card-header">Клиент</h5>
+                <div class="card-body">
+                    <p class="card-text">{{ order.client_info }}</p>
+                    <p>Адресс: <strong>{{ order.address | capfirst }}</strong></p>
+                    <p>Тип объекта: {{ order.object_type | capfirst }}</p>
+                    <p>Вид оплаты: <strong>{{ order.get_payment_type_display }}</strong></p>
+                    <hr>
+                    {% for photo in order.order_cleaners.all %}
+                        {% if photo.foreman_photo.all %}
+                            <p><a class="btn btn-outline-primary btn-sm"
+                                  href="{% url 'crmapp:foreman_photo' order.id %}">Просмотреть
+                                фотографии</a></p>
+                        {% endif %}
+                    {% endfor %}
                 </div>
-                <div class="card text-dark bg-light mb-3 mt-3 p-0" style="max-width: 20rem;">
-                    <h5 class="card-header">Даты и время</h5>
-                    <div class="card-body">
-                        <div class="card-title">Дата и время заказа:</div>
-                            <ul>
-                                <p class="card-text text-success"><strong>{{ order.work_start }}, {{ order.work_start |date:'l'}}</strong></p>
-                            </ul>
-                        <div class="card-title">Заказ будет выполнен:</div>
-                            <ul>
-                                <p class="card-text"> {{ order.work_end }}</p>
-                            </ul>
-                        <div class="card-title">Общее время работы:</div>
-                            <ul>
-                                <p class="card-text"> {{ order.cleaning_time }} ч.</p>
-                            </ul>
-                    </div>
+            </div>
+            <div class="card text-dark bg-light mb-3 mt-3 p-0" style="max-width: 20rem;">
+                <h5 class="card-header">Даты и время</h5>
+                <div class="card-body">
+                    <div class="card-title">Дата и время заказа:</div>
+                    <ul>
+                        <p class="card-text text-success">
+                            <strong>{{ order.work_start }}, {{ order.work_start |date:'l' }}</strong></p>
+                    </ul>
+                    <div class="card-title">Заказ будет выполнен:</div>
+                    <ul>
+                        <p class="card-text"> {{ order.work_end }}</p>
+                    </ul>
+                    <div class="card-title">Общее время работы:</div>
+                    <ul>
+                        <p class="card-text"> {{ order.cleaning_time }} ч.</p>
+                    </ul>
                 </div>
-                <div class="card text-dark bg-light mb-3 mt-3 p-0" style="max-width: 20rem;">
-                    <h5 class="card-header">Бригада</h5>
-                    <div class="card-body">
-                        <p class="card-text">
-                            <ul>
-                                 {% for cleaner in order.order_cleaners.all %}
-                                    <li>
-                                        {% if cleaner.is_brigadier %}
-                                        <a style="text-decoration: none" href="{% url 'accounts:profile' cleaner.id %}">{{ cleaner.staff.first_name }} {{ cleaner.staff.last_name }} </a><span><strong>Бригадир</strong></span>
-                                        <a class="text-danger" href="{% url 'crmapp:order_staff_delete' cleaner.id %}"><i class="fa-solid fa-xmark"></i></a>
-                                    {% else  %}
-                                        <a style="text-decoration: none" href="{% url 'accounts:profile' cleaner.id %}"> {{ cleaner.staff.first_name }} {{ cleaner.staff.last_name }} </a>
-                                        <a class="text-danger" href="{% url 'crmapp:order_staff_delete' cleaner.id %}"><i class="fa-solid fa-xmark"></i></a>
-                                    {% endif %}
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        <div class="mb-4 ms-3"><a class="btn btn-outline-secondary btn-sm" href="{% url 'crmapp:order_staff_add' order.id %}"> + Добавить клинера</a></div>
-                        <hr>
-                        <p><a class="btn btn-outline-danger" href="{% url 'crmapp:manager_report_create' order.id %}">Рассчитать ЗП бригады</a></p>
-                        </p>
+            </div>
+            <div class="card text-dark bg-light mb-3 mt-3 p-0" style="max-width: 20rem;">
+                <h5 class="card-header">Бригада</h5>
+                <div class="card-body">
+                    <p class="card-text">
+                    <ul>
+                        {% for cleaner in order.order_cleaners.all %}
+                            <li>
+                                {% if cleaner.is_brigadier %}
+                                    <a style="text-decoration: none"
+                                       href="{% url 'accounts:profile' cleaner.id %}">{{ cleaner.staff.first_name }} {{ cleaner.staff.last_name }} </a>
+                                    <span><strong>Бригадир</strong></span>
+                                    <a class="text-danger" href="{% url 'crmapp:order_staff_delete' cleaner.id %}"><i
+                                            class="fa-solid fa-xmark"></i></a>
+                                {% else %}
+                                    <a style="text-decoration: none"
+                                       href="{% url 'accounts:profile' cleaner.id %}"> {{ cleaner.staff.first_name }} {{ cleaner.staff.last_name }} </a>
+                                    <a class="text-danger" href="{% url 'crmapp:order_staff_delete' cleaner.id %}"><i
+                                            class="fa-solid fa-xmark"></i></a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="mb-4 ms-3"><a class="btn btn-outline-secondary btn-sm"
+                                              href="{% url 'crmapp:order_staff_add' order.id %}"> + Добавить клинера</a>
                     </div>
+                    <hr>
+                    <p><a class="btn btn-outline-danger" href="{% url 'crmapp:manager_report_create' order.id %}">Рассчитать
+                        ЗП бригады</a></p>
+                    </p>
                 </div>
-                <div class="card text-dark bg-light mb-3 mt-3 p-0" style="max-width: 20rem;">
-                    <h5 class="card-header">Инвентарь</h5>
-                    <div class="card-body">
-                        <p class="card-text">
-                            {% for inventory in order.order_inventories.all %}
+            </div>
+            <div class="card text-dark bg-light mb-3 mt-3 p-0" style="max-width: 20rem;">
+                <h5 class="card-header">Инвентарь</h5>
+                <div class="card-body">
+                    <p class="card-text">
+                        {% for inventory in order.order_inventories.all %}
+                            <ul>
+                                <li>
+                                    <p>{{ inventory.inventory.name }}: {{ inventory.amount }}
+                                        <a class="text-danger"
+                                           href="{% url 'crmapp:inventory_order_remove' inventory.pk %}"><i
+                                                class="fa-solid fa-xmark"></i></a>
+                                    </p>
+                                </li>
+                            </ul>
+                        {% endfor %}
+                    <div class="mb-4 ms-3"><a class="btn btn-outline-secondary btn-sm"
+                                              href="{% url 'crmapp:inventory_order_add' order.id %}">+Добавить/Изменить
+                        инвентарь</a></div>
+                    </p>
+                </div>
+            </div>
+            <div class="card text-dark bg-light mb-3 mt-3 p-0" style="max-width: 30rem;">
+                <h5 class="card-header">Услуги</h5>
+                <div class="card-body">
+                    <p class="card-text">
+                        {% if order.order_services %}
+                            {% for service in order.order_services.all %}
                                 <ul>
                                     <li>
-                                        <p>{{ inventory.inventory.name }}: {{ inventory.amount }}
-                                        <a class="text-danger" href="{% url 'crmapp:inventory_order_remove' inventory.pk %}"><i class="fa-solid fa-xmark"></i></a>
+                                        <p>{{ service | capfirst }}
+                                            <a href="{% url 'crmapp:service_order_update' service.id %}"><i
+                                                    class="fa-solid fa-pen-to-square"></i></a>
+                                            <a class="text-danger"
+                                               href="{% url 'crmapp:service_order_delete' service.id %}"><i
+                                                    class="fa-solid fa-xmark"></i></a>
                                         </p>
                                     </li>
                                 </ul>
                             {% endfor %}
-                        <div class="mb-4 ms-3"><a class="btn btn-outline-secondary btn-sm" href="{% url 'crmapp:inventory_order_add' order.id %}">+Добавить/Изменить инвентарь</a></div>
-                        </p>
-                    </div>
-                </div>
-                <div class="card text-dark bg-light mb-3 mt-3 p-0" style="max-width: 30rem;">
-                    <h5 class="card-header">Услуги</h5>
-                    <div class="card-body">
-                        <p class="card-text">
-                            {% if order.order_services %}
-                                {% for service in order.order_services.all %}
-                                    <ul>
-                                        <li>
-                                            <p {% if foreman_update %} class="text-muted" {% endif %}>{{ service | capfirst }}
-                                                <a href="{% url 'crmapp:service_order_update' service.id %}"><i class="fa-solid fa-pen-to-square"></i></a>
-                                                <a class="text-danger" href="{% url 'crmapp:service_order_delete' service.id %}"><i class="fa-solid fa-xmark"></i></a>
-                                            </p>
-                                        </li>
-                                    </ul>
-                                {% endfor %}
-                            {% endif %}
-                            <div class="mb-4 ms-3"><a class="btn btn-outline-secondary btn-sm" href="{% url 'crmapp:service_order_create' order.id %}"> + Добавить услугу</a></div>
-                            {% if foreman_update %}
-                                <p><strong>Обновлённые услуги заказа:</strong></p>
-                                <ol>
-                                    {% for foreman_update in order.foreman_order_update.all %}
-                                        {% for service in foreman_update.services.all %}
-                                            <li>{{ service | capfirst }}</li>
-                                        {% endfor %}
-                                    {% endfor %}
-                                </ol>
-                            {% endif %}
-                            <hr>
-                            <h5><strong>Общая стоимость: {{ order.get_total }} с </strong></h5>
-                            {% for report in order.foreman_order_report.all %}
-                                {% if report.foreman_expense.all %}
-                                    <p><small class="text-muted">Расходы:</small></p>
-                                {% endif %}
-                                {% for expense in report.foreman_expense.all %}
-                                    <p>Расход {{ expense.name }}: {{ expense.amount }} сом {% if expense.description %}({{ expense.description }}){% endif %}</p>
-                                {% endfor %}
+                        {% endif %}
+                    <div class="mb-4 ms-3"><a class="btn btn-outline-secondary btn-sm"
+                                              href="{% url 'crmapp:service_order_create' order.id %}"> + Добавить
+                        услугу</a></div>
+                    <p><strong>Бргадир внес изменения в следующие услуги:</strong></p>
+                    <ul>
+                        {% for foreman_update in order.foreman_order_update.all %}
+                            {% for service in foreman_update.services.all %}
+                                <li>{{ service | capfirst }}</li>
                             {% endfor %}
-                        </p>
-                    </div>
+                        {% endfor %}
+                    </ul>
+                    <hr>
+                    <h5><strong>Общая стоимость: {{ order.get_total }} сом </strong></h5>
+                    {% for report in order.order_cleaners.all %}
+                        {% if report %}
+                            <p><small class="text-muted">Расходы:</small></p>
+                        {% endif %}
+                        {% for expense in report.foreman_expense.all %}
+                            <p>{{ expense.description }}: {{ expense.amount }} сом</p>
+                        {% endfor %}
+                        <h5><strong>Итого: {{ report.get_total_expenses }} сом</strong></h5>
+                    {% endfor %}
+                    </p>
                 </div>
-         </div>
+            </div>
+        </div>
     </div>
 {% endblock content %}
