@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db import transaction
 from django.forms import modelformset_factory, HiddenInput
 from django.shortcuts import get_object_or_404, redirect, render
@@ -13,10 +14,11 @@ from crmapp.forms import FilterForm
 User = get_user_model()
 
 
-class ManagerReportCreateView(FormView):
+class ManagerReportCreateView(PermissionRequiredMixin, FormView):
     model = ManagerReport
     form_class = ManagerReportForm
     template_name = 'manager_report/report_create.html'
+    permission_required = "crmapp.add_managerreport"
 
     def get(self, request, *args, **kwargs):
         order = get_object_or_404(Order, pk=self.kwargs['pk'])
@@ -90,12 +92,17 @@ class ManagerReportCreateView(FormView):
         context["formset"] = formset
         return render(self.request, self.template_name, context)
 
+    def has_permission(self):
+        order = get_object_or_404(Order, pk=self.kwargs['pk'])
+        return self.request.user == order.manager and super().has_permission() or self.request.user.is_staff
 
-class ManagerReportListView(ListView):
+
+class ManagerReportListView(PermissionRequiredMixin, ListView):
     model = ManagerReport
     template_name = 'manager_report/report_list.html'
     context_object_name = 'manager_reports'
     filter_form_class = FilterForm
+    permission_required = "crmapp.view_managerreport"
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_form()

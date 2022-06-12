@@ -27,7 +27,8 @@ from crmapp.views.manager_report import ManagerReportCreateView, ManagerReportLi
 
 from crmapp.views.order_staff import OrderStaffCreateView, OrderStaffDeleteView
 
-from crmapp.views.order import OrderListView, OrderDetailView, FirstStepOrderCreateView, SecondStepOrderCreateView
+from crmapp.views.order import OrderListView, OrderDetailView, FirstStepOrderCreateView,\
+    SecondStepOrderCreateView, OrderCommentUpdate, OrderDeleteView, OrderDeletedListView
 
 from crmapp.views.income_outcome_report import IncomeOutcomeReportView
 
@@ -42,6 +43,8 @@ client_urlpatterns = [
 order_urlpatterns = [
     path('', OrderListView.as_view(), name='order_index'),
     path('<int:pk>/', OrderDetailView.as_view(), name='order_detail'),
+    path('<int:pk>/delete/', OrderDeleteView.as_view(), name='order_delete'),
+    path('deleted_list', OrderDeletedListView.as_view(), name='order_deleted_list'),
     path('create/', FirstStepOrderCreateView.as_view(), name='order_create'),
     path('<int:pk>/add_cleaners/', SecondStepOrderCreateView.as_view(), name='cleaners_add'),
     path('<int:pk>/service/create/', ServiceOrderCreateView.as_view(), name="service_order_create"),
@@ -50,7 +53,8 @@ order_urlpatterns = [
     path('<int:pk>/staff/add/', OrderStaffCreateView.as_view(), name='order_staff_add'),
     path('staff/delete/<int:pk>', OrderStaffDeleteView.as_view(), name='order_staff_delete'),
     path("<int:pk>/inventory/add/", InventoryOrderCreateView.as_view(), name="inventory_order_add"),
-    path("inventory/<int:pk>/remove/", InventoryOrderRemoveView.as_view(), name="inventory_order_remove")
+    path("inventory/<int:pk>/remove/", InventoryOrderRemoveView.as_view(), name="inventory_order_remove"),
+    path('<int:pk>/finish/', OrderCommentUpdate.as_view(), name='order_finish'),
 ]
 
 service_urlpatterns = [

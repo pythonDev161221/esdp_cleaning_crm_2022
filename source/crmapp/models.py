@@ -141,7 +141,13 @@ class Order(models.Model):
 
     inventories = models.ManyToManyField("crmapp.Inventory", related_name='order_inventories',
                                          verbose_name=_('Инвентарь'),
-                                         through='crmapp.InventoryOrder')
+                                         through='crmapp.InventoryOrder'),
+    description = models.TextField(max_length=2000, null=True, blank=False, verbose_name=_('Примечание'))
+    is_deleted = models.BooleanField(null=True, blank=True, default=False, verbose_name=_('Удален'))
+
+    def soft_delete(self):
+        self.is_deleted = True
+        self.save()
 
     def get_all_staff_expenses(self):
         expenses = 0
@@ -193,13 +199,16 @@ class Order(models.Model):
 
     def get_total(self):
         total = 0
-        services = self.order_services.filter(order=self)
-        for service in services:
-            total += service.service_total()
-        if total > 2000:
-            return total
+        if self.status != 'canceled':
+            services = self.order_services.filter(order=self)
+            for service in services:
+                total += service.service_total()
+            if total > 2000:
+                return total
+            else:
+                return 2000
         else:
-            return 2000
+            return 0
 
     def save(self, *args, **kwargs):
         self.work_end = self.work_start + self.cleaning_time
@@ -209,6 +218,10 @@ class Order(models.Model):
         db_table = 'order'
         verbose_name = _('Заказ')
         verbose_name_plural = _('Заказы')
+        permissions = [
+        ('сan_view_income_outcome_report', 'Может просмотреть отчет о расходах и доходах'),
+        ('can_view_order_deleted_list', 'Может просмотреть список удаленных заказов')
+    ]
 
 
 class FineCategory(models.Model):
