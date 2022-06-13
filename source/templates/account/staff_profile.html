@@ -34,13 +34,15 @@
                 <hr>
                 <a class="btn btn-success" href="#">Баланс {{ user_object.balance }} сом</a>
                 {% if perms.accounts.add_payout %}
-                <a class="btn btn-dark" href="{% url 'accounts:payout_create' user_object.pk %}">Выдать заработную
-                    плату</a>
+                    <a class="btn btn-dark" href="{% url 'accounts:payout_create' user_object.pk %}">Выдать заработную
+                        плату</a>
                 {% endif %}
                 <a class="btn btn-dark" href="{% url 'accounts:staff_orders' user_object.pk %}">История заказов</a>
                 <a class="btn btn-dark" href="{% url 'accounts:staff_payout' user_object.pk %}">История зарплаты</a>
-                <a class="btn btn-dark" href="{% url "accounts:auth_tg_token" user_object.pk %}">Получить токен
-                    авторизации для телеграмм</a>
+                {% if perms.crmapp.add_order %}
+                    <a class="btn btn-dark" href="{% url "accounts:auth_tg_token" user_object.pk %}">Получить токен
+                        авторизации для телеграмм</a>
+                {% endif %}
                 <hr>
             </div>
             <div class="col-md-4">
@@ -78,24 +80,24 @@
                 </div>
                 <hr>
                 {% if perms.accounts.add_staff_description %}
-                {% if user_object.description %}
-                    <div class="card mb-3">
+                    {% if user_object.description %}
+                        <div class="card mb-3">
+                            <div class="card p-2">
+                                <a class="text-dark text-center" style="text-decoration: none"
+                                   href="{% url 'accounts:staff-description' user_object.pk %}">Примечания <i
+                                        class="fa-solid fa-pen-to-square"></i></a>
+                            </div>
+                            <div class="card-body">
+                                <p>{{ user_object.description }}</p>
+                            </div>
+                        </div>
+                    {% else %}
                         <div class="card p-2">
-                            <a class="text-dark text-center" style="text-decoration: none"
-                               href="{% url 'accounts:staff-description' user_object.pk %}">Примечания <i
-                                    class="fa-solid fa-pen-to-square"></i></a>
+                            <a class="text-dark text-center" style="text-decoration: none;"
+                               href="{% url 'accounts:staff-description' user_object.pk %}">Примечания
+                                <i class="fa-solid fa-pen-to-square"></i></a>
                         </div>
-                        <div class="card-body">
-                            <p>{{ user_object.description }}</p>
-                        </div>
-                    </div>
-                {% else %}
-                    <div class="card p-2">
-                        <a class="text-dark text-center" style="text-decoration: none;"
-                           href="{% url 'accounts:staff-description' user_object.pk %}">Примечания
-                            <i class="fa-solid fa-pen-to-square"></i></a>
-                    </div>
-                {% endif %}
+                    {% endif %}
                 {% endif %}
             </div>
         </div>

@@ -9,34 +9,36 @@
         <input type="submit" value="Поиск">
     </form>
     <div class="container">
-    <h1>Отчет по доходам и расходам</h1>
+        <h1>Отчет по доходам и расходам</h1>
         <table class="table">
             <thead>
-                <tr>
-                    <th scope="col">Дата</th>
-                    <th scope="col">Адресс Заказа</th>
-                    <th scope="col">Сумма заказа</th>
-                    <th scope="col">Расходы на клинеров</th>
-                    <th scope="col">Прочие расходы</th>
-                    <th scope="col">Итого</th>
+            <tr>
+                <th scope="col">№</th>
+                <th scope="col">Дата</th>
+                <th scope="col">Адресс</th>
+                <th scope="col">Сумма заказа</th>
+                <th scope="col">Расходы на клинеров</th>
+                <th scope="col">Прочие расходы</th>
+                <th scope="col">Итого</th>
 
-                </tr>
+            </tr>
             </thead>
             <tbody>
-                {% for order in orders %}
-                    <tr>
-                        <th scope="row">{{ order.work_start }}</th>
-{#                        created_at Дата должна быть на момент завершения заказа, и статус у заказов- заверщенные#}
-                        <th>{{ order.address }}</th>
-                        <td>{{ order.get_total }}</td>
-                        <td>{{ order.get_all_staff_expenses }}</td>
-                        <td>{{ order.get_foreman_expenses}}</td>
-                        {% if  order.get_income_outcome < 0 %}
+            {% for order in orders %}
+                <tr>
+                    <th>{{ order.id }}</th>
+                    <th scope="row">{{ order.work_start }}</th>
+                    <th>{{ order.address }}</th>
+                    <td>{{ order.get_total }}</td>
+                    <td>{{ order.get_all_staff_expenses }}</td>
+                    <td>{{ order.get_foreman_expenses }}</td>
+                    {% if  order.get_income_outcome < 0 %}
                         <td class="text-danger">{{ order.get_income_outcome }}</td>
-                        {% else %}<td>{{ order.get_income_outcome }}</td>
-                        {% endif %}
-                    </tr>
-                {% endfor %}
+                    {% else %}
+                        <td>{{ order.get_income_outcome }}</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
     </div>

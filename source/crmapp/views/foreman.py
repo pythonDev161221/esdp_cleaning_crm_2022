@@ -107,8 +107,8 @@ class PhotoDetailView(DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        order = StaffOrder.objects.filter(order_id=self.object.pk)
-        foreman_photo = ForemanPhoto.objects.filter(foreman_report__in=order)
+        order = StaffOrder.objects.get(order_id=self.object.pk, is_brigadier=True)
+        foreman_photo = ForemanPhoto.objects.filter(foreman_report=order)
         photos_before = [i for i in foreman_photo.filter(is_after=False)]
         photos_after = [i for i in foreman_photo.filter(is_after=True)]
         context['photos_before'] = photos_before
