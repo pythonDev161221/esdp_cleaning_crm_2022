@@ -156,8 +156,8 @@ class Order(models.Model):
         return expenses
 
     def get_foreman_expenses(self):
-        if self.foreman_order_report:
-            for report in self.foreman_order_report.all():
+        if self.order_cleaners:
+            for report in self.order_cleaners.all():
                 return report.get_total_expenses()
         return 0
 

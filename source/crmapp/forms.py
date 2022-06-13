@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 
 from django.forms import inlineformset_factory, modelformset_factory
 
@@ -7,7 +8,6 @@ from django.forms import BaseModelFormSet
 
 from crmapp.models import Inventory, Client, ForemanOrderUpdate, ServiceOrder, \
     Service, ManagerReport, StaffOrder, Order, InventoryOrder, ForemanExpenses
-
 
 User = get_user_model()
 
@@ -34,6 +34,13 @@ class ForemanExpenseForm(forms.ModelForm):
     class Meta:
         model = ForemanExpenses
         exclude = ('foreman_report',)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if cleaned_data['amount'] <= 0:
+            raise ValidationError('Расход не может быть 0!')
+        else:
+            return cleaned_data
 
 
 class OrderForm(forms.ModelForm):

@@ -25,8 +25,8 @@ class OrderStaffCreateView(PermissionRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         order = get_object_or_404(Order, pk=self.kwargs.get("pk"))
-        orders = Order.objects.filter(Q(work_start__gte=order.work_end) | Q(work_end__gte=order.work_start),
-                                      Q(work_end__gte=order.work_end))
+        orders = Order.objects.filter(Q(work_start__lte=order.work_start) | Q(work_end__lte=order.work_start),
+                                      Q(work_end__lte=order.work_end))
         staff = []
         for obj in orders:
             staff += obj.cleaners.all()
