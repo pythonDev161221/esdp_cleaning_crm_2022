@@ -16,7 +16,7 @@ from tgbot.handlers.info import staff_info
 from tgbot.handlers.orders import order
 from tgbot.handlers.orders.order_staff_callback import order_staff_accept_callback, order_staff_refuse_callback, \
     refuse_true_callback, refuse_false_callback, order_information, order_information_update, work_start_callback, \
-    work_end_callback, in_place_callback, photo_before_callback, photo_after_callback, edit_service_callback
+    work_end_callback, in_place_callback
 
 
 def setup_dispatcher(dp):
@@ -35,9 +35,6 @@ def setup_dispatcher(dp):
     dp.add_handler(CallbackQueryHandler(in_place_callback, pattern="in_place"))
     dp.add_handler(CallbackQueryHandler(work_start_callback, pattern="work_start"))
     dp.add_handler(CallbackQueryHandler(work_end_callback, pattern="work_end"))
-    dp.add_handler(CallbackQueryHandler(photo_before_callback, pattern="photo_before"))
-    dp.add_handler(CallbackQueryHandler(photo_after_callback, pattern="photo_after"))
-    dp.add_handler(CallbackQueryHandler(edit_service_callback, pattern="edit_service"))
     return dp
 
 
