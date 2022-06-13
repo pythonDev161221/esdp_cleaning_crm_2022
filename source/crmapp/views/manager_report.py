@@ -1,44 +1,63 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db import transaction
-from django.forms import modelformset_factory
+from django.forms import modelformset_factory, HiddenInput
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView, FormView
 
 from crmapp.forms import ManagerReportForm, BaseManagerReportFormSet
-from crmapp.models import ManagerReport, Order
+from crmapp.models import ManagerReport, Order, StaffOrder, ForemanPhoto
 
 from crmapp.forms import FilterForm
 
 User = get_user_model()
 
 
-class ManagerReportCreateView(FormView):
+class ManagerReportCreateView(PermissionRequiredMixin, FormView):
     model = ManagerReport
     form_class = ManagerReportForm
     template_name = 'manager_report/report_create.html'
+    permission_required = "crmapp.add_managerreport"
 
     def get(self, request, *args, **kwargs):
-        if self.model.objects.filter(order=self.kwargs['pk']):
+        order = get_object_or_404(Order, pk=self.kwargs['pk'])
+        if self.model.objects.filter(order=order):
             messages.warning(self.request, f'Менеджерский отчет уже существует!')
             return redirect("crmapp:order_detail", pk=self.kwargs['pk'])
         else:
-            return super(ManagerReportCreateView, self).get(request, *args, **kwargs)
+            if order.manager_report_salary_staffs():
+                return super().get(request, *args, **kwargs)
+            else:
+                messages.warning(self.request, f'Нельзя создать отчет, пока клинеры не принимут заказ!')
+                return redirect("crmapp:order_detail", pk=self.kwargs['pk'])
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         order = get_object_or_404(Order, pk=self.kwargs['pk'])
         staff_and_salary = order.manager_report_salary_staffs()
         ManagerFormset = modelformset_factory(ManagerReport, form=ManagerReportForm, formset=BaseManagerReportFormSet,
-                                              extra=order.cleaners.count())
-        formset = ManagerFormset(prefix='extra', queryset=order.cleaners.all())
+                                              extra=len(staff_and_salary))
+        formset = ManagerFormset(prefix='extra', )
         staff_numeric_value = 0
         for forms in formset:
-            forms.fields['cleaner'].queryset = order.cleaners.all()
-            forms.initial = {"cleaner": staff_and_salary[staff_numeric_value][0],
-                             "salary": round(staff_and_salary[staff_numeric_value][1], 0)}
+            if not staff_and_salary[staff_numeric_value][1] == None:
+                forms.initial = {"cleaner": staff_and_salary[staff_numeric_value][0],
+                                 "salary": round(staff_and_salary[staff_numeric_value][1], 0)}
+            else:
+                forms.fields.pop('bonus') and forms.fields.pop('bonus_description')
+                forms.fields['salary'].widget = HiddenInput(attrs={"value": 0})
+                forms.initial = {"cleaner": staff_and_salary[staff_numeric_value][0]}
             staff_numeric_value += 1
         context['formset'] = formset
+        staff_order = StaffOrder.objects.filter(order=order)
+        foreman_photo = ForemanPhoto.objects.filter(foreman_report__in=staff_order)
+        photos_before = [i for i in foreman_photo.filter(is_after=False)]
+        photos_after = [i for i in foreman_photo.filter(is_after=True)]
+        context['photos_before'] = photos_before
+        context['photos_after'] = photos_after
+        context['staff_order'] = staff_order
+        context['order'] = order
         return context
 
     def post(self, request, *args, **kwargs):
@@ -73,12 +92,17 @@ class ManagerReportCreateView(FormView):
         context["formset"] = formset
         return render(self.request, self.template_name, context)
 
+    def has_permission(self):
+        order = get_object_or_404(Order, pk=self.kwargs['pk'])
+        return self.request.user == order.manager and super().has_permission() or self.request.user.is_staff
 
-class ManagerReportListView(ListView):
+
+class ManagerReportListView(PermissionRequiredMixin, ListView):
     model = ManagerReport
     template_name = 'manager_report/report_list.html'
     context_object_name = 'manager_reports'
     filter_form_class = FilterForm
+    permission_required = "crmapp.view_managerreport"
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_form()

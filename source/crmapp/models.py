@@ -48,30 +48,10 @@ class Client(models.Model):
         verbose_name_plural = _('Клиенты')
 
 
-class ForemanReport(models.Model):
-    # Таблица для отчёта бригадира имеет связь FK с таблицей Order
-    order = models.ForeignKey('crmapp.Order', on_delete=models.PROTECT, null=False, blank=False,
-                              related_name='foreman_order_report', verbose_name=_('Заказ'))
-    start_at = models.DateTimeField(null=True, blank=True, verbose_name=_('Дата и время начала работы'))
-    end_at = models.DateTimeField(null=True, blank=True, verbose_name=_('Дата и время окончания работы'))
-
-    class Meta:
-        db_table = 'foreman_report'
-        verbose_name = _('Отчёт бригадира')
-        verbose_name_plural = _('Отчёты бригадира')
-
-    def get_total_expenses(self):
-        total = 0
-        for expense in self.foreman_expense.all():
-            total += expense.amount
-        return total
-
-
 class ForemanExpenses(models.Model):
     amount = models.PositiveIntegerField(null=True, blank=True, default=0, verbose_name=_('Сумма расхода'))
-    name = models.CharField(max_length=100, null=False, blank=False, verbose_name=_('Название расхода'))
     description = models.TextField(max_length=1000, null=True, blank=True, verbose_name=_('Описание расхода'))
-    foreman_report = models.ForeignKey('crmapp.ForemanReport', on_delete=models.CASCADE, null=False, blank=False,
+    foreman_report = models.ForeignKey('crmapp.StaffOrder', on_delete=models.CASCADE, null=False, blank=False,
                                        related_name='foreman_expense', verbose_name=_('Отчёт бригадира'))
 
     db_table = 'foreman_expense'
@@ -80,7 +60,7 @@ class ForemanExpenses(models.Model):
 
 
 class ForemanPhoto(models.Model):
-    foreman_report = models.ForeignKey('crmapp.ForemanReport', null=False, blank=False, on_delete=models.CASCADE,
+    foreman_report = models.ForeignKey('crmapp.StaffOrder', null=False, blank=False, on_delete=models.CASCADE,
                                        related_name='foreman_photo', verbose_name='Фото до начала работ')
     is_after = models.BooleanField(default=False, verbose_name='Фото после окончания работ')
     image = models.ImageField(upload_to='photo_foreman/', verbose_name=_('Фото'))
@@ -92,7 +72,6 @@ class ForemanPhoto(models.Model):
 
 
 class ForemanOrderUpdate(models.Model):
-    # Таблица для редактирования услуг и доп услуг в заказе для бригадира, имеет связь FK с таблицей Order
     order = models.ForeignKey('crmapp.Order', on_delete=models.PROTECT, null=False, blank=False,
                               related_name='foreman_order_update', verbose_name=_('Заказ'))
     services = models.ManyToManyField('crmapp.ServiceOrder', related_name='foreman_order_update',
@@ -111,13 +90,21 @@ class StaffOrder(models.Model):
                               null=False, blank=False, on_delete=models.PROTECT)
     is_brigadier = models.BooleanField(verbose_name=_('Бригадир'), default=False)
     is_accept = models.BooleanField(null=True, blank=True, default=False, verbose_name=_('Принял заказ'))
+    is_refuse = models.BooleanField(null=True, blank=True, default=False, verbose_name=_('Отказался от заказа'))
     in_place = models.DateTimeField(null=True, blank=True, verbose_name=_('Время прибытия на заказ'))
-    work_start = models.DateTimeField(null=True, blank=True, verbose_name=_('Время старта выполнения работ'))
+    work_start = models.DateTimeField(null=True, blank=True, verbose_name=_('Начало работ'))
+    work_end = models.DateTimeField(null=True, blank=True, verbose_name=_('Конец работ'))
 
     class Meta:
         db_table = 'staff_order'
         verbose_name = _('Сотрудник в заказе')
         verbose_name_plural = _('Сотрудники в заказе')
+
+    def get_total_expenses(self):
+        total = 0
+        for expense in self.foreman_expense.all():
+            total += expense.amount
+        return total
 
 
 class Order(models.Model):
@@ -154,7 +141,13 @@ class Order(models.Model):
 
     inventories = models.ManyToManyField("crmapp.Inventory", related_name='order_inventories',
                                          verbose_name=_('Инвентарь'),
-                                         through='crmapp.InventoryOrder')
+                                         through='crmapp.InventoryOrder'),
+    description = models.TextField(max_length=2000, null=True, blank=False, verbose_name=_('Примечание'))
+    is_deleted = models.BooleanField(null=True, blank=True, default=False, verbose_name=_('Удален'))
+
+    def soft_delete(self):
+        self.is_deleted = True
+        self.save()
 
     def get_all_staff_expenses(self):
         expenses = 0
@@ -171,54 +164,51 @@ class Order(models.Model):
     def get_income_outcome(self):
         return self.get_total() - self.get_all_staff_expenses() - self.get_foreman_expenses()
 
-    def manager_report_base_sum(self):
+    def manager_report_base_sum(self, staff_is_accept_order):
         staff_part = int(
-            self.get_total()) / self.cleaners.count()  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+            self.get_total()) / staff_is_accept_order.count()  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
         base_sum = 0
-        for staff in self.cleaners.all():
+        for order_staff in staff_is_accept_order:
             for coefficient in ORDER_STAFF_SALARY_COEFFICIENT:
-                if str(staff.experience) == coefficient[0]:
+                if str(order_staff.staff.experience) == coefficient[0]:
                     base_sum += staff_part * coefficient[1]
         return base_sum
 
-    def manager_report_numeric_coefficient(self):
+    def manager_report_numeric_coefficient(self, staff_is_accept_order):
         staff_part = int(
-            self.get_total()) / self.cleaners.count()  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
-        base_num = self.manager_report_base_sum()
+            self.get_total()) / staff_is_accept_order.count()  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+        base_num = self.manager_report_base_sum(staff_is_accept_order)
         num_coefficient = []
-        for staff in self.cleaners.all():
+        for order_staff in staff_is_accept_order:
             for coefficient in ORDER_STAFF_SALARY_COEFFICIENT:
-                if str(staff.experience) == coefficient[0]:
+                if str(order_staff.staff.experience) == coefficient[0]:
                     num_coff = staff_part * coefficient[1] / base_num
-                    num_coefficient.append(num_coff)
+                    num_coefficient.append([order_staff.staff, num_coff])
         return num_coefficient
 
-    def manager_reprot_numeric_salary(self):
-        staff_salary = []
-        num_coefficient = self.manager_report_numeric_coefficient()
-        [staff_salary.append(int(self.get_total()) * nc) for nc in
-         num_coefficient]  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
-        return staff_salary
-
     def manager_report_salary_staffs(self):
-        staff_salary = self.manager_reprot_numeric_salary()
-        i = 0
-        context = []
-        for staff in self.cleaners.all():
-            result = [staff, int(staff_salary[i])]
-            i += 1
-            context.append(result)
-        return context
+        staff_list = self.order_cleaners.all()
+        staff_salary = []
+        if staff_list.filter(is_accept=True):
+            num_coefficient = self.manager_report_numeric_coefficient(staff_list.filter(is_accept=True))
+            [staff_salary.append([nc[0], int(self.get_total()) * nc[1]]) for nc in
+             num_coefficient]  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+        if staff_list.filter(is_refuse=True):
+            [staff_salary.append([staff_is_refuse.staff, None]) for staff_is_refuse in staff_list.filter(is_refuse=True)]
+        return staff_salary
 
     def get_total(self):
         total = 0
-        services = self.order_services.filter(order=self)
-        for service in services:
-            total += service.service_total()
-        if total > 2000:
-            return total
+        if self.status != 'canceled':
+            services = self.order_services.filter(order=self)
+            for service in services:
+                total += service.service_total()
+            if total > 2000:
+                return total
+            else:
+                return 2000
         else:
-            return 2000
+            return 0
 
     def save(self, *args, **kwargs):
         self.work_end = self.work_start + self.cleaning_time
@@ -228,6 +218,10 @@ class Order(models.Model):
         db_table = 'order'
         verbose_name = _('Заказ')
         verbose_name_plural = _('Заказы')
+        permissions = [
+        ('сan_view_income_outcome_report', 'Может просмотреть отчет о расходах и доходах'),
+        ('can_view_order_deleted_list', 'Может просмотреть список удаленных заказов')
+    ]
 
 
 class FineCategory(models.Model):

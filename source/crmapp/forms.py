@@ -159,3 +159,9 @@ class FilterForm(forms.Form):
 
 class SearchForm(forms.Form):
     search = forms.CharField(max_length=30, required=False, label="Найти")
+
+
+class OrderCommentForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['description', 'status']

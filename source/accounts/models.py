@@ -63,6 +63,10 @@ class Staff(AbstractUser):
         self.balance += value
         self.save()
 
+    def remove_salary(self, value):
+        self.balance -= value
+        self.save()
+
     def set_auth_tg_token(self):
         token = str(uuid.uuid4().hex)[:20]
         self.telegram_auth_token = token
@@ -79,6 +83,13 @@ class Staff(AbstractUser):
         db_table = 'staff'
         verbose_name = _('Сотрудник')
         verbose_name_plural = _('Сотрудники')
+        permissions = (
+            ('add_staff_passport_photo', 'добавить фото паспорта'),
+            ('add_staff_description', 'добавить примечание'),
+            ('view_staff_blacklist', 'просмотр черного листа'),
+            ('add_toBlackList', 'добавить в черный список'),
+            ('delete_fromBlackList', 'удалить из черного списка'),
+        )
 
 
 class WorkDay(models.Model):
