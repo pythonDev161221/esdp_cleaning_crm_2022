@@ -49,6 +49,8 @@
         <p class="p-5">Список сотрудников пуст</p>
     {% endif %}
     <div class="container text-center">
-        <a class="btn btn-success" href="{% url 'accounts:register' %}">Добавить сотрудника</a>
+        {% if perms.accounts.add_staff %}
+            <a class="btn btn-success" href="{% url 'accounts:register' %}">Добавить сотрудника</a>
+        {% endif %}
     </div>
 {% endblock content %}

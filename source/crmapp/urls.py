@@ -16,9 +16,6 @@ from crmapp.views.inventories import (InventoryListView,
                                       InventoryOrderRemoveView)
 
 from crmapp.views.foreman import (ForemanOrderUpdateCreateView,
-                                  InPlaceView,
-                                  WorkStartView,
-                                  WorkEndView,
                                   PhotoView,
                                   PhotoDetailView,
                                   ServiceForemanOrderCreateView,
@@ -30,7 +27,8 @@ from crmapp.views.manager_report import ManagerReportCreateView, ManagerReportLi
 
 from crmapp.views.order_staff import OrderStaffCreateView, OrderStaffDeleteView
 
-from crmapp.views.order import OrderListView, OrderDetailView, OrderCreateView
+from crmapp.views.order import OrderListView, OrderDetailView, FirstStepOrderCreateView,\
+    SecondStepOrderCreateView, OrderCommentUpdate, OrderDeleteView, OrderDeletedListView
 
 from crmapp.views.income_outcome_report import IncomeOutcomeReportView
 
@@ -45,14 +43,18 @@ client_urlpatterns = [
 order_urlpatterns = [
     path('', OrderListView.as_view(), name='order_index'),
     path('<int:pk>/', OrderDetailView.as_view(), name='order_detail'),
-    path('create/', OrderCreateView.as_view(), name='order_create'),
+    path('<int:pk>/delete/', OrderDeleteView.as_view(), name='order_delete'),
+    path('deleted_list', OrderDeletedListView.as_view(), name='order_deleted_list'),
+    path('create/', FirstStepOrderCreateView.as_view(), name='order_create'),
+    path('<int:pk>/add_cleaners/', SecondStepOrderCreateView.as_view(), name='cleaners_add'),
     path('<int:pk>/service/create/', ServiceOrderCreateView.as_view(), name="service_order_create"),
     path('<int:pk>/service/update/', ServiceOrderUpdateView.as_view(), name="service_order_update"),
     path('delete/<int:pk>/', ServiceOrderDeleteView.as_view(), name="service_order_delete"),
     path('<int:pk>/staff/add/', OrderStaffCreateView.as_view(), name='order_staff_add'),
     path('staff/delete/<int:pk>', OrderStaffDeleteView.as_view(), name='order_staff_delete'),
     path("<int:pk>/inventory/add/", InventoryOrderCreateView.as_view(), name="inventory_order_add"),
-    path("inventory/<int:pk>/remove/", InventoryOrderRemoveView.as_view(), name="inventory_order_remove")
+    path("inventory/<int:pk>/remove/", InventoryOrderRemoveView.as_view(), name="inventory_order_remove"),
+    path('<int:pk>/finish/', OrderCommentUpdate.as_view(), name='order_finish'),
 ]
 
 service_urlpatterns = [
@@ -69,11 +71,8 @@ inventory_urlpatterns = [
     path('inventory/delete/<int:pk>/', InventoryDeleteView.as_view(), name='inventory_delete')
 ]
 
-cleaners_urlpatterns = [
+brigadier_urlpatterns = [
     path('order/<int:pk>/update/', ForemanOrderUpdateCreateView.as_view(), name='foremanorder_create'),
-    path('order/<int:pk>/place/', InPlaceView.as_view(), name='cleaner_in_place'),
-    path('order/<int:pk>/work/start/', WorkStartView.as_view(), name='cleaner_work_start'),
-    path('order/<int:pk>/work/end/', WorkEndView.as_view(), name='cleaner_work_end'),
     path('order/<int:pk>/photo/before/', PhotoView.as_view(), name='foreman_photo_before'),
     path('<int:pk>/photos/', PhotoDetailView.as_view(), name='foreman_photo'),
     path('order/<int:pk>/add/service/', ServiceForemanOrderCreateView.as_view(), name='foreman_create_service'),
@@ -88,7 +87,7 @@ manager_report_urlpatterns = [
 urlpatterns = [
     path('client/', include(client_urlpatterns)),
     path('service/', include(service_urlpatterns)),
-    path('cleaners/', include(cleaners_urlpatterns)),
+    path('cleaners/', include(brigadier_urlpatterns)),
     path('inventories/', include(inventory_urlpatterns)),
     path('', include(manager_report_urlpatterns)),
     path('order/', include(order_urlpatterns)),
