@@ -36,7 +36,6 @@ class ForemanOrderUpdateCreateView(FormView):
             for form in service_form:
                 if form.cleaned_data:
                     f = form.save()
-                    print(f'f = {f}')
                     foreman_order.services.add(f)
             service_form.save()
             foreman_order.save()
@@ -116,7 +115,7 @@ class WorkEndView(View):
         return redirect('crmapp:order_detail', kwargs['pk'])
 
 
-class PhotoBeforeView(View):
+class PhotoView(View):
     def post(self, request, *args, **kwargs):
         photo_before = request.FILES.getlist('photo_before')
         photo_after = request.FILES.getlist('photo_after')
@@ -149,3 +148,4 @@ class PhotoDetailView(DetailView):
             context['photos_after'] = ph.foreman_photo.filter(is_after=True)
             context['photos_before'] = ph.foreman_photo.filter(is_after=False)
         return context
+

@@ -19,7 +19,7 @@ from crmapp.views.foreman import (ForemanOrderUpdateCreateView,
                                   InPlaceView,
                                   WorkStartView,
                                   WorkEndView,
-                                  PhotoBeforeView,
+                                  PhotoView,
                                   PhotoDetailView,
                                   ServiceForemanOrderCreateView,
                                   ForemanExpenseView)
@@ -74,7 +74,7 @@ cleaners_urlpatterns = [
     path('order/<int:pk>/place/', InPlaceView.as_view(), name='cleaner_in_place'),
     path('order/<int:pk>/work/start/', WorkStartView.as_view(), name='cleaner_work_start'),
     path('order/<int:pk>/work/end/', WorkEndView.as_view(), name='cleaner_work_end'),
-    path('order/<int:pk>/photo/before/', PhotoBeforeView.as_view(), name='foreman_photo_before'),
+    path('order/<int:pk>/photo/before/', PhotoView.as_view(), name='foreman_photo_before'),
     path('<int:pk>/photos/', PhotoDetailView.as_view(), name='foreman_photo'),
     path('order/<int:pk>/add/service/', ServiceForemanOrderCreateView.as_view(), name='foreman_create_service'),
     path('order/<int:pk>/add/expense/', ForemanExpenseView.as_view(), name='foreman_create_expense')

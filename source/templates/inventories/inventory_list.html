@@ -3,14 +3,14 @@
 {% block content %}
     {% include '../partial/simple_search.html' %}
     <div class="container">
-        <table class="table">
+        <table class="table table-hover">
             <thead>
                 <tr>
                     <th scope="col">id</th>
                     <th scope="col">Наименование</th>
                     <th scope="col">Описание</th>
-                    <th scope="col">Редактирование</th>
-                    <th scope="col">Удаление</th>
+{#                    <th scope="col">Действие</th>#}
+
                 </tr>
             </thead>
             <tbody>
@@ -19,12 +19,15 @@
                         <th scope="row">{{ inventory.id }}</th>
                         <td>{{ inventory.name }}</td>
                         <td>{{ inventory.description }}</td>
-                        <td><a style="text-decoration:none" href="{% url 'crmapp:inventory_update' inventory.id %}">Редактировать</a></td>
-                        <td><a style="text-decoration:none" href="{% url 'crmapp:inventory_delete' inventory.id %}">Удалить</a></td>
+                        <td><a class="btn btn-outline-warning" href="{% url 'crmapp:inventory_update' inventory.id %}"><i
+                                class="fa-solid fa-pen-to-square"></i></a>
+                            <a class="btn btn-outline-danger" href="{% url 'crmapp:inventory_delete' inventory.id %}"><i
+                                    class="fa-solid fa-trash"></i></a>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
-        <a style="text-decoration:none" href="{% url 'crmapp:inventory_create' %}" class="w-100 btn btn-primary">Добавить инвентарь</a>
+        <a style="text-decoration:none" href="{% url 'crmapp:inventory_create' %}" class="w-100 btn btn-success">Добавить инвентарь</a>
     </div>
 {% endblock content %}
