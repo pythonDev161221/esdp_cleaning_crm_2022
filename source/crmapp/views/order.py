@@ -13,7 +13,7 @@ from crmapp.helpers.order_helpers import BaseOrderCreateView, ServiceFormset, St
 
 from crmapp.models import Order, ForemanOrderUpdate
 
-from tgbot.handlers.orders.tg_order_staff import staff_accept_order
+from tgbot.handlers.orders.tg_order_staff import staff_accept_order, order_finished, manager_alert, order_canceled
 
 from crmapp.forms import SearchForm
 
@@ -36,7 +36,8 @@ class OrderListView(PermissionRequiredMixin, ListView):
         queryset = super().get_queryset()
         queryset = Order.objects.order_by('work_start').exclude(is_deleted=True)
         if self.search_value:
-            query = Q(status__icontains=self.search_value) | Q(work_start__icontains=self.search_value) | Q(address__icontains=self.search_value)
+            query = Q(status__icontains=self.search_value) | Q(work_start__icontains=self.search_value) | Q(
+                address__icontains=self.search_value)
             queryset = queryset.filter(query)
         return queryset
 
@@ -74,11 +75,12 @@ class OrderDeleteView(PermissionRequiredMixin, DeleteView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.object.soft_delete()
-        messages.success(self.request, f'Заказ № {self.object.pk } успешно удален!')
+        messages.success(self.request, f'Заказ № {self.object.pk} успешно удален!')
         return HttpResponseRedirect(self.get_success_url())
 
     def has_permission(self):
         return self.request.user == self.get_object().manager or self.request.user.is_staff
+
 
 class FirstStepOrderCreateView(PermissionRequiredMixin, BaseOrderCreateView):
     model = Order
@@ -152,6 +154,18 @@ class OrderCommentUpdate(PermissionRequiredMixin, UpdateView):
     template_name = 'order/order_finish.html'
     success_url = reverse_lazy('crmapp:order_index')
 
+    def form_valid(self, form, formset=None):
+        order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
+        order.description = form.cleaned_data.get('description')
+        order.status = form.cleaned_data.get('status')
+        if order.status == 'finished':
+            order_finished(order)
+        elif order.status == 'canceled':
+            order_canceled(order)
+        order.save()
+        messages.success(self.request, f'Статус заказа №{order.id} изменен на "{order.get_status_display()}"')
+        return HttpResponseRedirect(self.get_success_url())
+
     def has_permission(self):
         return self.request.user == self.get_object().manager or self.request.user.is_staff
 
@@ -163,7 +177,5 @@ class OrderDeletedListView(PermissionRequiredMixin, ListView):
     permission_required = "crmapp:can_view_order_deleted_list"
 
     def get_queryset(self):
-        queryset = super().get_queryset()
         queryset = Order.objects.filter(is_deleted=True)
         return queryset
-
