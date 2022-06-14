@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.forms import modelformset_factory
 from django.contrib import messages
 from django.http import HttpResponseRedirect
@@ -13,10 +14,11 @@ from crmapp.models import ForemanOrderUpdate, Order, ServiceOrder, ForemanPhoto,
 from tgbot.handlers.orders.tg_order_staff import staff_accept_order, order_finished, manager_alert, manager_expense_alert
 
 
-class ForemanOrderUpdateCreateView(FormView):
+class ForemanOrderUpdateCreateView(PermissionRequiredMixin, FormView):
     model = ForemanOrderUpdate
     template_name = 'foreman/create_order_update.html'
     ServiceFormSet = modelformset_factory(ServiceOrder, form=ServiceOrderForm, can_delete=True)
+    permission_required = "crmapp.change_foremanorderupdate"
 
     def get(self, request, *args, **kwargs):
         try:
@@ -44,11 +46,18 @@ class ForemanOrderUpdateCreateView(FormView):
             manager_alert(order)
         return redirect('crmapp:order_detail', order.id)
 
+    def has_permission(self):
+        order = get_object_or_404(Order, pk=self.kwargs.get("pk"))
+        if order.status == 'finished' or order.status == "canceled":
+            return super().has_permission()
+        return self.request.user == order.order_cleaners.get(is_brigadier=True).staff and not order.order_cleaners.get(is_brigadier=True).work_start
 
-class ServiceForemanOrderCreateView(CreateView):
+
+class ServiceForemanOrderCreateView(PermissionRequiredMixin, CreateView):
     model = ServiceOrder
     template_name = 'service_order/service_order_create.html'
     form_class = ServiceOrderForm
+    permission_required = "crmapp.add_foremanorderupdate"
 
     def form_valid(self, form):
         order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
@@ -65,15 +74,22 @@ class ServiceForemanOrderCreateView(CreateView):
     def get_success_url(self):
         return reverse('crmapp:order_detail', kwargs={'pk': self.object.order.pk})
 
+    def has_permission(self):
+        order = get_object_or_404(Order, pk=self.kwargs.get("pk"))
+        if order.status == 'finished' or order.status == "canceled":
+            return super().has_permission()
+        return self.request.user == order.order_cleaners.get(is_brigadier=True).staff
 
-class ForemanExpenseView(CreateView):
+
+class ForemanExpenseView(PermissionRequiredMixin, CreateView):
     model = ForemanExpenses
     form_class = ForemanExpenseForm
     template_name = 'foreman/expense.html'
+    permission_required = "crmapp.add_foremanexpenses"
 
     def form_valid(self, form):
         order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
-        foreman_report, created = StaffOrder.objects.get_or_create(order_id=order.pk)
+        foreman_report = StaffOrder.objects.get(order_id=order.pk, is_brigadier=True)
         self.object = form.save(commit=False)
         self.object.foreman_report = foreman_report
         self.object.save()
@@ -81,12 +97,20 @@ class ForemanExpenseView(CreateView):
         messages.success(self.request, f'Вы успешно добавили услугу в заказ № {order.id}!')
         return redirect('crmapp:order_detail', order.pk)
 
+    def has_permission(self):
+        order = get_object_or_404(Order, pk=self.kwargs.get("pk"))
+        if order.status == 'finished' or order.status == "canceled":
+            return super().has_permission()
+        return self.request.user == order.order_cleaners.get(is_brigadier=True).staff
 
-class PhotoBeforeView(View):
+
+class PhotoBeforeView(PermissionRequiredMixin, View):
+    permission_required = "crmapp.add_foremanphoto"
+
     def post(self, request, *args, **kwargs):
         photo_before = request.FILES.getlist('photo_before')
         photo_after = request.FILES.getlist('photo_after')
-        foreman_report, created = StaffOrder.objects.get_or_create(order_id=kwargs['pk'])
+        foreman_report = StaffOrder.objects.get(order_id=self.kwargs.get("pk"), is_brigadier=True)
         foreman_report.save()
         for img in photo_before:
             if img.content_type == 'image/jpeg':
@@ -104,11 +128,18 @@ class PhotoBeforeView(View):
                 messages.success(self.request, f'Вы добавили ФОТО ПОСЛЕ')
         return redirect('crmapp:order_detail', kwargs['pk'])
 
+    def has_permission(self):
+        order = get_object_or_404(Order, pk=self.kwargs.get("pk"))
+        if order.status == 'finished' or order.status == "canceled":
+            return super().has_permission()
+        return self.request.user == order.order_cleaners.get(is_brigadier=True).staff
 
-class PhotoDetailView(DetailView):
+
+class PhotoDetailView(PermissionRequiredMixin, DetailView):
     model = ForemanPhoto
     template_name = 'foreman/photo_report.html'
     context_object_name = 'foreman_report'
+    permission_required = "crmapp.view_foremanphoto"
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -119,3 +150,7 @@ class PhotoDetailView(DetailView):
         context['photos_before'] = photos_before
         context['photos_after'] = photos_after
         return context
+
+    def has_permission(self):
+        order = get_object_or_404(Order, pk=self.kwargs.get("pk"))
+        return super().has_permission() or self.request.user == order.order_cleaners.get(is_brigadier=True).staff

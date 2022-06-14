@@ -39,7 +39,7 @@
                 {% endif %}
                 <a class="btn btn-dark" href="{% url 'accounts:staff_orders' user_object.pk %}">История заказов</a>
                 <a class="btn btn-dark" href="{% url 'accounts:staff_payout' user_object.pk %}">История зарплаты</a>
-                {% if perms.crmapp.add_order %}
+                {% if perms.accounts.add_staff %}
                     <a class="btn btn-dark" href="{% url "accounts:auth_tg_token" user_object.pk %}">Получить токен
                         авторизации для телеграмм</a>
                 {% endif %}

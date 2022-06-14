@@ -65,6 +65,10 @@ class OrderDetailView(PermissionRequiredMixin, DetailView):
         context['brigadir'] = self.object.order_cleaners.get(is_brigadier=True)
         return context
 
+    def has_permission(self):
+        return super().has_permission() or self.get_object().order_cleaners.get(is_brigadier=True).staff == self.request.user
+
+
 
 class OrderDeleteView(PermissionRequiredMixin, DeleteView):
     model = Order
