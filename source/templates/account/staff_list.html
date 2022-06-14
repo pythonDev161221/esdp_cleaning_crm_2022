@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Staff{% endblock title %}
+{% block title %}Сотрудники{% endblock title %}
 
 {% block links %}
     <li class="nav-item">
@@ -50,7 +50,7 @@
     {% endif %}
     <div class="container text-center">
         {% if perms.accounts.add_staff %}
-            <a class="btn btn-success" href="{% url 'accounts:register' %}">Добавить сотрудника</a>
+            <a class="btn btn-success w-100" href="{% url 'accounts:register' %}">Добавить сотрудника</a>
         {% endif %}
     </div>
 {% endblock content %}

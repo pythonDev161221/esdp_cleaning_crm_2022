@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% block title %}Инвентарь{% endblock title %}
 {% block content %}
     {% include '../partial/simple_search.html' %}
     <div class="container">
@@ -9,7 +9,7 @@
                     <th scope="col">id</th>
                     <th scope="col">Наименование</th>
                     <th scope="col">Описание</th>
-{#                    <th scope="col">Действие</th>#}
+                    <th scope="col" style="width: 103px;">Действие</th>
 
                 </tr>
             </thead>
@@ -19,7 +19,8 @@
                         <th scope="row">{{ inventory.id }}</th>
                         <td>{{ inventory.name }}</td>
                         <td>{{ inventory.description }}</td>
-                        <td><a class="btn btn-outline-warning" href="{% url 'crmapp:inventory_update' inventory.id %}"><i
+                        <td>
+                            <a class="btn btn-outline-warning" href="{% url 'crmapp:inventory_update' inventory.id %}"><i
                                 class="fa-solid fa-pen-to-square"></i></a>
                             <a class="btn btn-outline-danger" href="{% url 'crmapp:inventory_delete' inventory.id %}"><i
                                     class="fa-solid fa-trash"></i></a>
