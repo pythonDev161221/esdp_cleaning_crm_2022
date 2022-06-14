@@ -16,7 +16,7 @@ from crmapp.views.inventories import (InventoryListView,
                                       InventoryOrderRemoveView)
 
 from crmapp.views.foreman import (ForemanOrderUpdateCreateView,
-                                  PhotoBeforeView,
+                                  PhotoView,
                                   PhotoDetailView,
                                   ServiceForemanOrderCreateView,
                                   ForemanExpenseView)
@@ -73,7 +73,7 @@ inventory_urlpatterns = [
 
 brigadier_urlpatterns = [
     path('order/<int:pk>/update/', ForemanOrderUpdateCreateView.as_view(), name='foremanorder_create'),
-    path('order/<int:pk>/photo/before/', PhotoBeforeView.as_view(), name='foreman_photo_before'),
+    path('order/<int:pk>/photo/before/', PhotoView.as_view(), name='foreman_photo_before'),
     path('<int:pk>/photos/', PhotoDetailView.as_view(), name='foreman_photo'),
     path('order/<int:pk>/add/service/', ServiceForemanOrderCreateView.as_view(), name='foreman_create_service'),
     path('order/<int:pk>/add/expense/', ForemanExpenseView.as_view(), name='foreman_create_expense')

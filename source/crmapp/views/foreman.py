@@ -77,7 +77,7 @@ class ForemanExpenseView(CreateView):
         return redirect('crmapp:order_detail', order.pk)
 
 
-class PhotoBeforeView(View):
+class PhotoView(View):
     def post(self, request, *args, **kwargs):
         photo_before = request.FILES.getlist('photo_before')
         photo_after = request.FILES.getlist('photo_after')
@@ -114,3 +114,4 @@ class PhotoDetailView(DetailView):
         context['photos_before'] = photos_before
         context['photos_after'] = photos_after
         return context
+
