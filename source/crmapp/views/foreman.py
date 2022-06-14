@@ -10,6 +10,8 @@ from crmapp.forms import ServiceOrderForm, ForemanExpenseForm
 from crmapp.models import ForemanOrderUpdate, Order, ServiceOrder, ForemanPhoto, ForemanExpenses, \
     StaffOrder
 
+from tgbot.handlers.orders.tg_order_staff import staff_accept_order, order_finished, manager_alert, manager_expense_alert
+
 
 class ForemanOrderUpdateCreateView(FormView):
     model = ForemanOrderUpdate
@@ -39,6 +41,7 @@ class ForemanOrderUpdateCreateView(FormView):
                     foreman_order.services.add(f)
             service_form.save()
             foreman_order.save()
+            manager_alert(order)
         return redirect('crmapp:order_detail', order.id)
 
 
@@ -54,6 +57,7 @@ class ServiceForemanOrderCreateView(CreateView):
         self.object.total = self.object.service_total()
         self.object.order = order
         self.object.save()
+        manager_alert(order)
         messages.success(self.request, f'Вы успешно добавили услугу в заказ № {order.id}!')
         foreman_order.services.add(self.object)
         return HttpResponseRedirect(self.get_success_url())
@@ -73,11 +77,12 @@ class ForemanExpenseView(CreateView):
         self.object = form.save(commit=False)
         self.object.foreman_report = foreman_report
         self.object.save()
+        manager_expense_alert(order)
         messages.success(self.request, f'Вы успешно добавили услугу в заказ № {order.id}!')
         return redirect('crmapp:order_detail', order.pk)
 
 
-class PhotoView(View):
+class PhotoBeforeView(View):
     def post(self, request, *args, **kwargs):
         photo_before = request.FILES.getlist('photo_before')
         photo_after = request.FILES.getlist('photo_after')
@@ -114,4 +119,3 @@ class PhotoDetailView(DetailView):
         context['photos_before'] = photos_before
         context['photos_after'] = photos_after
         return context
-

@@ -1,12 +1,19 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 {% block title %}Завершение заказа{% endblock title %}
 {% block content %}
-
-<h2>Закрытие заказа</h2>
-
-<form method="post">
-    {% csrf_token %}
-    {% include 'partial/form.html' %}
-</form>
-
-{% endblock content %}
+    <div class="container ms-auto me-auto w-50">
+        <div class="card mt-3">
+            <div class="card-header text-center">
+                <h3>Завершение заказа</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <input type="submit" value="Cохранить" class="btn btn-success w-100">
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

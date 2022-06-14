@@ -5,7 +5,7 @@
 {% block content %}
     {% include '../partial/simple_search.html' %}
     <div class="container">
-        <table class="table table-hover">
+        <table class="table">
             <thead>
                 <tr>
                     <th scope="col">id</th>
@@ -13,7 +13,7 @@
                     <th scope="col">Имя</th>
                     <th scope="col">Телефон</th>
                     <th scope="col">Организация</th>
-                    <th scope="col" style="width: 52px">Редактировать</th>
+                    <th scope="col">Редактировать</th>
                 </tr>
             </thead>
             <tbody>
@@ -24,11 +24,11 @@
                         <td>{{ client.first_name }}</td>
                         <td>{{ client.phone }}</td>
                         <td>{{ client.organization|default:"" }}</td>
-                        <td><a href="{% url 'crmapp:client_update' client.id %}" class="btn btn-outline-warning"><i class="fa fa-pencil text-warning" aria-hidden="true"></i></a></td>
+                        <td><a href="{% url 'crmapp:client_update' client.id %}"><i class="fa fa-pencil text-warning" aria-hidden="true"></i></a></td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
-        <a href="{% url 'crmapp:client_create' %}" class="w-100 btn btn-success">Добавить клиента</a>
+        <a href="{% url 'crmapp:client_create' %}" class="w-100 btn btn-primary">Добавить клиента</a>
     </div>
 {% endblock content %}

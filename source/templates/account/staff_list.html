@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %}Сотрудники{% endblock title %}
+{% block title %}Staff{% endblock title %}
 
 {% block links %}
     <li class="nav-item">
@@ -10,7 +10,7 @@
     {% if user_objects %}
         {% include '../partial/simple_search.html' %}
         <div class="container">
-            <table class="table table-hover">
+            <table class="table">
                 <thead>
                 <tr>
                     <th scope="col">ФИО Сотрудника</th>
@@ -24,7 +24,7 @@
                 <tbody>
                 {% for staff in user_objects %}
                     <tr>
-                        <td><a style="text-decoration: none; color: green" href="{% url 'accounts:profile' staff.pk %}">
+                        <td><a style="text-decoration: none" href="{% url 'accounts:profile' staff.pk %}">
                             {{ staff.last_name | capfirst }} {{ staff.first_name | capfirst }} </a></td>
                         <td>{{ staff.balance }}</td>
                         <td>{{ staff.phone }}</td>
@@ -34,7 +34,7 @@
                                 <span>{{ day }}{% if not forloop.last %}, {% else %}. {% endif %}</span>
                             {% endfor %}
                         </td>
-                        <td><a class="btn btn-outline-warning" href="{% url 'accounts:staff-edit' staff.pk %}"><i
+                        <td><a class="btn btn-outline-primary" href="{% url 'accounts:staff-edit' staff.pk %}"><i
                                 class="fa-solid fa-pen-to-square"></i></a>
                             <a class="btn btn-outline-dark" href="{% url 'accounts:black-list-add' staff.pk %}"><i
                                     class="fa-solid fa-file-excel"></i></a>
@@ -50,7 +50,7 @@
     {% endif %}
     <div class="container text-center">
         {% if perms.accounts.add_staff %}
-            <a class="btn btn-success w-100" href="{% url 'accounts:register' %}">Добавить сотрудника</a>
+        <a class="btn btn-primary" href="{% url 'accounts:register' %}">Добавить сотрудника</a>
         {% endif %}
     </div>
 {% endblock content %}

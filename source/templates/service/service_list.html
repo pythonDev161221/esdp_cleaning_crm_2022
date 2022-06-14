@@ -7,14 +7,15 @@
 {% block content %}
     {% include '../partial/simple_search.html' %}
 <div class="container">
-<table class="table table-hover">
+<table class="table">
     <thead>
         <tr>
             <th scope="col">id</th>
             <th scope="col">Вид уборки</th>
             <th scope="col">Стоимость (сом)</th>
             <th scope="col">Единица измерения</th>
-            <th scope="col">Действие</th>
+            <th scope="col">Редактировать</th>
+            <th scope="col">Удалить</th>
         </tr>
     </thead>
     <tbody>
@@ -24,18 +25,17 @@
             <td>{{ service.name }}</td>
             <td>{{ service.price }}</td>
             <td>{{ service.get_unit_display }}</td>
-            <td><a href="{% url 'crmapp:service_update' service.pk %}" class="btn btn-outline-warning">
-                    <i class="fa fa-pencil text-warning" aria-hidden="true"></i>
-                </a>
-                <a href="{% url 'crmapp:service_delete' service.pk %}" class="btn btn-outline-danger">
-                    <i class="fa fa-trash text-danger" aria-hidden="true"></i>
-                </a>
-            </td>
+            <td><a href="{% url 'crmapp:service_update' service.pk %}">
+                <i class="fa fa-pencil text-warning" aria-hidden="true"></i>
+            </a></td>
+            <td><a href="{% url 'crmapp:service_delete' service.pk %}">
+                <i class="fa fa-trash text-danger" aria-hidden="true"></i>
+            </a></td>
         </tr>
     {% endfor %}
     </tbody>
 </table>
-        <a href="{% url 'crmapp:service_create'%}" class="w-100 btn btn-success">
+        <a href="{% url 'crmapp:service_create'%}" class="w-100 btn btn-primary">
         Добавить услугу
     </a>
 </div>

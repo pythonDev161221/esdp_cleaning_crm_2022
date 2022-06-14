@@ -32,3 +32,43 @@ def once_staff_add_order(staff: StaffOrder):
 def once_staff_remove_order(staff: StaffOrder):
     text = f"Вы были удалены с заказа №{staff.order.pk}"
     bot.send_message(chat_id=staff.staff.telegram_id, text=text)
+
+
+def order_finished(order):
+    text = f'''
+Заказ №{order.pk}
+◉ Адрес: {order.address}
+◉ Дата: {order.work_start.date()}
+◉ Статус: {order.get_status_display()} 
+Ваш баланс изменился!'''
+    for staff in order.order_cleaners.all():
+        if staff.is_accept:
+            bot.send_message(chat_id=staff.staff.telegram_id, text=text)
+
+
+def order_canceled(order):
+    text = f'''
+Заказ №{order.pk} по адресу {order.address} {order.work_start.date()} БЫЛ ОТМЕНЕН!
+◉ Причина: {order.description}
+Вы больше не учавствуете в данном заказе'''
+    for staff in order.order_cleaners.all():
+        if staff.is_accept:
+            bot.send_message(chat_id=staff.staff.telegram_id, text=text)
+
+
+def manager_alert(order):
+    text = f'''
+Заказе №{order.pk}
+◉ Адрес: {order.address}
+◉ Дата: {order.work_start.date()}
+Бригадир внес изменения в заказ!'''
+    bot.send_message(chat_id=order.manager.telegram_id, text=text)
+
+
+def manager_expense_alert(order):
+    text = f'''
+Заказе №{order.pk}
+◉ Адрес: {order.address}
+◉ Дата: {order.work_start.date()}
+Бригадир добавил новый расход в заказ!'''
+    bot.send_message(chat_id=order.manager.telegram_id, text=text)

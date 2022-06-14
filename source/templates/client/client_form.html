@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
-{% block tittle %}Создание клиента{% endblock tittle %}
+{% block tittle %}Client Creating{% endblock tittle %}
 {% block content %}
     <div class="container">
         <div class="card mt-3">
@@ -11,7 +11,7 @@
                 <form method="post">
                     {% csrf_token %}
                     {{ form|crispy }}
-                    <input type="submit" value="Сохранить" class="btn btn-success">
+                    <input type="submit" value="Сохранить" class="btn btn-primary">
                 </form>
             </div>
         </div>

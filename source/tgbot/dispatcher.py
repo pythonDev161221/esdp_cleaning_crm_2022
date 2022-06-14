@@ -24,7 +24,7 @@ def setup_dispatcher(dp):
     dp.add_handler(CommandHandler("balance", staff_balance.balance))
     dp.add_handler(CommandHandler("profile", staff_info.info))
     dp.add_handler(CommandHandler("new_orders", order.get_new_orders))
-    dp.add_handler(CommandHandler("my_order", order.get_orders))
+    dp.add_handler(CommandHandler("my_order", order.get_finished_orders))
     dp.add_handler(CommandHandler("today", order.get_today_orders))
     dp.add_handler(CallbackQueryHandler(order_staff_accept_callback, pattern="accept"))
     dp.add_handler(CallbackQueryHandler(order_staff_refuse_callback, pattern="refuse"))
@@ -73,8 +73,7 @@ def set_up_commands(bot_instance: Bot) -> None:
 
 bot = telegram.Bot(TELEGRAM_TOKEN)
 set_up_commands(bot)
-# bot.setWebhook(
-#     url='https://cace-212-112-118-101.in.ngrok.io/telegram-bot/cleaning-serice-bot/update/')  # вставить в url https:// Ngrok или путь с протоколом https + telegram-bot/cleaning-serice-bot/update/
+# bot.setWebhook(url='https://25e8-212-112-118-101.in.ngrok.io/telegram-bot/cleaning-serice-bot/update/')  # вставить в url https:// Ngrok или путь с протоколом https + telegram-bot/cleaning-serice-bot/update/
 # n_workers = 0 if DEBUG else 4
 dispatcher = setup_dispatcher(Dispatcher(bot, None, workers=1, use_context=True))
 TELEGRAM_BOT_USERNAME = bot.get_me()["username"]
