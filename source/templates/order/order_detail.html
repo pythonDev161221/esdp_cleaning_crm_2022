@@ -19,8 +19,8 @@
         <div class="row">
             <div class="col col-lg-6 col-md-8">
                 <div class="row g-1">
-                    <div class="border border-success rounded-1 mb-2 col col-lg-6 col-md-6">
-                        <h5 class="card-header bg-success text-white">Клиент</h5>
+                    <div class="border border-success rounded-1 mb-2 col col-lg-6 col-md-6 p-0">
+                        <h5 class="card-header alert-success">Клиент</h5>
                 <div class="card-body">
                     <p class="card-text">{{ order.client_info }}</p>
                     <p>Адресс: <strong>{{ order.address | capfirst }}</strong></p>
@@ -36,8 +36,8 @@
                     {% endfor %}
                 </div>
                     </div>
-                    <div class="border border-success rounded-1 mb-2 col col-lg-6 col-md-6">
-                        <h5 class="card-header bg-success text-white">Даты и время</h5>
+                    <div class="border border-success rounded-1 mb-2 col col-lg-6 col-md-6 p-0">
+                        <h5 class="card-header alert-success">Даты и время</h5>
                 <div class="card-body">
                     <div class="card-title">Дата и время заказа:</div>
                     <ul>
@@ -55,8 +55,8 @@
                     </ul>
                 </div>
                     </div>
-                    <div class="border border-success rounded-1 mb-2 col col-lg-6 col-md-6">
-                        <h5 class="card-header bg-success text-white">Бригада</h5>
+                    <div class="border border-success rounded-1 mb-2 col col-lg-6 col-md-6 p-0">
+                        <h5 class="card-header alert-success">Бригада</h5>
                         <div class="card-body">
                             <p class="card-text">
                             <ul>
@@ -111,8 +111,8 @@
                             {% endif %}
                         </div>
                     </div>
-                    <div class="border border-success rounded-1 mb-2 col col-lg-6 col-md-6">
-                        <h5 class="card-header bg-success text-white">Инвентарь</h5>
+                    <div class="border border-success rounded-1 mb-2 col col-lg-6 col-md-6 p-0">
+                        <h5 class="card-header alert-success">Инвентарь</h5>
                         <div class="card-body">
                             <p class="card-text">
                                 {% for inventory in order.order_inventories.all %}
@@ -139,7 +139,7 @@
                 </div>
             </div>
             <div class="border border-success rounded-1 col col-lg-6 col-md-4 p-0">
-                <h5 class="card-header bg-success text-white">Услуги</h5>
+                <h5 class="card-header alert-success">Услуги</h5>
                 <div class="card-body">
                     <p class="card-text">
                         {% if order.order_services %}
