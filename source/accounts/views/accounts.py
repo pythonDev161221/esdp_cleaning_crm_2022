@@ -231,10 +231,18 @@ class StaffPassportView(LoginRequiredMixin, DetailView):
     context_object_name = 'user_object'
 
 
-def get_auth_token_telegram(request, pk):
-    user = get_object_or_404(Staff, pk=pk)
-    if request.method == "GET":
-        return render(request, "account/staff_tg_auth_token.html", {"token": user.set_auth_tg_token()})
+class GetAuthTokenTelegram(PermissionRequiredMixin, DetailView):
+    model = Staff
+    template_name = "account/staff_tg_auth_token.html"
+    permission_required = "accounts.add_staff"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["token"] = self.object.set_auth_tg_token()
+        return context
+
+    def has_permission(self):
+        return super().has_permission()
 
 
 class StaffPayoutDetailView(LoginRequiredMixin, DetailView):

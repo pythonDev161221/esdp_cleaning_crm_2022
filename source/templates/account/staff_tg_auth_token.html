@@ -1,10 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div style="padding: 5px 5px; border: 1px solid gray; margin-top: 10px; text-align: center; border-radius: 22px">
-    <p>
-        {{ token }}
-    </p>
+    <div>
+        <h3>Ссылка для авторизации телеграмм</h3>
+        <hr>
+        <div style="border: 1px solid gray; background: rgba(192,192,192,0.3); width: 500px; margin-left: 30px">
+            <p style="padding: 10px 10px; margin: 0; width: 450px">
+                {{ token }}
+            </p>
+        </div>
+        <hr>
+        <h4>Инструкция</h4>
+        <div style="margin: auto 30px">
+            <p>Скопировать ссылку и отправить сотруднику, далее сотрудник должен открыть ссылку, перейти в telegram по ссылке и нажать на "start" для авторизации</p>
+        </div>
     </div>
 
 {% endblock %}
