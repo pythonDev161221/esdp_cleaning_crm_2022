@@ -1,14 +1,15 @@
-<form class="mt-3 mb-2" action="" method="GET">
-    <div class="lab input-group mb-3 w-50 mx-auto">
-        {{ form.search }}
-      <button class="btn btn-outline-success" type="submit" id="button-addon2"><i class="fa-solid fa-magnifying-glass"></i></button>
-        {% for error in form.search.errors %}
-            <p class="form-error">{{ error }}</p>
-        {% endfor %}
+<form class="mt-3 mb-2"  method="GET">
+    <p class="lab input-group mb-3 w-50 mx-auto">
+    <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск"{{ form.search }}
+    <button class="btn btn-outline-success" type="submit" id="button-addon2"><i
+            class="fa-solid fa-magnifying-glass"></i></button>
+    {% for error in form.search.errors %}
+        <p class="form-error">{{ error }}</p>
+    {% endfor %}
     </div>
 </form>
 <style>
-    .lab input{
+    .lab input {
         width: 500px;
     }
 </style>
