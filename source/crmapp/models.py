@@ -145,6 +145,14 @@ class Order(models.Model):
     description = models.TextField(max_length=2000, null=True, blank=False, verbose_name=_('Примечание'))
     is_deleted = models.BooleanField(null=True, blank=True, default=False, verbose_name=_('Удален'))
 
+    def finish_order(self):
+        self.status = 'finished'
+        self.save()
+
+    def cancel_order(self):
+        self.status = 'canceled'
+        self.save()
+
     def soft_delete(self):
         self.is_deleted = True
         self.save()
@@ -343,7 +351,6 @@ class ManagerReport(models.Model):
     bonus_description = models.ForeignKey('crmapp.Bonus', related_name='manager_reports', on_delete=models.PROTECT,
                                           null=True, blank=True, verbose_name=_('Причина для бонуса'))
     created_at = models.DateTimeField(auto_now=True, verbose_name=_('Дата создания'))
-    updated_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата изменения'))
     comment = models.CharField(max_length=255, null=True, blank=True, verbose_name=_('Комментарий'))
 
     def get_salary(self):

@@ -1,5 +1,6 @@
 from django.urls import path, include
 
+from crmapp.views.excel import (export_manager_report_to_excel, export_expense_excel)
 from crmapp.views.client_views import (ClientCreateView,
                                        ClientListView,
                                        ClientUpdateView)
@@ -27,8 +28,8 @@ from crmapp.views.manager_report import ManagerReportCreateView, ManagerReportLi
 
 from crmapp.views.order_staff import OrderStaffCreateView, OrderStaffDeleteView
 
-from crmapp.views.order import OrderListView, OrderDetailView, FirstStepOrderCreateView,\
-    SecondStepOrderCreateView, OrderCommentUpdate, OrderDeleteView, OrderDeletedListView
+from crmapp.views.order import OrderListView, OrderDetailView, FirstStepOrderCreateView, \
+    SecondStepOrderCreateView, OrderFinishView, OrderDeleteView, OrderDeletedListView
 
 from crmapp.views.income_outcome_report import IncomeOutcomeReportView
 
@@ -40,6 +41,10 @@ client_urlpatterns = [
     path('up/<int:pk>/', ClientUpdateView.as_view(), name='client_update')
 ]
 
+excel_urlpatterns = [
+    path('expense/', export_expense_excel, name='expense-excel'),
+    path('manager-report/', export_manager_report_to_excel, name='manager-excel')
+]
 order_urlpatterns = [
     path('', OrderListView.as_view(), name='order_index'),
     path('<int:pk>/', OrderDetailView.as_view(), name='order_detail'),
@@ -54,7 +59,7 @@ order_urlpatterns = [
     path('staff/delete/<int:pk>', OrderStaffDeleteView.as_view(), name='order_staff_delete'),
     path("<int:pk>/inventory/add/", InventoryOrderCreateView.as_view(), name="inventory_order_add"),
     path("inventory/<int:pk>/remove/", InventoryOrderRemoveView.as_view(), name="inventory_order_remove"),
-    path('<int:pk>/finish/', OrderCommentUpdate.as_view(), name='order_finish'),
+    path('<int:pk>/finish/', OrderFinishView.as_view(), name='order_finish'),
 ]
 
 service_urlpatterns = [
@@ -91,5 +96,6 @@ urlpatterns = [
     path('inventories/', include(inventory_urlpatterns)),
     path('', include(manager_report_urlpatterns)),
     path('order/', include(order_urlpatterns)),
-    path('income_outcome_report', IncomeOutcomeReportView.as_view(), name='income_outcome_report')
+    path('income_outcome_report', IncomeOutcomeReportView.as_view(), name='income_outcome_report'),
+    path('excel/', include(excel_urlpatterns))
 ]
