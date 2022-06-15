@@ -1,11 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}Сотрудники{% endblock title %}
 
-{% block links %}
-    <li class="nav-item">
-        <a href="{% url 'accounts:black-list' %}" class="nav-link">Черный список</a>
-    </li>
-{% endblock links %}
 {% block content %}
     {% if user_objects %}
         {% include '../partial/simple_search.html' %}

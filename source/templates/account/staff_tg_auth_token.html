@@ -12,18 +12,10 @@
         </div>
         <hr>
         <h4>Инструкция</h4>
-        <div style="margin: auto 30px">
+        <div>
             <p>Отправьте сотруднику скопированный TOKEN, далее сотрудник должен перейти в telegram по
                 ссылке и нажать кнопку на "start" для авторизации.</p>
         </div>
     </div>
-    <script>
-        const copyBtn = document.getElementById('copy-btn');
-        console.log(copyBtn);
-        window.addEventListener('click', () => {
-            const token = copyBtn.getAttribute('data-token');
-            navigator.clipboard.writeText(token);
-            copyBtn.textContent = 'Token скопирован';
-        })
-    </script>
+    {% block script %}{% endblock script %}
 {% endblock %}
