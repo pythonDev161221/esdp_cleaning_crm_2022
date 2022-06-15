@@ -4,7 +4,7 @@
 
 
 {% block content %}
-    <div class="container mt-5">
+    <div class="container mt-1">
         <div>
             <h3 class="mt-3">Заказ № {{ order.id }}<span class="label success">{{ order.get_status_display }}</span>
             </h3>
@@ -21,7 +21,7 @@
         <div class="row">
             <div class="col col-lg-6 col-md-8">
                 <div class="row g-1">
-                    <div class="border border-success rounded-1 mb-2 col col-lg-6 col-md-6 p-0">
+                    <div class="border mb-2 col col-lg-6 col-md-6 p-0">
                         <h5 class="card-header alert-success">Клиент</h5>
                         <div class="card-body">
                             <p class="card-text">{{ order.client_info }}</p>
@@ -38,7 +38,7 @@
                             {% endfor %}
                         </div>
                     </div>
-                    <div class="border border-success rounded-1 mb-2 col col-lg-6 col-md-6 p-0">
+                    <div class="border mb-2 col col-lg-6 col-md-6 p-0">
                         <h5 class="card-header alert-success">Даты и время</h5>
                         <div class="card-body">
                             <div class="card-title">Дата и время заказа:</div>
@@ -57,7 +57,7 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="border border-success rounded-1 mb-2 col col-lg-6 col-md-6 p-0">
+                    <div class="border mb-2 col col-lg-6 col-md-6 p-0">
                         <h5 class="card-header alert-success">Бригада</h5>
                         <div class="card-body">
                             <p class="card-text">
@@ -92,17 +92,19 @@
                                 {% endfor %}
                             </ul>
                             {% if perms.crmapp.add_stafforder and order.manager == request.user or request.user.is_staff %}
-                                <div class="mb-4 ms-3">
-                                    <a class="btn btn-outline-secondary btn-sm"
-                                       href="{% url 'crmapp:order_staff_add' order.id %}">
-                                        + Добавить клинера
-                                    </a>
-                                </div>
+                                {% if order.status == 'new' %}
+                                    <div class="mb-4 ms-3">
+                                        <a class="btn btn-outline-secondary btn-sm"
+                                           href="{% url 'crmapp:order_staff_add' order.id %}">
+                                            + Добавить клинера
+                                        </a>
+                                    </div>
+                                {% endif %}
                             {% endif %}
                             <hr>
                             {% if perms.crmapp.add_managerreport and order.manager == request.user or request.user.is_staff %}
                                 {% if order.get_total is not 0 %}
-                                    <p><a class="btn btn-outline-danger"
+                                    <p><a class="btn btn-outline-success"
                                           href="{% url 'crmapp:manager_report_create' order.id %}">Рассчитать ЗП
                                         бригады</a></p>
                                 {% endif %}
@@ -110,14 +112,13 @@
                             {% endif %}
                             </p>
                             {% if order.manager == request.user or request.user.is_staff %}
-                                <a href="{% url 'crmapp:order_finish' order.pk %}">
-                                    <button>Завершить заказ</button>
-                                </a>
+                                <a  class="btn btn-outline-success" href="{% url 'crmapp:order_finish' order.pk %}">
+                                    Статус заказa</a>
                             {% endif %}
                         </div>
                     </div>
-                    <div class="border border-success rounded-1 mb-2 col col-lg-6 col-md-6 p-0">
-                        <h5 class="card-header alert-success">Инвентарь</h5>
+                    <div class="border mb-2 col col-lg-6 col-md-6 p-0">
+                        <h5 class="card-header alert-success ">Инвентарь</h5>
                         <div class="card-body">
                             <p class="card-text">
                                 {% for inventory in order.order_inventories.all %}
@@ -134,16 +135,18 @@
                                     </ul>
                                 {% endfor %}
                             {% if perms.crmapp.add_inventoryorder and order.manager == request.user or request.user.is_staff %}
-                                <div class="mb-4 ms-3"><a class="btn btn-outline-secondary btn-sm"
-                                                          href="{% url 'crmapp:inventory_order_add' order.id %}">+Добавить/Изменить
-                                    инвентарь</a></div>
+                                {% if order.status == 'new' %}
+                                    <div class="mb-4 ms-3"><a class="btn btn-outline-secondary btn-sm"
+                                                              href="{% url 'crmapp:inventory_order_add' order.id %}">+Добавить/Изменить
+                                        инвентарь</a></div>
+                                {% endif %}
                             {% endif %}
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="border border-success rounded-1 col col-lg-6 col-md-4 p-0">
+            <div class="border col col-lg-6 col-md-4 p-0">
                 <h5 class="card-header alert-success">Услуги</h5>
                 <div class="card-body">
                     <p class="card-text">
@@ -181,9 +184,12 @@
                             {% endfor %}
                         {% endif %}
                     {% if perms.crmapp.add_serviceorder and order.manager == request.user or request.user.is_staff %}
-                        <div class="mb-4 ms-3"><a class="btn btn-outline-secondary btn-sm"
-                                                  href="{% url 'crmapp:service_order_create' order.id %}"> + Добавить
-                            услугу</a></div>
+                        {% if order.status == 'new' %}
+                            <div class="mb-4 ms-3"><a class="btn btn-outline-secondary btn-sm"
+                                                      href="{% url 'crmapp:service_order_create' order.id %}"> +
+                                Добавить
+                                услугу</a></div>
+                        {% endif %}
                     {% endif %}
                     <p><strong>Бргадир изменил/добавил следующие услуги:</strong></p>
                     <ul>
@@ -195,15 +201,15 @@
                     </ul>
                     <hr>
                     <h5><strong>Общая стоимость: {{ order.get_total }} сом </strong></h5>
-                        {% if brigadir %}
-                            <p><small class="text-muted">Расходы:</small></p>
-                            {% for expense in brigadir.foreman_expense.all %}
-                                <p>{{ expense.description }}: {{ expense.amount }} сом</p>
-                            {% endfor %}
-                            <h5><strong>Итого: {{ brigadir.get_total_expenses }} сом</strong></h5>
-                        {% else %}
-                            <p><small class="text-muted">Расходов нет</small></p>
-                        {% endif %}
+                    {% if brigadir %}
+                        <p><small class="text-muted">Расходы:</small></p>
+                        {% for expense in brigadir.foreman_expense.all %}
+                            <p>{{ expense.description }}: {{ expense.amount }} сом</p>
+                        {% endfor %}
+                        <h5><strong>Итого: {{ brigadir.get_total_expenses }} сом</strong></h5>
+                    {% else %}
+                        <p><small class="text-muted">Расходов нет</small></p>
+                    {% endif %}
                 </div>
                 {% if order.status != 'finished' %}
                     {% if order.status != 'canceled' %}

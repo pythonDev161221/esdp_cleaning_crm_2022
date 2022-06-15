@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Удаление штрафа{% endblock title %}
+{% block content %}
+    <div class="container text-center">
+        {% if fine %}
+            <form method="POST">
+                {% csrf_token %}
+                <h2>Вы действительно хотите удалить штраф {{ fine.fine }}?</h2>
+                <input class="btn btn-danger" type="submit" value="Да">
+                <a class="btn btn-dark" href="{% url "crmapp:fine_list" %}">Нет</a>
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}

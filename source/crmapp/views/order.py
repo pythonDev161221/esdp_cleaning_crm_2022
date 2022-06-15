@@ -69,7 +69,6 @@ class OrderDetailView(PermissionRequiredMixin, DetailView):
         return super().has_permission() or self.get_object().order_cleaners.get(is_brigadier=True).staff == self.request.user
 
 
-
 class OrderDeleteView(PermissionRequiredMixin, DeleteView):
     model = Order
     success_url = reverse_lazy('crmapp:order_index')
@@ -152,20 +151,25 @@ class SecondStepOrderCreateView(PermissionRequiredMixin, BaseOrderCreateView):
         return reverse('crmapp:order_index')
 
 
-class OrderCommentUpdate(PermissionRequiredMixin, UpdateView):
+class OrderFinishView(PermissionRequiredMixin, UpdateView):
     model = Order
     form_class = OrderCommentForm
     template_name = 'order/order_finish.html'
     success_url = reverse_lazy('crmapp:order_index')
 
+    def post(self, request, *args, **kwargs):
+        order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
+        if request.method == 'POST' and 'finish' in request.POST:
+            order.finish_order()
+            order_finished(order)
+        elif request.method == 'POST' and 'cancel' in request.POST:
+            order.cancel_order()
+            order_canceled(order)
+        return super(OrderFinishView, self).post(request, **kwargs)
+
     def form_valid(self, form, formset=None):
         order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
         order.description = form.cleaned_data.get('description')
-        order.status = form.cleaned_data.get('status')
-        if order.status == 'finished':
-            order_finished(order)
-        elif order.status == 'canceled':
-            order_canceled(order)
         order.save()
         messages.success(self.request, f'Статус заказа №{order.id} изменен на "{order.get_status_display()}"')
         return HttpResponseRedirect(self.get_success_url())

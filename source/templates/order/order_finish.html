@@ -5,13 +5,16 @@
     <div class="container ms-auto me-auto w-50">
         <div class="card mt-3">
             <div class="card-header text-center">
-                <h3>Завершение заказа</h3>
+                <h3>Статус заказа</h3>
             </div>
             <div class="card-body">
                 <form method="post">
                     {% csrf_token %}
                     {{ form|crispy }}
-                    <input type="submit" value="Cохранить" class="btn btn-success w-100">
+                    <div class="text-center">
+                        <input type="submit" name="cancel" value="Отменить" class="btn btn-outline-secondary w-25">
+                        <input type="submit" name="finish" value="Завершить" class="btn btn-success w-25">
+                    </div>
                 </form>
             </div>
         </div>

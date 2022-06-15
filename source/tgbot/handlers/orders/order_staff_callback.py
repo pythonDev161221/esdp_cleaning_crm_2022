@@ -20,13 +20,13 @@ def order_staff_accept_callback(update: Update, context: CallbackContext):
             staff.is_accept = True
             staff.save()
             text = f'''
-Информация о заказе
+Информация о заказе:
  ◉ Дата: {order.work_start.date()}
  ◉ Время: {order.work_start.time()}
  ◉ Адрес: {order.address}
  ◉ Время проведения работ: {order.work_end.time()}
- ◉ Вид оплаты: {order.payment_type}
-Информация о клиенте
+ ◉ Вид оплаты: {order.get_payment_type_display()}
+Информация о клиенте:
  ◉ Имя: {order.client_info.full_name}
  ◉ Телефон: {order.client_info.phone}\n'''
             keyboard = get_in_place_keyboard(order_id, staff_id)
@@ -90,7 +90,7 @@ def order_information(update: Update, context: CallbackContext):
     call, order_id, staff_id = data.split(" ")
     if call == "order_info":
         order = Order.objects.get(pk=order_id)
-        number_order = f"Информация об заказе №{order.pk}\n" + "_" * 35
+        number_order = f"Информация о заказе №{order.pk}\n" + "_" * 35
         inventory = "Информация об инвентаре\n"
         serviсes = "Информация об услугах\n"
         extra_service = "Информация о доп. услугах\n"
@@ -122,7 +122,7 @@ def order_information_update(update: Update, context: CallbackContext):
     call, order_id, staff_id = data.split(" ")
     order = Order.objects.get(pk=order_id)
     if call == "info_update":
-        number_order = f"Информация об заказе №{order.pk}\n" + "_" * 35
+        number_order = f"Информация о заказе №{order.pk}\n" + "_" * 35
         inventory = "Информация об инвентаре\n"
         serviсes = "Информация об услугах\n"
         extra_service = "Информация о доп. услугах\n"

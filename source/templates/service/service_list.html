@@ -10,7 +10,7 @@
 <table class="table">
     <thead>
         <tr>
-            <th scope="col">id</th>
+            <th scope="col">№</th>
             <th scope="col">Вид уборки</th>
             <th scope="col">Стоимость (сом)</th>
             <th scope="col">Единица измерения</th>
@@ -35,7 +35,7 @@
     {% endfor %}
     </tbody>
 </table>
-        <a href="{% url 'crmapp:service_create'%}" class="w-100 btn btn-primary">
+        <a href="{% url 'crmapp:service_create'%}" class="w-100 btn btn-success">
         Добавить услугу
     </a>
 </div>

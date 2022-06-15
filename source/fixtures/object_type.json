@@ -1,0 +1,9 @@
+[
+{
+    "model": "crmapp.objecttype",
+    "pk": 1,
+    "fields": {
+        "name": "квартира 104 серии"
+    }
+}
+]

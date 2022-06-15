@@ -27,60 +27,109 @@
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
                         {% if perms.crmapp.add_order %}
-                        <li class="nav-item">
-                            <a href="{% url 'crmapp:order_create' %}" class="nav-link">Создать заказ</a>
-                        </li>
+                            <li class="nav-item">
+                                <a href="{% url 'crmapp:order_create' %}" class="nav-link">Создать заказ</a>
+                            </li>
                         {% endif %}
                         {% if perms.crmapp.view_order %}
-{#                        <li class="nav-item">#}
-{#                            <a href="{% url 'crmapp:order_index' %}" class="nav-link">Заказы</a>#}
-{#                        </li>#}
+                            <li class="nav-item">
+                                <a href="{% url 'crmapp:order_index' %}" class="nav-link">Заказы</a>
+                            </li>
                         {% endif %}
                         {% if perms.accounts.view_staff %}
-                        <li class="nav-item">
-                            <a href="{% url 'accounts:staff-list' %}" class="nav-link">Cотрудники</a>
-                        </li>
-                        {% endif %}
-                        {% if perms.accounts.view_payout %}
-                        <li class="nav-item">
-                            <a href="{% url 'accounts:payout_list' %}" class="nav-link">История выплат</a>
-                        </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                    Cотрудники
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    <li><a class="dropdown-item" href="{% url 'accounts:staff-list' %}">Cписок
+                                        сотрудников</a>
+                                    </li>
+                                    {% if perms.accounts.add_staff %}
+                                        <a class="dropdown-item" href="{% url 'accounts:register' %}">Добавить
+                                            сотрудника</a>
+                                    {% endif %}
+                                    {% if perms.accounts.view_payout %}
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'accounts:payout_list' %}">История
+                                                выплат</a>
+                                        </li>
+                                    {% endif %}
+                                    {% if perms.accounts.view_staff_blacklist %}
+                                        <li><a class="dropdown-item"
+                                               href="{% url 'accounts:black-list' %}">Черный список</a></li>
+                                    {% endif %}
+                                </ul>
+                            </li>
                         {% endif %}
                         {% if perms.crmapp.сan_view_income_outcome_report %}
-                        <li class="nav-item">
-                            <a href="{% url 'crmapp:income_outcome_report' %}" class="nav-link">Отчет</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                               data-bs-toggle="dropdown" aria-expanded="false">
-                                Прочее
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                {% if perms.crmapp.view_service %}
-                                    <li><a class="dropdown-item" href="{% url 'crmapp:service_list' %}">Услуги</a></li>
-                                {% endif %}
-                                {% if perms.crmapp.add_service %}
-                                    <li><a class="dropdown-item" href="{% url 'crmapp:service_create' %}">Добавить
-                                    услугу</a></li>
-                                {% endif %}
-                                {% if perms.crmapp.view_inventory %}
-                                    <li><a class="dropdown-item" href="{% url 'crmapp:inventory_index' %}">Инвентарь</a></li>
-                                {% endif %}
-                                {% if perms.crmapp.add_inventory %}
-                                    <li><a class="dropdown-item" href="{% url 'crmapp:inventory_create' %}">Добавить
-                                    инвентарь</a></li>
-                                {% endif %}
-                                {%  if perms.crmapp.view_client %}
-                                    <li><a class="dropdown-item" href="{% url 'crmapp:client_index' %}">Клиенты</a></li>
-                                {% endif %}
-                                {% if perms.crmapp.add_client %}
-                                    <li><a class="dropdown-item" href="{% url 'crmapp:client_create' %}">Добавить
-                                    клиента</a></li>
-                                <li><a class="dropdown-item" href="{% url 'crmapp:order_deleted_list' %}">Удаленные заказы</a></li>
-                                {% endif %}
-                            </ul>
-                        </li>
-                    {% endif %}
+                            <li class="nav-item">
+                                <a href="{% url 'crmapp:income_outcome_report' %}" class="nav-link">Отчет</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'crmapp:manager_report_list' %}" class="nav-link">Отчет менеджера</a>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                    Прочее
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    {% if perms.crmapp.view_service %}
+                                        <li><a class="dropdown-item" href="{% url 'crmapp:service_list' %}">Услуги</a>
+                                        </li>
+                                    {% endif %}
+                                    {% if perms.crmapp.add_service %}
+                                        <li><a class="dropdown-item" href="{% url 'crmapp:service_create' %}">Добавить
+                                            услугу</a></li>
+                                    {% endif %}
+                                    {% if perms.crmapp.view_inventory %}
+                                        <li><a class="dropdown-item"
+                                               href="{% url 'crmapp:inventory_index' %}">Инвентарь</a></li>
+                                    {% endif %}
+                                    {% if perms.crmapp.add_inventory %}
+                                        <li><a class="dropdown-item" href="{% url 'crmapp:inventory_create' %}">Добавить
+                                            инвентарь</a></li>
+                                    {% endif %}
+                                    {% if perms.crmapp.view_objecttype %}
+                                        <li><a class="dropdown-item"
+                                               href="{% url 'crmapp:object_type_list' %}">Типы объекта</a></li>
+                                    {% endif %}
+                                    {% if perms.crmapp.add_objecttype %}
+                                        <li><a class="dropdown-item" href="{% url 'crmapp:object_type_create' %}">Добавить
+                                            тип объекта</a></li>
+                                    {% endif %}
+                                    {% if perms.crmapp.view_fine %}
+                                        <li><a class="dropdown-item"
+                                               href="{% url 'crmapp:fine_list' %}">Штрафы</a></li>
+                                    {% endif %}
+                                    {% if perms.crmapp.add_fine %}
+                                        <li><a class="dropdown-item" href="{% url 'crmapp:fine_create' %}">Добавить
+                                            штраф</a></li>
+                                    {% endif %}
+                                    {% if perms.crmapp.view_bonus %}
+                                        <li><a class="dropdown-item"
+                                               href="{% url 'crmapp:bonus_list' %}">Бонусы</a></li>
+                                    {% endif %}
+                                    {% if perms.crmapp.add_bonus %}
+                                        <li><a class="dropdown-item" href="{% url 'crmapp:bonus_create' %}">Добавить
+                                            бонус</a></li>
+                                    {% endif %}
+                                    {% if perms.crmapp.view_client %}
+                                        <li><a class="dropdown-item" href="{% url 'crmapp:client_index' %}">Клиенты</a>
+                                        </li>
+                                    {% endif %}
+                                    {% if perms.crmapp.add_client %}
+                                        <li><a class="dropdown-item" href="{% url 'crmapp:client_create' %}">Добавить
+                                            клиента</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'crmapp:order_deleted_list' %}">Удаленные
+                                            заказы</a></li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        {% endif %}
                     {% else %}
                         <li class="nav-item">
                             <a class="nav-link"
@@ -111,15 +160,16 @@
 </div>
 
 <style>
-    .navbar-dark .navbar-nav .nav-link{
+    .navbar-dark .navbar-nav .nav-link {
         color: white;
     }
 </style>
-
+{% block script %}
+{% endblock script %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
         crossorigin="anonymous"></script>
 <script src="{% static 'fontawesomefree/js/all.min.js' %}" crossorigin="anonymous"></script>
-
+<script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>
