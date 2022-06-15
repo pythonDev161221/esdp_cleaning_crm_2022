@@ -351,7 +351,6 @@ class ManagerReport(models.Model):
     bonus_description = models.ForeignKey('crmapp.Bonus', related_name='manager_reports', on_delete=models.PROTECT,
                                           null=True, blank=True, verbose_name=_('Причина для бонуса'))
     created_at = models.DateTimeField(auto_now=True, verbose_name=_('Дата создания'))
-    updated_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата изменения'))
     comment = models.CharField(max_length=255, null=True, blank=True, verbose_name=_('Комментарий'))
 
     def get_salary(self):

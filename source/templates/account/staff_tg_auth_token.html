@@ -1,19 +1,29 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div>
-        <h3>Ссылка для авторизации телеграмм</h3>
+    <div class="text-center m-5">
+        <h3>Авторизация сотрудника в Telegram боте</h3>
         <hr>
-        <div style="border: 1px solid gray; background: rgba(192,192,192,0.3); width: 500px; margin-left: 30px">
-            <p style="padding: 10px 10px; margin: 0; width: 450px">
-                {{ token }}
-            </p>
+        <div class="text-center">
+            <button class="btn btn-outline-success" id="copy-btn" data-token={{ token }}>Нажмите кнопку,чтобы
+                скопировать
+                token аворизации
+            </button>
         </div>
         <hr>
         <h4>Инструкция</h4>
         <div style="margin: auto 30px">
-            <p>Скопировать ссылку и отправить сотруднику, далее сотрудник должен открыть ссылку, перейти в telegram по ссылке и нажать на "start" для авторизации</p>
+            <p>Отправьте сотруднику скопированный TOKEN, далее сотрудник должен перейти в telegram по
+                ссылке и нажать кнопку на "start" для авторизации.</p>
         </div>
     </div>
-
+    <script>
+        const copyBtn = document.getElementById('copy-btn');
+        console.log(copyBtn);
+        window.addEventListener('click', () => {
+            const token = copyBtn.getAttribute('data-token');
+            navigator.clipboard.writeText(token);
+            copyBtn.textContent = 'Token скопирован';
+        })
+    </script>
 {% endblock %}
