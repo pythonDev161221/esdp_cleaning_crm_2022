@@ -145,6 +145,14 @@ class Order(models.Model):
     description = models.TextField(max_length=2000, null=True, blank=False, verbose_name=_('Примечание'))
     is_deleted = models.BooleanField(null=True, blank=True, default=False, verbose_name=_('Удален'))
 
+    def finish_order(self):
+        self.status = 'finished'
+        self.save()
+
+    def cancel_order(self):
+        self.status = 'canceled'
+        self.save()
+
     def soft_delete(self):
         self.is_deleted = True
         self.save()

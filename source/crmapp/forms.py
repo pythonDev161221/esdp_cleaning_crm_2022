@@ -171,4 +171,4 @@ class SearchForm(forms.Form):
 class OrderCommentForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ['description', 'status']
+        fields = ['description', ]
