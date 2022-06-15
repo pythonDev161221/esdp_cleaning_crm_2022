@@ -1,0 +1,18 @@
+[
+{
+    "model": "crmapp.bonus",
+    "pk": 2,
+    "fields": {
+        "bonus": "наличие фото до",
+        "value": "100.00"
+    }
+},
+{
+    "model": "crmapp.bonus",
+    "pk": 3,
+    "fields": {
+        "bonus": "Наличие фото после",
+        "value": "50.00"
+    }
+}
+]

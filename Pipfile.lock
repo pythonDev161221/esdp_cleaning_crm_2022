@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "13046108d149809a016a1686e64798be7ab02f7aa5d02f782cc5c6df87d4208c"
+            "sha256": "4127e12858f7f4553f1f8fc569c8c08e8a11e29d588e0e2675506981685359c3"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -41,11 +41,11 @@
         },
         "certifi": {
             "hashes": [
-                "sha256:9c5705e395cd70084351dd8ad5c41e65655e08ce46f2ec9cf6c2c08390f71eb7",
-                "sha256:f1d53542ee8cbedbe2118b5686372fb33c297fcd6379b050cca0ef13a597382a"
+                "sha256:84c85a9078b11105f04f3036a9482ae10e4621616db313fe045dd24743a0820d",
+                "sha256:fe86415d55e84719d75f8b69414f6438ac3547d2078ab91b67e779ef69378412"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==2022.5.18.1"
+            "version": "==2022.6.15"
         },
         "crispy-bootstrap5": {
             "hashes": [
@@ -73,11 +73,11 @@
         },
         "django-environ": {
             "hashes": [
-                "sha256:42593bee519a527602a467c7b682aee1a051c2597f98c45f4f4f44169ecdb6e5",
-                "sha256:6f0bc902b43891656b20486938cba0861dc62892784a44919170719572a534cb"
+                "sha256:bff5381533056328c9ac02f71790bd5bf1cea81b1beeb648f28b81c9e83e0a21",
+                "sha256:f21a5ef8cc603da1870bbf9a09b7e5577ab5f6da451b843dbcc721a7bca6b3d9"
             ],
             "index": "pypi",
-            "version": "==0.8.1"
+            "version": "==0.9.0"
         },
         "django-phonenumber-field": {
             "hashes": [
@@ -262,7 +262,7 @@
                 "sha256:238e70234214138ed7b4e8a0fab0e5e13872edab3be586ab8198c407620e2ab9",
                 "sha256:8b536a8ec63dc0751342b3984193a3118f8fca2afe25752bb9b7fffd398552d3"
             ],
-            "markers": "sys_platform == 'win32'",
+            "markers": "python_version >= '3.6'",
             "version": "==2022.1"
         },
         "tzlocal": {

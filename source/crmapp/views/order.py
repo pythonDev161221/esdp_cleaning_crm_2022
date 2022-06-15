@@ -69,7 +69,6 @@ class OrderDetailView(PermissionRequiredMixin, DetailView):
         return super().has_permission() or self.get_object().order_cleaners.get(is_brigadier=True).staff == self.request.user
 
 
-
 class OrderDeleteView(PermissionRequiredMixin, DeleteView):
     model = Order
     success_url = reverse_lazy('crmapp:order_index')
