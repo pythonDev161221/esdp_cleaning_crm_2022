@@ -13,6 +13,9 @@ phonenumbers = "*"
 fontawesomefree = "*"
 crispy-bootstrap5 = "*"
 python-telegram-bot = "*"
+selenium = "*"
+behave = "*"
+behave-django = "*"
 
 [dev-packages]
 
