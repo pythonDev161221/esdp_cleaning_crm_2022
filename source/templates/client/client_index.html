@@ -8,7 +8,7 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">id</th>
+                    <th scope="col">№</th>
                     <th scope="col">Фамилия</th>
                     <th scope="col">Имя</th>
                     <th scope="col">Телефон</th>
@@ -29,6 +29,6 @@
                 {% endfor %}
             </tbody>
         </table>
-        <a href="{% url 'crmapp:client_create' %}" class="w-100 btn btn-primary">Добавить клиента</a>
+        <a href="{% url 'crmapp:client_create' %}" class="w-100 btn btn-success">Добавить клиента</a>
     </div>
 {% endblock content %}

@@ -232,21 +232,8 @@ class Order(models.Model):
     ]
 
 
-class FineCategory(models.Model):
-    name = models.CharField(max_length=255, null=True, blank=True, verbose_name=_('Категория'))
-
-    def __str__(self):
-        return f'{self.name}'
-
-    class Meta:
-        db_table = 'fine_category'
-        verbose_name = _('Категория для штрафа')
-        verbose_name_plural = _('Категории для штрафа')
-
-
 class Fine(models.Model):
-    category = models.ForeignKey('crmapp.FineCategory', on_delete=models.PROTECT, null=True, blank=True,
-                                 related_name='fines', verbose_name=_('Категория'))
+    category = models.CharField(max_length=255,null=True, blank=True, verbose_name=_('Категория'))
     fine = models.CharField(max_length=300, null=True, blank=True, verbose_name=_('Штраф'))
     criteria = models.CharField(max_length=255, null=True, blank=True, verbose_name=_('Критерий'))
     value = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name=_('Сумма штрафа'))
@@ -254,6 +241,9 @@ class Fine(models.Model):
 
     def __str__(self):
         return f"{self.fine}"
+
+    def get_absolute_url(self):
+        return reverse('crmapp:fine_list')
 
     class Meta:
         db_table = 'fine'
@@ -267,6 +257,9 @@ class Bonus(models.Model):
 
     def __str__(self):
         return f"{self.bonus}"
+
+    def get_absolute_url(self):
+        return reverse('crmapp:bonus_list')
 
     class Meta:
         db_table = 'bonus'
@@ -368,6 +361,9 @@ class ObjectType(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
+    def get_absolute_url(self):
+        return reverse('crmapp:object_type_list')
 
     class Meta:
         db_table = 'object_types'

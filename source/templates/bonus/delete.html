@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Удаление бонуса{% endblock title %}
+{% block content %}
+    <div class="container text-center">
+        {% if bonus %}
+            <form method="POST">
+                {% csrf_token %}
+                <h2>Вы действительно хотите удалить бонус {{ bonus.bonus }}?</h2>
+                <input class="btn btn-danger" type="submit" value="Да">
+                <a class="btn btn-dark" href="{% url "crmapp:bonus_list" %}">Нет</a>
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}

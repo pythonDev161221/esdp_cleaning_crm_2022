@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Удаление типа объекта{% endblock title %}
+{% block content %}
+    <div class="container text-center">
+        {% if object_type %}
+            <form method="POST">
+                {% csrf_token %}
+                <h2>Вы действительно хотите удалить тип объекта {{ object_type.name }}?</h2>
+                <input class="btn btn-danger" type="submit" value="Да">
+                <a class="btn btn-dark" href="{% url "crmapp:object_type_list" %}">Нет</a>
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}
