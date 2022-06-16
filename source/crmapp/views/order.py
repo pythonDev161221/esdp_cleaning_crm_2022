@@ -121,9 +121,6 @@ class SecondStepOrderCreateView(PermissionRequiredMixin, BaseOrderCreateView):
 
     def form_valid(self, form, formset=None):
         order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
-        # order.cleaners_part = form.cleaned_data.get('cleaners_part')
-        # order.part_units = form.cleaned_data.get('part_units')
-        # order.save()
         formset.instance = order
         formset.save()
         staff_accept_order(order)
