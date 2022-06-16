@@ -6,38 +6,39 @@
 
 {% block content %}
     {% include '../partial/simple_search.html' %}
-<div class="container">
-<table class="table">
-    <thead>
-        <tr>
-            <th scope="col">№</th>
-            <th scope="col">Вид уборки</th>
-            <th scope="col">Стоимость (сом)</th>
-            <th scope="col">Единица измерения</th>
-            <th scope="col">Редактировать</th>
-            <th scope="col">Удалить</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for service in services.all %}
-        <tr>
-            <th scope="row">{{ service.id }}</th>
-            <td>{{ service.name }}</td>
-            <td>{{ service.price }}</td>
-            <td>{{ service.get_unit_display }}</td>
-            <td><a href="{% url 'crmapp:service_update' service.pk %}">
-                <i class="fa fa-pencil text-warning" aria-hidden="true"></i>
-            </a></td>
-            <td><a href="{% url 'crmapp:service_delete' service.pk %}">
-                <i class="fa fa-trash text-danger" aria-hidden="true"></i>
-            </a></td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
-        <a href="{% url 'crmapp:service_create'%}" class="w-100 btn btn-success">
-        Добавить услугу
-    </a>
-</div>
+    <div class="container">
+        <a href="{% url 'crmapp:service_create' %}" class="btn btn-success mt-3 py-2 px-5"><span
+                class="fw-bold">+</span> Добавить услугу
+        </a>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">№</th>
+                <th scope="col">Вид уборки</th>
+                <th scope="col">Стоимость (сом)</th>
+                <th scope="col">Единица измерения</th>
+                <th scope="col">Редактировать</th>
+                <th scope="col">Удалить</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for service in services.all %}
+                <tr>
+                    <th scope="row">{{ service.id }}</th>
+                    <td>{{ service.name }}</td>
+                    <td>{{ service.price }}</td>
+                    <td>{{ service.get_unit_display }}</td>
+                    <td><a href="{% url 'crmapp:service_update' service.pk %}">
+                        <i class="fa fa-pencil text-warning" aria-hidden="true"></i>
+                    </a></td>
+                    <td><a href="{% url 'crmapp:service_delete' service.pk %}">
+                        <i class="fa fa-trash text-danger" aria-hidden="true"></i>
+                    </a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
 
 {% endblock content %}

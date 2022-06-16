@@ -88,34 +88,25 @@
                                         <li><a class="dropdown-item"
                                                href="{% url 'crmapp:inventory_index' %}">Инвентарь</a></li>
                                     {% endif %}
-                                    {% if perms.crmapp.add_inventory %}
-                                        <li><a class="dropdown-item" href="{% url 'crmapp:inventory_create' %}">Добавить
-                                            инвентарь</a></li>
-                                    {% endif %}
+{#                                    {% if perms.crmapp.add_inventory %}#}
+{#                                    {% endif %}#}
                                     {% if perms.crmapp.view_objecttype %}
                                         <li><a class="dropdown-item"
                                                href="{% url 'crmapp:object_type_list' %}">Типы объекта</a></li>
                                     {% endif %}
-                                    {% if perms.crmapp.add_objecttype %}
-                                        <li><a class="dropdown-item" href="{% url 'crmapp:object_type_create' %}">Добавить
-                                            тип объекта</a></li>
-                                    {% endif %}
+{#                                    {% if perms.crmapp.add_objecttype %}#}
+{#                                    {% endif %}#}
                                     {% if perms.crmapp.view_fine %}
                                         <li><a class="dropdown-item"
                                                href="{% url 'crmapp:fine_list' %}">Штрафы</a></li>
                                     {% endif %}
-                                    {% if perms.crmapp.add_fine %}
-                                        <li><a class="dropdown-item" href="{% url 'crmapp:fine_create' %}">Добавить
-                                            штраф</a></li>
-                                    {% endif %}
+
                                     {% if perms.crmapp.view_bonus %}
                                         <li><a class="dropdown-item"
                                                href="{% url 'crmapp:bonus_list' %}">Бонусы</a></li>
                                     {% endif %}
-                                    {% if perms.crmapp.add_bonus %}
-                                        <li><a class="dropdown-item" href="{% url 'crmapp:bonus_create' %}">Добавить
-                                            бонус</a></li>
-                                    {% endif %}
+{#                                    {% if perms.crmapp.add_bonus %}#}
+{#                                    {% endif %}#}
                                     {% if perms.crmapp.view_client %}
                                         <li><a class="dropdown-item" href="{% url 'crmapp:client_index' %}">Клиенты</a>
                                         </li>
@@ -123,6 +114,8 @@
                                     {% if perms.crmapp.add_client %}
                                         <li><a class="dropdown-item" href="{% url 'crmapp:client_create' %}">Добавить
                                             клиента</a></li>
+                                    {% endif %}
+                                    {% if request.user.is_staff %}
                                         <li><a class="dropdown-item" href="{% url 'crmapp:order_deleted_list' %}">Удаленные
                                             заказы</a></li>
                                     {% endif %}

@@ -151,7 +151,7 @@ class SecondStepOrderCreateView(PermissionRequiredMixin, BaseOrderCreateView):
         return reverse('crmapp:order_index')
 
 
-class OrderUpdateView(UpdateView):
+class OrderUpdateView(PermissionRequiredMixin, UpdateView):
     model = Order
     template_name = 'order/order_update.html'
     form_class = OrderForm
@@ -160,11 +160,13 @@ class OrderUpdateView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form_helper'] = self.form_helper()
-        print(context)
         return context
 
     def get_success_url(self):
         return reverse('crmapp:order_detail', kwargs={'pk': self.object.pk})
+
+    def has_permission(self):
+        return self.request.user == self.get_object().manager or self.request.user.is_staff
 
 
 class OrderFinishView(PermissionRequiredMixin, UpdateView):
