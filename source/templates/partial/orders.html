@@ -2,38 +2,45 @@
     {% if orders %}
         <table class="table table-striped text-center table-hover">
             <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Дата уборки</th>
-                    <th scope="col">Дата создания</th>
-                    <th scope="col">Адрес</th>
-                    <th scope="col">Статус</th>
-                    <th scope="col">Сумма</th>
-                    <th scope="col" width="15%">Действия</th>
-                </tr>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Дата уборки</th>
+                <th scope="col">Дата создания</th>
+                <th scope="col">Адрес</th>
+                <th scope="col">Статус</th>
+                <th scope="col">Сумма</th>
+                <th scope="col" width="15%">Действия</th>
+            </tr>
             </thead>
             <tbody>
-                {% for order in orders %}
-                    <tr>
-                        <th scope="row">{{ order.id }}</th>
-                        <td>{{ order.work_start }}</td>
-                        <td>{{ order.created_at }}</td>
-                        <td>{{ order.address }}</td>
-                        <td>{{ order.get_status_display }}</td>
-                        <td>{{ order.get_total }}</td>
-                        <td><div class=" btn-group">
-                                    <a class="btn btn-outline-success"
-                                       href="{% url 'crmapp:order_detail' order.pk %}"><i class="fa-solid fa-eye"></i></a>
-                                    <br>
-                                    <a class="btn btn-outline-success"
-                                       href="№"><i class="fa-solid fa-pen-to-square"></i></a>
-                                    <br>
-                                    <a class="btn btn-outline-danger"
-                                       href="{% url 'crmapp:order_delete' order.pk %}"><i class="fa-solid fa-square-minus"></i></a>
-                                </div>
-</td>
-                    </tr>
-                {% endfor %}
+            {% for order in orders %}
+                <tr>
+                    <th scope="row">{{ order.id }}</th>
+                    <td>{{ order.work_start }}</td>
+                    <td>{{ order.created_at }}</td>
+                    <td>{{ order.address }}</td>
+                    <td>{{ order.get_status_display }}</td>
+                    <td>{{ order.get_total }}</td>
+                    <td>
+                        <div class=" btn-group">
+                            <a class="btn btn-outline-success"
+                               href="{% url 'crmapp:order_detail' order.pk %}"><i class="fa-solid fa-eye"></i></a>
+                            <br>
+                            {% if perms.crmapp.change_order and order.manager == request.user or request.user.is_staff %}
+                                <a class="btn btn-outline-success"
+                                   href="{% url 'crmapp:order_update' order.pk %}"><i
+                                        class="fa-solid fa-pen-to-square"></i></a>
+                            {% endif %}
+                            {% if perms.crmapp.delete_order and order.manager == request.user or request.user.is_staff %}
+                                <br>
+                                <a class="btn btn-outline-danger"
+                                   href="{% url 'crmapp:order_delete' order.pk %}"><i
+                                        class="fa-solid fa-square-minus"></i></a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
     {% else %}

@@ -5,30 +5,32 @@
 {% block content %}
     {% include '../partial/simple_search.html' %}
     <div class="container">
+        <a href="{% url 'crmapp:client_create' %}" class="btn btn-success mt-3 py-2 px-5"><span
+                class="fw-bold">+</span> Добавить клиента</a>
         <table class="table">
             <thead>
-                <tr>
-                    <th scope="col">№</th>
-                    <th scope="col">Фамилия</th>
-                    <th scope="col">Имя</th>
-                    <th scope="col">Телефон</th>
-                    <th scope="col">Организация</th>
-                    <th scope="col">Редактировать</th>
-                </tr>
+            <tr>
+                <th scope="col">№</th>
+                <th scope="col">Фамилия</th>
+                <th scope="col">Имя</th>
+                <th scope="col">Телефон</th>
+                <th scope="col">Организация</th>
+                <th scope="col">Редактировать</th>
+            </tr>
             </thead>
             <tbody>
-                {% for client in clients %}
-                    <tr>
-                        <th scope="row">{{ client.id }}</th>
-                        <td>{{ client.last_name }}</td>
-                        <td>{{ client.first_name }}</td>
-                        <td>{{ client.phone }}</td>
-                        <td>{{ client.organization|default:"" }}</td>
-                        <td><a href="{% url 'crmapp:client_update' client.id %}"><i class="fa fa-pencil text-warning" aria-hidden="true"></i></a></td>
-                    </tr>
-                {% endfor %}
+            {% for client in clients %}
+                <tr>
+                    <th scope="row">{{ client.id }}</th>
+                    <td>{{ client.last_name }}</td>
+                    <td>{{ client.first_name }}</td>
+                    <td>{{ client.phone }}</td>
+                    <td>{{ client.organization|default:"" }}</td>
+                    <td><a href="{% url 'crmapp:client_update' client.id %}"><i class="fa fa-pencil text-warning"
+                                                                                aria-hidden="true"></i></a></td>
+                </tr>
+            {% endfor %}
             </tbody>
         </table>
-        <a href="{% url 'crmapp:client_create' %}" class="w-100 btn btn-success">Добавить клиента</a>
     </div>
 {% endblock content %}

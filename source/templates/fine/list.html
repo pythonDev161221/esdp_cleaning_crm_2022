@@ -2,41 +2,46 @@
 {% block title %}Список штрафов{% endblock title %}
 {% block content %}
     <div class="container">
-        <table class="table">
-            <thead>
+        {% if perms.crmapp.add_fine %}
+            <a href="{% url 'crmapp:fine_create' %}" class="btn btn-success mt-3 py-2 px-5"> <span
+                    class="fw-bold">+</span> Добавить
+                штраф</a>
+            <table class="table">
+        {% endif %}
+
+        <thead>
+        <tr>
+            <th scope="col">№</th>
+            <th scope="col">Категория</th>
+            <th scope="col">Штраф</th>
+            <th scope="col">Критерий</th>
+            <th scope="col">Сумма штрафа</th>
+            <th scope="col">Пояснение</th>
+            <th scope="col">Редактировать</th>
+            <th scope="col">Удалить</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for fine in fines %}
             <tr>
-                <th scope="col">№</th>
-                <th scope="col">Категория</th>
-                <th scope="col">Штраф</th>
-                <th scope="col">Критерий</th>
-                <th scope="col">Сумма штрафа</th>
-                <th scope="col">Пояснение</th>
-                <th scope="col">Редактировать</th>
-                <th scope="col">Удалить</th>
+                <th scope="row">{{ fine.id }}</th>
+                <td>{{ fine.category }}</td>
+                <td>{{ fine.fine }}</td>
+                <td>{{ fine.criteria }}</td>
+                <td>{{ fine.value|default:"" }}</td>
+                <td>{{ fine.description }}</td>
+                <td><a style="text-decoration:none" href="{% url 'crmapp:fine_update' fine.id %}">
+                    <i class="fa fa-pencil text-warning" aria-hidden="true"></i>
+                </a>
+                </td>
+                <td><a style="text-decoration:none"
+                       href="{% url 'crmapp:fine_delete' fine.id %}">
+                    <i class="fa fa-trash text-danger" aria-hidden="true"></i>
+                </a></td>
             </tr>
-            </thead>
-            <tbody>
-            {% for fine in fines %}
-                <tr>
-                    <th scope="row">{{ fine.id }}</th>
-                    <td>{{ fine.category }}</td>
-                    <td>{{ fine.fine }}</td>
-                    <td>{{ fine.criteria }}</td>
-                    <td>{{ fine.value|default:"" }}</td>
-                    <td>{{ fine.description }}</td>
-                    <td><a style="text-decoration:none" href="{% url 'crmapp:fine_update' fine.id %}">
-                        <i class="fa fa-pencil text-warning" aria-hidden="true"></i>
-                        </a>
-                    </td>
-                    <td><a style="text-decoration:none"
-                           href="{% url 'crmapp:fine_delete' fine.id %}">
-                        <i class="fa fa-trash text-danger" aria-hidden="true"></i>
-                    </a></td>
-                </tr>
-            {% endfor %}
-            </tbody>
+        {% endfor %}
+        </tbody>
         </table>
-        <a style="text-decoration:none" href="{% url 'crmapp:fine_create' %}" class="w-100 btn btn-success">Добавить
-            штраф</a>
+
     </div>
 {% endblock content %}
