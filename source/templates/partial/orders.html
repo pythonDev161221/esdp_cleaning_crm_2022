@@ -25,6 +25,9 @@
                                     <a class="btn btn-success"
                                        href="{% url 'crmapp:order_detail' order.pk %}">Просмотреть</a>
                                     <br>
+                                    <a class="btn btn-warning"
+                                       href="{% url 'crmapp:order_update' order.pk %}">Рудактировать</a>
+                                    <br>
                                     <a class="btn btn-danger"
                                        href="{% url 'crmapp:order_delete' order.pk %}">Удалить</a>
                                 </div>
