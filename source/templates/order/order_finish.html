@@ -12,6 +12,7 @@
                     {% csrf_token %}
                     {{ form|crispy }}
                     <div class="text-center">
+                        <input type="submit" name="back" value="Назад" class="btn btn-success w-25">
                         <input type="submit" name="cancel" value="Отменить" class="btn btn-outline-secondary w-25">
                         <input type="submit" name="finish" value="Завершить" class="btn btn-success w-25">
                     </div>

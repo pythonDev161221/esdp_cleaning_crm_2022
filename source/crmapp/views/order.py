@@ -174,6 +174,8 @@ class OrderFinishView(PermissionRequiredMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
+        if request.method == 'POST' and 'back' in request.POST:
+            return redirect("crmapp:order_detail", pk=order.pk)
         if request.method == 'POST' and 'cancel' in request.POST:
             order.cancel_order()
             order_canceled(order)
