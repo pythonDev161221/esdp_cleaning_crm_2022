@@ -5,7 +5,7 @@
         <h1>Вход</h1>
         {% csrf_token %}
         {% if form.errors %}
-            <p class="text-danger">Неверное email или пароль.</p>
+            <p class="text-danger">Неверный email или пароль.</p>
         {% endif %}
         <div class="container w-50">
             <div class="form-group">
