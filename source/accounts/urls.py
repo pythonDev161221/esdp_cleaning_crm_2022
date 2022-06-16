@@ -14,7 +14,7 @@ from accounts.views.accounts import (StaffProfileView,
                                      StaffDescriptionView,
                                      StaffPassportView,
                                      StaffPassportPhotoView,
-                                     get_auth_token_telegram,
+                                     GetAuthTokenTelegram,
                                      StaffPayoutDetailView,
                                      StaffOrderDetailView,)
 from accounts.views.payout import PayoutListView, PayoutCreateView
@@ -41,6 +41,6 @@ urlpatterns = [
     path('payout/', PayoutListView.as_view(), name='payout_list'),
     path('payout/<int:pk>/', PayoutCreateView.as_view(), name='payout_create'),
     path('staff/<int:pk>/payout/', StaffPayoutDetailView.as_view(), name='staff_payout'),
-    path("staff/<int:pk>/telegram/token/", get_auth_token_telegram, name="auth_tg_token"),
+    path("staff/<int:pk>/telegram/token/", GetAuthTokenTelegram.as_view(), name="auth_tg_token"),
     path('staff/<int:pk>/order/', StaffOrderDetailView.as_view(), name='staff_orders'),
 ]

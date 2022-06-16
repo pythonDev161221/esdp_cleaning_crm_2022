@@ -3,7 +3,7 @@
         <table class="table table-striped text-center table-hover">
             <thead>
                 <tr>
-                    <th scope="col">Заказ #</th>
+                    <th scope="col">#</th>
                     <th scope="col">Дата уборки</th>
                     <th scope="col">Дата создания</th>
                     <th scope="col">Адрес</th>
@@ -22,14 +22,14 @@
                         <td>{{ order.get_status_display }}</td>
                         <td>{{ order.get_total }}</td>
                         <td><div class=" btn-group">
-                                    <a class="btn btn-success"
-                                       href="{% url 'crmapp:order_detail' order.pk %}">Просмотреть</a>
+                                    <a class="btn btn-outline-success"
+                                       href="{% url 'crmapp:order_detail' order.pk %}"><i class="fa-solid fa-eye"></i></a>
                                     <br>
-                                    <a class="btn btn-warning"
-                                       href="{% url 'crmapp:order_update' order.pk %}">Рудактировать</a>
+                                    <a class="btn btn-outline-success"
+                                       href="{% url 'crmapp:order_update' order.pk %}"><i class="fa-solid fa-pen-to-square"></i></a>
                                     <br>
-                                    <a class="btn btn-danger"
-                                       href="{% url 'crmapp:order_delete' order.pk %}">Удалить</a>
+                                    <a class="btn btn-outline-danger"
+                                       href="{% url 'crmapp:order_delete' order.pk %}"><i class="fa-solid fa-square-minus"></i></a>
                                 </div>
 </td>
                     </tr>

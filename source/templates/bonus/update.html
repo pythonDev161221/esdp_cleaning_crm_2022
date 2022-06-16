@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Изменение бонуса{% endblock title %}
+{% block content %}
+<div class="container ">
+        <div class="card mt-3">
+            <div class="card-header">
+               Редактирование бонуса
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <input type="submit" value="Сохранить" class="btn btn-success">
+                </form>
+            </div>
+        </div>
+</div>
+{% endblock content %}

@@ -1,10 +1,21 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div style="padding: 5px 5px; border: 1px solid gray; margin-top: 10px; text-align: center; border-radius: 22px">
-    <p>
-        {{ token }}
-    </p>
+    <div class="text-center m-5">
+        <h3>Авторизация сотрудника в Telegram боте</h3>
+        <hr>
+        <div class="text-center">
+            <button class="btn btn-outline-success" id="copy-btn" data-token={{ token }}>Нажмите кнопку,чтобы
+                скопировать
+                token аворизации
+            </button>
+        </div>
+        <hr>
+        <h4>Инструкция</h4>
+        <div>
+            <p>Отправьте сотруднику скопированный TOKEN, далее сотрудник должен перейти в telegram по
+                ссылке и нажать кнопку на "start" для авторизации.</p>
+        </div>
     </div>
-
+    {% block script %}{% endblock script %}
 {% endblock %}

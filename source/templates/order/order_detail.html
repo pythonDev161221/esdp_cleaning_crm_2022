@@ -4,165 +4,150 @@
 
 
 {% block content %}
-    <div class="container mt-3">
-        {% for staff in order.order_cleaners.all %}
-            {% if staff.staff == user %}
-                {% if staff.in_place and not staff.work_start %}
-                    <a href="{% url 'crmapp:foremanorder_create' order.id %}" class="btn btn-outline-success">Внести
-                        изменения в
-                        заказ</a>
-                    <a href="{% url 'crmapp:foreman_create_service' order.id %}" class="btn btn-outline-success">Добавить
-                        услугу в
-                        заказ</a>
-                    <a href="{% url 'crmapp:foreman_create_expense' order.id %}" class="btn btn-outline-success">Добавить
-                        расход</a>
-                    <form class="mt-3" action="{% url 'crmapp:foreman_photo_before' order.id %}" method="POST"
-                          enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <input class="btn btn-outline-success" type="file" name="photo_before" multiple>
-                        <button type="submit" class="btn btn-success">Отправить фото до</button>
-                    </form>
-                {% elif staff.in_place and staff.work_start %}
-                    {% if user == brigadir.staff %}
-
-                        <form class="mt-3" action="{% url 'crmapp:foreman_photo_before' order.id %}" method="POST"
-                              enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <input class="btn btn-outline-success" type="file" name="photo_after" multiple>
-                            <button type="submit" class="btn btn-success">Отправить фото после</button>
-                        </form>
-                    {% endif %}
-                {% endif %}
-            {% endif %}
-        {% endfor %}
-
-        <h3 class="mt-3">Заказ № {{ order.id }}<span class="label success">{{ order.get_status_display }}</span></h3>
-        <hr>
+    <div class="container mt-1">
         <div>
-            <p><small class="text-muted">Менеджер: {{ order.manager.first_name }} {{ order.manager.last_name }}</small>
-            </p>
-            <small class="text-muted me-5">Заказ создан: {{ order.created_at }}</small>
+            <h3 class="mt-3">Заказ № {{ order.id }}<span class="label success">{{ order.get_status_display }}</span>
+            </h3>
+            <span><small
+                    class="text-muted">Менеджер: {{ order.manager.first_name }} {{ order.manager.last_name }}</small></span>
+            <p><small class="text-muted me-5">Заказ создан: {{ order.created_at }}</small></p>
         </div>
-        <div class="row justify-content-around">
-            <div class="card text-dark bg-light mb-3 mt-3 p-0" style="max-width: 20rem;">
-                <h5 class="card-header">Клиент</h5>
-                <div class="card-body">
-                    <p class="card-text">{{ order.client_info }}</p>
-                    <p>Адресс: <strong>{{ order.address | capfirst }}</strong></p>
-                    <p>Тип объекта: {{ order.object_type | capfirst }}</p>
-                    <p>Вид оплаты: <strong>{{ order.get_payment_type_display }}</strong></p>
-                    <hr>
-                    {% for photo in order.order_cleaners.all %}
-                        {% if photo.foreman_photo.all %}
-                            <p><a class="btn btn-outline-primary btn-sm"
-                                  href="{% url 'crmapp:foreman_photo' order.id %}">Просмотреть
-                                фотографии</a></p>
-                        {% endif %}
-                    {% endfor %}
-                </div>
+        {% if order.status != 'new' %}
+            <div class="alert alert-info" role="alert">
+                <h5>Комментарий к заказу: {{ order.description }}</h5>
             </div>
-            <div class="card text-dark bg-light mb-3 mt-3 p-0" style="max-width: 20rem;">
-                <h5 class="card-header">Даты и время</h5>
-                <div class="card-body">
-                    <div class="card-title">Дата и время заказа:</div>
-                    <ul>
-                        <p class="card-text text-success">
-                            <strong>{{ order.work_start }}, {{ order.work_start |date:'l' }}</strong></p>
-                    </ul>
-                    <div class="card-title">Заказ будет выполнен:</div>
-                    <ul>
-                        <p class="card-text"> {{ order.work_end }}</p>
-                    </ul>
-                    <div class="card-title">Общее время работы:</div>
-                    <ul>
-                        <p class="card-text"> {{ order.cleaning_time }} ч.</p>
-                    </ul>
-                </div>
-            </div>
-            <div class="card text-dark bg-light mb-3 mt-3 p-0" style="max-width: 20rem;">
-                <h5 class="card-header">Бригада</h5>
-                <div class="card-body">
-                    <p class="card-text">
-                    <ul>
-                        {% for cleaner in order.order_cleaners.all %}
-                            <li>
-                                {% if cleaner.is_brigadier %}
-                                    <a style="text-decoration: none"
-                                       href="{% url 'accounts:profile' cleaner.staff.id %}">
-                                        {{ cleaner.staff.first_name }} {{ cleaner.staff.last_name }}
-                                    </a>
-                                    <span><strong>Бригадир</strong></span>
-                                    {% if perms.crmapp.delete_stafforder and order.manager == request.user or request.user.is_staff %}
-                                        <a class="text-danger" href="{% url 'crmapp:order_staff_delete' cleaner.id %}">
-                                            <i class="fa-solid fa-xmark"></i>
-                                        </a>
-                                    {% endif %}
-                                {% else %}
-                                    <a style="text-decoration: none"
-                                       href="{% url 'accounts:profile' cleaner.staff.id %}">
-                                        {{ cleaner.staff.first_name }} {{ cleaner.staff.last_name }}
-                                    </a>
-                                    {% if perms.crmapp.delete_stafforder and order.manager == request.user or request.user.is_staff %}
-                                        <a class="text-danger" href="{% url 'crmapp:order_staff_delete' cleaner.id %}">
-                                            <i class="fa-solid fa-xmark"></i>
-                                        </a>
-                                    {% endif %}
+        {% endif %}
+        <hr>
+        <div class="row">
+            <div class="col col-lg-6 col-md-8">
+                <div class="row g-1">
+                    <div class="border mb-2 col col-lg-6 col-md-6 p-0">
+                        <h5 class="card-header alert-success">Клиент</h5>
+                        <div class="card-body">
+                            <p class="card-text">{{ order.client_info }}</p>
+                            <p>Адресс: <strong>{{ order.address | capfirst }}</strong></p>
+                            <p>Тип объекта: {{ order.object_type | capfirst }}</p>
+                            <p>Вид оплаты: <strong>{{ order.get_payment_type_display }}</strong></p>
+                            <hr>
+                            {% for photo in order.order_cleaners.all %}
+                                {% if photo.foreman_photo.all %}
+                                    <p><a class="btn btn-outline-primary btn-sm"
+                                          href="{% url 'crmapp:foreman_photo' order.id %}">Просмотреть
+                                        фотографии</a></p>
                                 {% endif %}
-                            </li>
-                        {% endfor %}
-                    </ul>
-
-                    {% if perms.crmapp.add_stafforder and order.manager == request.user or request.user.is_staff %}
-                        <div class="mb-4 ms-3">
-                            <a class="btn btn-outline-secondary btn-sm"
-                               href="{% url 'crmapp:order_staff_add' order.id %}">
-                                + Добавить клинера
-                            </a>
+                            {% endfor %}
                         </div>
-                    {% endif %}
-                    <hr>
-                    {% if perms.crmapp.add_managerreport and order.manager == request.user or request.user.is_staff %}
-                        {% if order.get_total is not 0 %}
-                            <p><a class="btn btn-outline-danger"
-                                  href="{% url 'crmapp:manager_report_create' order.id %}">Рассчитать ЗП бригады</a></p>
-                        {% endif %}
-                    {% else %}
-                    {% endif %}
-                    </p>
-                    {% if order.manager == request.user or request.user.is_staff %}
-                        <a href="{% url 'crmapp:order_finish' order.pk %}">
-                            <button>Завершить заказ</button>
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
-            <div class="card text-dark bg-light mb-3 mt-3 p-0" style="max-width: 20rem;">
-                <h5 class="card-header">Инвентарь</h5>
-                <div class="card-body">
-                    <p class="card-text">
-                        {% for inventory in order.order_inventories.all %}
+                    </div>
+                    <div class="border mb-2 col col-lg-6 col-md-6 p-0">
+                        <h5 class="card-header alert-success">Даты и время</h5>
+                        <div class="card-body">
+                            <div class="card-title">Дата и время заказа:</div>
                             <ul>
-                                <li>
-                                    <p>{{ inventory.inventory.name }}: {{ inventory.amount }}
-                                        {% if perms.crmapp.delete_inventoryorder and order.manager == request.user or request.user.is_staff %}
-                                            <a class="text-danger"
-                                               href="{% url 'crmapp:inventory_order_remove' inventory.pk %}"><i
-                                                    class="fa-solid fa-xmark"></i></a>
-                                        {% endif %}
-                                    </p>
-                                </li>
+
+                                <p class="card-text text-success">
+                                    <strong>{{ order.work_start }}, {{ order.work_start |date:'l' }}</strong></p>
                             </ul>
-                        {% endfor %}
-                    {% if perms.crmapp.add_inventoryorder and order.manager == request.user or request.user.is_staff %}
-                        <div class="mb-4 ms-3"><a class="btn btn-outline-secondary btn-sm"
-                                                  href="{% url 'crmapp:inventory_order_add' order.id %}">+Добавить/Изменить
-                            инвентарь</a></div>
-                    {% endif %}
-                    </p>
+                            <div class="card-title">Заказ будет выполнен:</div>
+                            <ul>
+                                <p class="card-text"> {{ order.work_end }}</p>
+                            </ul>
+                            <div class="card-title">Общее время работы:</div>
+                            <ul>
+                                <p class="card-text"> {{ order.cleaning_time }} ч.</p>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="border mb-2 col col-lg-6 col-md-6 p-0">
+                        <h5 class="card-header alert-success">Бригада</h5>
+                        <div class="card-body">
+                            <p class="card-text">
+                            <ul>
+                                {% for cleaner in order.order_cleaners.all %}
+                                    <li>
+                                        {% if cleaner.is_brigadier %}
+                                            <a style="text-decoration: none"
+                                               href="{% url 'accounts:profile' cleaner.staff.id %}">
+                                                {{ cleaner.staff.first_name }} {{ cleaner.staff.last_name }}
+                                            </a>
+                                            <span><strong>Бригадир</strong></span>
+                                            {% if perms.crmapp.delete_stafforder and order.manager == request.user or request.user.is_staff %}
+                                                <a class="text-danger"
+                                                   href="{% url 'crmapp:order_staff_delete' cleaner.id %}">
+                                                    <i class="fa-solid fa-xmark"></i>
+                                                </a>
+                                            {% endif %}
+                                        {% else %}
+                                            <a style="text-decoration: none"
+                                               href="{% url 'accounts:profile' cleaner.staff.id %}">
+                                                {{ cleaner.staff.first_name }} {{ cleaner.staff.last_name }}
+                                            </a>
+                                            {% if perms.crmapp.delete_stafforder and order.manager == request.user or request.user.is_staff %}
+                                                <a class="text-danger"
+                                                   href="{% url 'crmapp:order_staff_delete' cleaner.id %}">
+                                                    <i class="fa-solid fa-xmark"></i>
+                                                </a>
+                                            {% endif %}
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            {% if perms.crmapp.add_stafforder and order.manager == request.user or request.user.is_staff %}
+                                {% if order.status == 'new' %}
+                                    <div class="mb-4 ms-3">
+                                        <a class="btn btn-outline-secondary btn-sm"
+                                           href="{% url 'crmapp:order_staff_add' order.id %}">
+                                            + Добавить клинера
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                            <hr>
+                            {% if perms.crmapp.add_managerreport and order.manager == request.user or request.user.is_staff %}
+                                {% if order.get_total is not 0 %}
+                                    <p><a class="btn btn-outline-success"
+                                          href="{% url 'crmapp:manager_report_create' order.id %}">Рассчитать ЗП
+                                        бригады</a></p>
+                                {% endif %}
+                            {% else %}
+                            {% endif %}
+                            </p>
+                            {% if order.manager == request.user or request.user.is_staff %}
+                                <a  class="btn btn-outline-success" href="{% url 'crmapp:order_finish' order.pk %}">
+                                    Статус заказa</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="border mb-2 col col-lg-6 col-md-6 p-0">
+                        <h5 class="card-header alert-success ">Инвентарь</h5>
+                        <div class="card-body">
+                            <p class="card-text">
+                                {% for inventory in order.order_inventories.all %}
+                                    <ul>
+                                        <li>
+                                            <p>{{ inventory.inventory.name }}: {{ inventory.amount }}
+                                                {% if perms.crmapp.delete_inventoryorder and order.manager == request.user or request.user.is_staff %}
+                                                    <a class="text-danger"
+                                                       href="{% url 'crmapp:inventory_order_remove' inventory.pk %}"><i
+                                                            class="fa-solid fa-xmark"></i></a>
+                                                {% endif %}
+                                            </p>
+                                        </li>
+                                    </ul>
+                                {% endfor %}
+                            {% if perms.crmapp.add_inventoryorder and order.manager == request.user or request.user.is_staff %}
+                                {% if order.status == 'new' %}
+                                    <div class="mb-4 ms-3"><a class="btn btn-outline-secondary btn-sm"
+                                                              href="{% url 'crmapp:inventory_order_add' order.id %}">+Добавить/Изменить
+                                        инвентарь</a></div>
+                                {% endif %}
+                            {% endif %}
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="card text-dark bg-light mb-3 mt-3 p-0" style="max-width: 30rem;">
-                <h5 class="card-header">Услуги</h5>
+            <div class="border col col-lg-6 col-md-4 p-0">
+                <h5 class="card-header alert-success">Услуги</h5>
                 <div class="card-body">
                     <p class="card-text">
                         {% if order.order_services %}
@@ -182,25 +167,29 @@
                                             {% endif %}
                                         {% endif %}
                                         {% if not service.foreman_order_update.all %}
-                                            <p class="text-muted">{{ service | capfirst }}</p>
-                                            {% if perms.crmapp.change_serviceorder and order.manager == request.user or request.user.is_staff %}
-                                                <a href="{% url 'crmapp:service_order_update' service.id %}"><i
-                                                        class="fa-solid fa-pen-to-square"></i></a>
-                                            {% endif %}
-                                            {% if perms.crmapp.add_serviceorder and order.manager == request.user or request.user.is_staff %}
-                                                <a class="text-danger"
-                                                   href="{% url 'crmapp:service_order_delete' service.id %}"><i
-                                                        class="fa-solid fa-xmark"></i></a>
-                                            {% endif %}
+                                            <p class="text-muted">{{ service | capfirst }}
+                                                {% if perms.crmapp.change_serviceorder and order.manager == request.user or request.user.is_staff %}
+                                                    <a href="{% url 'crmapp:service_order_update' service.id %}"><i
+                                                            class="fa-solid fa-pen-to-square"></i></a>
+                                                {% endif %}
+                                                {% if perms.crmapp.add_serviceorder and order.manager == request.user or request.user.is_staff %}
+                                                    <a class="text-danger"
+                                                       href="{% url 'crmapp:service_order_delete' service.id %}"><i
+                                                            class="fa-solid fa-xmark"></i></a>
+                                                {% endif %}
+                                            </p>
                                         {% endif %}
                                     </li>
                                 </ul>
                             {% endfor %}
                         {% endif %}
                     {% if perms.crmapp.add_serviceorder and order.manager == request.user or request.user.is_staff %}
-                        <div class="mb-4 ms-3"><a class="btn btn-outline-secondary btn-sm"
-                                                  href="{% url 'crmapp:service_order_create' order.id %}"> + Добавить
-                            услугу</a></div>
+                        {% if order.status == 'new' %}
+                            <div class="mb-4 ms-3"><a class="btn btn-outline-secondary btn-sm"
+                                                      href="{% url 'crmapp:service_order_create' order.id %}"> +
+                                Добавить
+                                услугу</a></div>
+                        {% endif %}
                     {% endif %}
                     <p><strong>Бргадир изменил/добавил следующие услуги:</strong></p>
                     <ul>
@@ -212,19 +201,55 @@
                     </ul>
                     <hr>
                     <h5><strong>Общая стоимость: {{ order.get_total }} сом </strong></h5>
-                    {% for report in order.order_cleaners.all %}
-                        {% if report %}
-                            <p><small class="text-muted">Расходы:</small></p>
-                            {% for expense in report.foreman_expense.all %}
-                                <p>{{ expense.description }}: {{ expense.amount }} сом</p>
-                            {% endfor %}
-                            <h5><strong>Итого: {{ report.get_total_expenses }} сом</strong></h5>
-                        {% else %}
-                            <p><small class="text-muted">Расходов нет</small></p>
-                        {% endif %}
-                    {% endfor %}
+                    {% if brigadir %}
+                        <p><small class="text-muted">Расходы:</small></p>
+                        {% for expense in brigadir.foreman_expense.all %}
+                            <p>{{ expense.description }}: {{ expense.amount }} сом</p>
+                        {% endfor %}
+                        <h5><strong>Итого: {{ brigadir.get_total_expenses }} сом</strong></h5>
+                    {% else %}
+                        <p><small class="text-muted">Расходов нет</small></p>
+                    {% endif %}
                 </div>
+                {% if order.status != 'finished' %}
+                    {% if order.status != 'canceled' %}
+                        {% if brigadir.staff == request.user %}
+                            {% if brigadir.in_place %}
+                                <a href="{% url 'crmapp:foreman_create_service' order.id %}"
+                                   class="btn btn-outline-success">Добавить
+                                    услугу в
+                                    заказ</a>
+                                <a href="{% url 'crmapp:foreman_create_expense' order.id %}"
+                                   class="btn btn-outline-success">Добавить
+                                    расход</a>
+                                {% if not brigadir.work_start %}
+                                    <a href="{% url 'crmapp:foremanorder_create' order.id %}"
+                                       class="btn btn-outline-success">Внести
+                                        изменения в
+                                        заказ</a>
+                                    <form class="mt-3" action="{% url 'crmapp:foreman_photo_before' order.id %}"
+                                          method="POST"
+                                          enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <input class="btn btn-outline-success" type="file" name="photo_before" multiple>
+                                        <button type="submit" class="btn btn-success">Отправить фото до</button>
+                                    </form>
+                                {% else %}
+                                    <form class="mt-3" action="{% url 'crmapp:foreman_photo_before' order.id %}"
+                                          method="POST"
+                                          enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <input class="btn btn-outline-success" type="file" name="photo_after" multiple>
+                                        <button type="submit" class="btn btn-success">Отправить фото после</button>
+                                    </form>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
             </div>
         </div>
     </div>
+
+
 {% endblock content %}

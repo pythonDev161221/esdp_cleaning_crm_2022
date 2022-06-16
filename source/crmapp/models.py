@@ -145,6 +145,14 @@ class Order(models.Model):
     description = models.TextField(max_length=2000, null=True, blank=False, verbose_name=_('Примечание'))
     is_deleted = models.BooleanField(null=True, blank=True, default=False, verbose_name=_('Удален'))
 
+    def finish_order(self):
+        self.status = 'finished'
+        self.save()
+
+    def cancel_order(self):
+        self.status = 'canceled'
+        self.save()
+
     def soft_delete(self):
         self.is_deleted = True
         self.save()
@@ -156,8 +164,8 @@ class Order(models.Model):
         return expenses
 
     def get_foreman_expenses(self):
-        if self.foreman_order_report:
-            for report in self.foreman_order_report.all():
+        if self.order_cleaners:
+            for report in self.order_cleaners.all():
                 return report.get_total_expenses()
         return 0
 
@@ -224,21 +232,8 @@ class Order(models.Model):
     ]
 
 
-class FineCategory(models.Model):
-    name = models.CharField(max_length=255, null=True, blank=True, verbose_name=_('Категория'))
-
-    def __str__(self):
-        return f'{self.name}'
-
-    class Meta:
-        db_table = 'fine_category'
-        verbose_name = _('Категория для штрафа')
-        verbose_name_plural = _('Категории для штрафа')
-
-
 class Fine(models.Model):
-    category = models.ForeignKey('crmapp.FineCategory', on_delete=models.PROTECT, null=True, blank=True,
-                                 related_name='fines', verbose_name=_('Категория'))
+    category = models.CharField(max_length=255,null=True, blank=True, verbose_name=_('Категория'))
     fine = models.CharField(max_length=300, null=True, blank=True, verbose_name=_('Штраф'))
     criteria = models.CharField(max_length=255, null=True, blank=True, verbose_name=_('Критерий'))
     value = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name=_('Сумма штрафа'))
@@ -246,6 +241,9 @@ class Fine(models.Model):
 
     def __str__(self):
         return f"{self.fine}"
+
+    def get_absolute_url(self):
+        return reverse('crmapp:fine_list')
 
     class Meta:
         db_table = 'fine'
@@ -259,6 +257,9 @@ class Bonus(models.Model):
 
     def __str__(self):
         return f"{self.bonus}"
+
+    def get_absolute_url(self):
+        return reverse('crmapp:bonus_list')
 
     class Meta:
         db_table = 'bonus'
@@ -343,7 +344,6 @@ class ManagerReport(models.Model):
     bonus_description = models.ForeignKey('crmapp.Bonus', related_name='manager_reports', on_delete=models.PROTECT,
                                           null=True, blank=True, verbose_name=_('Причина для бонуса'))
     created_at = models.DateTimeField(auto_now=True, verbose_name=_('Дата создания'))
-    updated_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата изменения'))
     comment = models.CharField(max_length=255, null=True, blank=True, verbose_name=_('Комментарий'))
 
     def get_salary(self):
@@ -361,6 +361,9 @@ class ObjectType(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
+    def get_absolute_url(self):
+        return reverse('crmapp:object_type_list')
 
     class Meta:
         db_table = 'object_types'
