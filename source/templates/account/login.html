@@ -4,8 +4,8 @@
     <form method="post" class="text-center ms-auto me-auto w-50">
         <h1>Вход</h1>
         {% csrf_token %}
-        {% if form.has_error %}
-            <p class="text-danger">Неверное имя пользователя или пароль.</p>
+        {% if form.errors %}
+            <p class="text-danger">Неверный email или пароль.</p>
         {% endif %}
         <div class="container w-50">
             <div class="form-group">

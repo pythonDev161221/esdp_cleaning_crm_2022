@@ -14,6 +14,9 @@ fontawesomefree = "*"
 crispy-bootstrap5 = "*"
 python-telegram-bot = "*"
 xlwt = "*"
+selenium = "*"
+behave = "*"
+behave-django = "*"
 
 [dev-packages]
 
