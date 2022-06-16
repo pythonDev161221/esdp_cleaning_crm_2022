@@ -1,6 +1,6 @@
 from django.urls import path, include
 
-from crmapp.views.excel import (export_manager_report_to_excel, export_expense_excel)
+from crmapp.views.excel import (export_manager_report_to_excel, export_expense_excel, export_cash_manager_excel)
 from crmapp.views.client_views import (ClientCreateView,
                                        ClientListView,
                                        ClientUpdateView)
@@ -52,7 +52,8 @@ client_urlpatterns = [
 
 excel_urlpatterns = [
     path('expense/', export_expense_excel, name='expense-excel'),
-    path('manager-report/', export_manager_report_to_excel, name='manager-excel')
+    path('manager-report/', export_manager_report_to_excel, name='manager-excel'),
+    path('manager/cash/', export_cash_manager_excel, name='cash_excel')
 ]
 order_urlpatterns = [
     path('', OrderListView.as_view(), name='order_index'),
