@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import ListView, FormView
 
 from crmapp.forms import ManagerReportForm, BaseManagerReportFormSet
-from crmapp.models import ManagerReport, Order, StaffOrder, ForemanPhoto
+from crmapp.models import ManagerReport, Order, StaffOrder, ForemanPhoto, CashManager
 
 from crmapp.forms import FilterForm
 
@@ -85,6 +85,8 @@ class ManagerReportCreateView(PermissionRequiredMixin, FormView):
                 form.order = order
                 form.cleaner.add_salary(form.get_salary())
                 form.save()
+            order.manager.add_cash(order.get_total())
+            CashManager.objects.create(staff=order.manager, order=order)
         return redirect('crmapp:manager_report_list')
 
     def form_invalid(self, formset):

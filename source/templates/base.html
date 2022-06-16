@@ -49,12 +49,6 @@
                                         <a class="dropdown-item" href="{% url 'accounts:register' %}">Добавить
                                             сотрудника</a>
                                     {% endif %}
-                                    {% if perms.accounts.view_payout %}
-                                        <li>
-                                            <a class="dropdown-item" href="{% url 'accounts:payout_list' %}">История
-                                                выплат</a>
-                                        </li>
-                                    {% endif %}
                                     {% if perms.accounts.view_staff_blacklist %}
                                         <li><a class="dropdown-item"
                                                href="{% url 'accounts:black-list' %}">Черный список</a></li>
@@ -63,13 +57,32 @@
                             </li>
                         {% endif %}
                         {% if perms.crmapp.сan_view_income_outcome_report %}
-                            <li class="nav-item">
-                                <a href="{% url 'crmapp:income_outcome_report' %}" class="nav-link">Отчет</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{% url 'crmapp:manager_report_list' %}" class="nav-link">Отчет менеджера</a>
-                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                    Отчеты
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                    {% if request.user.is_staff %}
+                                        <li class="nav-item">
+                                            <a href="{% url 'crmapp:manager_cash_list' %}" class="dropdown-item">Отчет
+                                                по кассе</a>
+                                        </li>
+                                    {% endif %}
+                                    <li class="nav-item">
+                                        <a href="{% url 'crmapp:income_outcome_report' %}" class="dropdown-item">Отчет о расходах и доходах</a></li>
+                                    <li class="nav-item">
+                                        <a href="{% url 'crmapp:manager_report_list' %}" class="dropdown-item">Отчет
+                                            менеджера</a>
+                                    </li>
+                                    {% if perms.accounts.view_payout %}
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'accounts:payout_list' %}">Отчет по выплатам</a>
+                                        </li>
+                                    {% endif %}
 
+                                </ul>
+                            </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
                                    data-bs-toggle="dropdown" aria-expanded="false">

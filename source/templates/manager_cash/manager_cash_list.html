@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block tittle %}Отчет {% endblock tittle %}
+
+{% block content %}
+    <div class="container">
+        <h1>Отчет по кассе менеджера</h1>
+        <a class="btn btn-success" href="{% url 'crmapp:cash_excel' %}">Экспорт в Excel</a>
+        {% if manager_cash %}
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Менеджер</th>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Заказ №</th>
+                    <th scope="col">Сумма заказа</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for cash in manager_cash %}
+                    <tr>
+                        <th>{{ cash.staff.first_name }} {{ cash.staff.last_name }}</th>
+                        <th>{{ cash.date }}</th>
+                        <th><a class="text-success" style="text-decoration: none"
+                               href="{% url 'crmapp:order_detail' cash.order.pk %}"> {{ cash.order.pk }}</a></th>
+                        <th>{{ cash.order.get_total }}</th>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+{% endblock content %}

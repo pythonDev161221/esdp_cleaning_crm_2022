@@ -1,7 +1,7 @@
 import datetime
 import xlwt
 from django.http import HttpResponse
-from crmapp.models import ManagerReport, Order
+from crmapp.models import ManagerReport, Order, CashManager
 
 
 def export_manager_report_to_excel(request):
@@ -70,3 +70,35 @@ def export_expense_excel(request):
         webhook.save(response)
 
     return response
+
+
+def export_cash_manager_excel(request):
+    cash_manager = CashManager.objects.filter(is_nullify=True)
+    rows = []
+    for cash in cash_manager:
+        rows.append((f"{cash.staff.first_name} {cash.staff.last_name}", cash.date, cash.order.pk, cash.order.get_total()))
+    response = HttpResponse(content_type="application/ms-excel")
+    response["Content-Disposition"] = "attachment; filename=ManagerCash" + \
+                                      str(datetime.datetime.now()) + ".xls"
+
+    webhook = xlwt.Workbook(encoding="utf-8")
+    web_sheet = webhook.add_sheet("Expences")
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ["Менеджер", "Дата", "Заказ №", "Сумма"]
+
+    for col_num in range(len(columns)):
+        web_sheet.write(row_num, col_num, columns[col_num], font_style)
+
+    font_style = xlwt.XFStyle()
+
+    for row in rows:
+        row_num += 1
+        for col_num in range(len(row)):
+            web_sheet.write(row_num, col_num, str(row[col_num]), font_style)
+    webhook.save(response)
+
+    return response
+

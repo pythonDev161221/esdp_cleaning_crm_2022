@@ -3,6 +3,7 @@ import uuid
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.models import Group
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, get_object_or_404, render
@@ -27,6 +28,14 @@ class StaffProfileView(PermissionRequiredMixin, DetailView):
     template_name = 'account/staff_profile.html'
     context_object_name = 'user_object'
     permission_required = "accounts.view_staff"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        group = Group(name="Manager")
+        if self.object.groups.filter(name=group):
+            context["is_manager"] = True
+            context["cash_order_count"] = self.object.manager_cash.filter(is_nullify=False).count()
+        return context
 
     def has_permission(self):
         return super().has_permission() or self.request.user.is_staff or self.request.user == self.get_object()

@@ -7,8 +7,7 @@ from django.contrib.auth import get_user_model
 from django.forms import BaseModelFormSet
 
 from crmapp.models import Inventory, Client, ForemanOrderUpdate, ServiceOrder, \
-    Service, ManagerReport, StaffOrder, Order, InventoryOrder, ForemanExpenses, ObjectType, Fine, Bonus
-
+    Service, ManagerReport, StaffOrder, Order, InventoryOrder, ForemanExpenses, ObjectType, Fine, Bonus,CashManager
 
 
 User = get_user_model()
@@ -173,7 +172,13 @@ class SearchForm(forms.Form):
 class OrderCommentForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ['description', ]
+        fields = ['description',]
+
+
+class ManagerCashForm(forms.ModelForm):
+    class Meta:
+        model = CashManager
+        fields = ['staff', ]
 
 
 class ObjectTypeForm(forms.ModelForm):

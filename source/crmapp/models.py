@@ -369,3 +369,24 @@ class ObjectType(models.Model):
         db_table = 'object_types'
         verbose_name = _('Тип объекта')
         verbose_name_plural = _('Типы объекта')
+
+
+class CashManager(models.Model):
+    staff = models.ForeignKey(get_user_model(), null=False, blank=False, related_name='manager_cash',
+                              verbose_name=_('Менеджер'), on_delete=models.PROTECT)
+    order = models.ForeignKey('crmapp.Order', related_name='order_manager_cash', verbose_name=_('Заказ'), null=False,
+                              blank=False, on_delete=models.PROTECT)
+    date = models.DateTimeField(auto_now_add=True, verbose_name=_("Дата создание"))
+    is_nullify = models.BooleanField(default=False)
+
+    def set_nullify_true(self):
+        self.is_nullify = True
+        self.save()
+
+    def __str__(self):
+        return f"{self.staff} - {self.order} -- {self.is_nullify}"
+
+    class Meta:
+        db_table = 'payout_cash_manager'
+        verbose_name = _('Касса менеджера')
+        verbose_name_plural = _('Касса менеджеров')
