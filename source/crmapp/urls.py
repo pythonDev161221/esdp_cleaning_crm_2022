@@ -24,7 +24,7 @@ from crmapp.views.foreman import (ForemanOrderUpdateCreateView,
 
 from crmapp.views.service_views import ServiceListView, ServiceCreateView, ServiceUpdateView, ServiceDeleteView
 
-from crmapp.views.manager_report import ManagerReportCreateView, ManagerReportListView
+from crmapp.views.manager_report import ManagerReportCreateView, ManagerReportListView, GetManagerReportCost
 
 from crmapp.views.order_staff import OrderStaffCreateView, OrderStaffDeleteView
 
@@ -98,6 +98,7 @@ brigadier_urlpatterns = [
 manager_report_urlpatterns = [
     path('order/<int:pk>/manager_report/create/', ManagerReportCreateView.as_view(), name='manager_report_create'),
     path('manager_report/all/', ManagerReportListView.as_view(), name='manager_report_list'),
+    path('order/<int:pk>/manager_report/add/cost/', GetManagerReportCost.as_view(), name='manager_report_add_cost'),
 ]
 
 object_type_urlpatterns = [

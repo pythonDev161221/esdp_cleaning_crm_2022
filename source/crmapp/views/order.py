@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import DetailView, UpdateView, DeleteView, ListView
 
@@ -121,9 +121,6 @@ class SecondStepOrderCreateView(PermissionRequiredMixin, BaseOrderCreateView):
 
     def form_valid(self, form, formset=None):
         order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
-        order.cleaners_part = form.cleaned_data.get('cleaners_part')
-        order.part_units = form.cleaned_data.get('part_units')
-        order.save()
         formset.instance = order
         formset.save()
         staff_accept_order(order)
@@ -177,10 +174,9 @@ class OrderFinishView(PermissionRequiredMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
-        if request.method == 'POST' and 'finish' in request.POST:
-            order.finish_order()
-            order_finished(order)
-        elif request.method == 'POST' and 'cancel' in request.POST:
+        if request.method == 'POST' and 'back' in request.POST:
+            return redirect("crmapp:order_detail", pk=order.pk)
+        if request.method == 'POST' and 'cancel' in request.POST:
             order.cancel_order()
             order_canceled(order)
         return super(OrderFinishView, self).post(request, **kwargs)
@@ -189,7 +185,11 @@ class OrderFinishView(PermissionRequiredMixin, UpdateView):
         order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
         order.description = form.cleaned_data.get('description')
         order.save()
-        messages.success(self.request, f'Статус заказа №{order.id} изменен на "{order.get_status_display()}"')
+        if self.request.method == 'POST' and 'finish' in self.request.POST:
+            messages.success(self.request, f'Описание заказа добавлено, следуйте далее для заверешние')
+            return redirect("crmapp:manager_report_add_cost", pk=self.get_object().pk)
+        else:
+            messages.success(self.request, f'Статус заказа №{order.id} изменен на "{order.get_status_display()}"')
         return HttpResponseRedirect(self.get_success_url())
 
     def has_permission(self):
