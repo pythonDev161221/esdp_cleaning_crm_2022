@@ -1,5 +1,6 @@
 from django.urls import path, include
 
+from crmapp.views.excel import (export_manager_report_to_excel, export_expense_excel)
 from crmapp.views.client_views import (ClientCreateView,
                                        ClientListView,
                                        ClientUpdateView)
@@ -27,12 +28,19 @@ from crmapp.views.manager_report import ManagerReportCreateView, ManagerReportLi
 
 from crmapp.views.order_staff import OrderStaffCreateView, OrderStaffDeleteView
 
-from crmapp.views.order import OrderListView, OrderDetailView, FirstStepOrderCreateView,\
-    SecondStepOrderCreateView, OrderCommentUpdate, OrderDeleteView, OrderDeletedListView
+from crmapp.views.order import OrderListView, OrderDetailView, FirstStepOrderCreateView, \
+    SecondStepOrderCreateView, OrderFinishView, OrderDeleteView, OrderDeletedListView
 
 from crmapp.views.income_outcome_report import IncomeOutcomeReportView
 
 from crmapp.views.manager_cash import ManagerCashList
+from crmapp.views.object_type import ObjectTypeListView, ObjectTypeCreateView, ObjectTypeUpdateView, \
+    ObjectTypeDeleteView
+
+from crmapp.views.fine import FineListView, FineCreateView, FineUpdateView, FineDeleteView
+
+from crmapp.views.bonus import BonusListView, BonusCreateView, BonusUpdateView, BonusDeleteView
+
 
 app_name = 'crmapp'
 
@@ -42,6 +50,10 @@ client_urlpatterns = [
     path('up/<int:pk>/', ClientUpdateView.as_view(), name='client_update')
 ]
 
+excel_urlpatterns = [
+    path('expense/', export_expense_excel, name='expense-excel'),
+    path('manager-report/', export_manager_report_to_excel, name='manager-excel')
+]
 order_urlpatterns = [
     path('', OrderListView.as_view(), name='order_index'),
     path('<int:pk>/', OrderDetailView.as_view(), name='order_detail'),
@@ -56,7 +68,7 @@ order_urlpatterns = [
     path('staff/delete/<int:pk>', OrderStaffDeleteView.as_view(), name='order_staff_delete'),
     path("<int:pk>/inventory/add/", InventoryOrderCreateView.as_view(), name="inventory_order_add"),
     path("inventory/<int:pk>/remove/", InventoryOrderRemoveView.as_view(), name="inventory_order_remove"),
-    path('<int:pk>/finish/', OrderCommentUpdate.as_view(), name='order_finish'),
+    path('<int:pk>/finish/', OrderFinishView.as_view(), name='order_finish'),
 ]
 
 service_urlpatterns = [
@@ -86,6 +98,27 @@ manager_report_urlpatterns = [
     path('manager_report/all/', ManagerReportListView.as_view(), name='manager_report_list'),
 ]
 
+object_type_urlpatterns = [
+    path('all/', ObjectTypeListView.as_view(), name='object_type_list'),
+    path('create/', ObjectTypeCreateView.as_view(), name='object_type_create'),
+    path('up/<int:pk>/', ObjectTypeUpdateView.as_view(), name='object_type_update'),
+    path('delete/<int:pk>/', ObjectTypeDeleteView.as_view(), name='object_type_delete')
+]
+
+fine_urlpatterns = [
+    path('all/', FineListView.as_view(), name='fine_list'),
+    path('create/', FineCreateView.as_view(), name='fine_create'),
+    path('up/<int:pk>/', FineUpdateView.as_view(), name='fine_update'),
+    path('delete/<int:pk>/', FineDeleteView.as_view(), name='fine_delete')
+]
+
+bonus_urlpatterns = [
+    path('all/', BonusListView.as_view(), name='bonus_list'),
+    path('create/', BonusCreateView.as_view(), name='bonus_create'),
+    path('up/<int:pk>/', BonusUpdateView.as_view(), name='bonus_update'),
+    path('delete/<int:pk>/', BonusDeleteView.as_view(), name='bonus_delete')
+]
+
 urlpatterns = [
     path('client/', include(client_urlpatterns)),
     path('service/', include(service_urlpatterns)),
@@ -94,5 +127,9 @@ urlpatterns = [
     path('', include(manager_report_urlpatterns)),
     path('order/', include(order_urlpatterns)),
     path('income_outcome_report', IncomeOutcomeReportView.as_view(), name='income_outcome_report'),
-    path('manager/cash/list/', ManagerCashList.as_view(), name='manager_cash_list')
+    path('manager/cash/list/', ManagerCashList.as_view(), name='manager_cash_list'),
+    path('excel/', include(excel_urlpatterns)),
+    path('object_type/', include(object_type_urlpatterns)),
+    path('fine/', include(fine_urlpatterns)),
+    path('bonus/', include(bonus_urlpatterns)),
 ]
