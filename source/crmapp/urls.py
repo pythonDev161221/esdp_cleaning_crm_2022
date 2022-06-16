@@ -32,6 +32,8 @@ from crmapp.views.order import OrderListView, OrderDetailView, FirstStepOrderCre
 
 from crmapp.views.income_outcome_report import IncomeOutcomeReportView
 
+from crmapp.views.manager_cash import ManagerCashList
+
 app_name = 'crmapp'
 
 client_urlpatterns = [
@@ -91,5 +93,6 @@ urlpatterns = [
     path('inventories/', include(inventory_urlpatterns)),
     path('', include(manager_report_urlpatterns)),
     path('order/', include(order_urlpatterns)),
-    path('income_outcome_report', IncomeOutcomeReportView.as_view(), name='income_outcome_report')
+    path('income_outcome_report', IncomeOutcomeReportView.as_view(), name='income_outcome_report'),
+    path('manager/cash/list/', ManagerCashList.as_view(), name='manager_cash_list')
 ]

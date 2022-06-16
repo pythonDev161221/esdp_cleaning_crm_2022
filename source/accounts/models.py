@@ -2,7 +2,7 @@ import uuid
 
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
-from django.db import models
+from django.db import models, transaction
 from django.urls import reverse
 from django.utils.translation import gettext as _
 from phonenumber_field.modelfields import PhoneNumberField
@@ -33,6 +33,8 @@ class Staff(AbstractUser):
     black_list = models.BooleanField(default=False, verbose_name=_('Черный список'))
     balance = models.IntegerField(verbose_name=_('Деньги работника'), default=0,
                                   null=False, blank=False)
+    cash = models.IntegerField(verbose_name=_('Касса менеджера'), default=0,
+                                  null=False, blank=False)
     description = models.TextField(max_length=2000, null=True, blank=True, verbose_name=_('Примечание'))
     telegram_id = models.CharField(max_length=120, null=True, blank=True)
     telegram_auth_token = models.CharField(max_length=21, null=True, blank=True)
@@ -57,6 +59,17 @@ class Staff(AbstractUser):
 
     def nullify_salary(self):
         self.balance = 0
+        self.save()
+
+    def nullify_cash(self):
+        with transaction.atomic():
+            self.manager_cash.all()
+            [pay.set_nullify_true() for pay in self.manager_cash.all()]
+            self.cash = 0
+            self.save()
+
+    def add_cash(self, value):
+        self.cash += value
         self.save()
 
     def add_salary(self, value):
