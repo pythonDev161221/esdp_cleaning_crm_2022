@@ -186,7 +186,7 @@ class OrderFinishView(PermissionRequiredMixin, UpdateView):
         order.description = form.cleaned_data.get('description')
         order.save()
         if self.request.method == 'POST' and 'finish' in self.request.POST:
-            messages.success(self.request, f'Описание заказа добавлено, следуйте далее для заверешние')
+            messages.success(self.request, f'Описание заказа добавлено, следуйте далее для завершение')
             return redirect("crmapp:manager_report_add_cost", pk=self.get_object().pk)
         else:
             messages.success(self.request, f'Статус заказа №{order.id} изменен на "{order.get_status_display()}"')

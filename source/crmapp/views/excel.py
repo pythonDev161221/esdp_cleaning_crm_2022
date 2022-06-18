@@ -11,28 +11,28 @@ def export_manager_report_to_excel(request):
     for item in manager_report:
         rows.append((item.order_id, item.cleaner, item.salary, item.fine, item.fine_description, item.bonus,
                      item.bonus_description, item.comment, item.created_at.date(), item.get_salary()))
-        response = HttpResponse(content_type='application/ms-excel')
-        response['Content-Disposition'] = 'attachment; filename=Expenses' + \
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename=Expenses' + \
                                           str(datetime.datetime.now()) + '.xls'
-        webhook = xlwt.Workbook(encoding='utf-8')
-        web_sheet = webhook.add_sheet('Expenses')
-        row_num = 0
-        font_style = xlwt.XFStyle()
-        font_style.font.bold = True
+    webhook = xlwt.Workbook(encoding='utf-8')
+    web_sheet = webhook.add_sheet('Expenses')
+    row_num = 0
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
 
-        columns = ['№ заказа', 'Клинер', 'Зарплата', 'Штраф', 'Описание', 'Бонус', 'Описание',
+    columns = ['№ заказа', 'Клинер', 'Зарплата', 'Штраф', 'Описание', 'Бонус', 'Описание',
                    'Комментарий', 'Дата', 'Итого']
 
-        for col_num in range(len(columns)):
-            web_sheet.write(row_num, col_num, columns[col_num], font_style)
+    for col_num in range(len(columns)):
+        web_sheet.write(row_num, col_num, columns[col_num], font_style)
 
-        font_style = xlwt.XFStyle()
+    font_style = xlwt.XFStyle()
 
-        for row in rows:
-            row_num += 1
+    for row in rows:
+        row_num += 1
         for col_num in range(len(row)):
             web_sheet.write(row_num, col_num, str(row[col_num]), font_style)
-        webhook.save(response)
+    webhook.save(response)
 
     return response
 
@@ -67,7 +67,7 @@ def export_expense_excel(request):
         row_num += 1
         for col_num in range(len(row)):
             web_sheet.write(row_num, col_num, str(row[col_num]), font_style)
-        webhook.save(response)
+    webhook.save(response)
 
     return response
 
