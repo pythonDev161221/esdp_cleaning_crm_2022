@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError, DataError
-from django.test import TestCase
+from django.test import TestCase, Client
 from accounts.models import WorkDay
 from django.urls import reverse
 
@@ -83,8 +83,41 @@ class TestCreateUser(TestCase):
         responce = self.client.get(reverse("accounts:profile", args=[self.staff.pk]))
         # 302 не авторизованные пользователи перенапрялются на страницу логина
         self.assertEqual(responce.status_code, 302)
+        self.assertTemplateNotUsed(responce, "account/staff_profile.html")
 
     def test_profile_view_authenticated_user(self):
         responce = self.client.get(reverse("accounts:profile", args=[self.staff.pk]))
         self.assertEqual(responce.status_code, 200)
+        self.assertTemplateUsed(responce, "account/staff_profile.html")
+
+    def test_staff_list_view_not_authenticated_user(self):
+        self.client.logout()
+        responce = self.client.get(reverse("accounts:staff-list"))
+        # 302 не авторизованные пользователи перенапрялются на страницу логина
+        self.assertEqual(responce.status_code, 302)
+        self.assertTemplateNotUsed(responce, "account/staff_list.html")
+
+    def test_staff_list_view_authenticated_user(self):
+        responce = self.client.get(reverse("accounts:staff-list"))
+        self.assertEqual(responce.status_code, 200)
+        self.assertTemplateUsed(responce, "account/staff_list.html")
+
+    def test_staff_delete_not_authenticated_user(self):
+        self.client.logout()
+        responce = self.client.get(reverse("accounts:staff-delete"))
+        # 302 не авторизованные пользователи перенапрялются на страницу логина
+        self.assertEqual(responce.status_code, 302)
+        self.assertTemplateNotUsed(responce, "account/delete.html")
+
+    def test_staff_delete_in_admin_user(self):
+        test_delete_user = User.objects.create(
+            email="delete@mail.ru",
+            password="deleteS123",
+            first_name="deletio",
+            last_name="deletions"
+        )
+        responce = self.client.post(reverse("accounts:staff-delete", args=[test_delete_user.pk]))
+        self.assertURLEqual(responce.url, reverse("accounts:staff-list"))
+        self.assertEqual(responce.status_code, 302)
+
 

@@ -112,6 +112,9 @@ class StaffListView(PermissionRequiredMixin, ListView):
         if self.form.is_valid():
             return self.form.cleaned_data.get("search")
 
+    def has_permission(self):
+        return super().has_permission() or self.request.user.is_staff
+
 
 class StaffEditView(PermissionRequiredMixin, UpdateView):
     model = Staff
@@ -166,6 +169,9 @@ class StaffDeleteView(PermissionRequiredMixin, DeleteView):
         self.object.soft_delete()
         messages.success(self.request, f'{self.object.last_name} {self.object.first_name} успешно удален(a)!')
         return HttpResponseRedirect(self.get_success_url())
+
+    def has_permission(self):
+        return super().has_permission() or self.request.user.is_staff
 
 
 class StaffBlackListView(PermissionRequiredMixin, ListView):
