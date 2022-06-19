@@ -104,7 +104,7 @@ class TestCreateUser(TestCase):
 
     def test_staff_delete_not_authenticated_user(self):
         self.client.logout()
-        responce = self.client.get(reverse("accounts:staff-delete"))
+        responce = self.client.get(reverse("accounts:staff-delete", args=[self.staff.pk]))
         # 302 не авторизованные пользователи перенапрялются на страницу логина
         self.assertEqual(responce.status_code, 302)
         self.assertTemplateNotUsed(responce, "account/delete.html")
