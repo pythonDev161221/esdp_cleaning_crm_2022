@@ -8,6 +8,8 @@ class SearchView(ListView):
     search_form_class = SearchForm
     search_form_field = "search"
     search_fields = []
+    paginate_by = 10
+    paginate_orphans = 0
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_form()

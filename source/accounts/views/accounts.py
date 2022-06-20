@@ -87,6 +87,7 @@ class StaffListView(PermissionRequiredMixin, ListView):
     search_form_class = SearchForm
     permission_required = "accounts.view_staff"
 
+
     def get(self, request, *args, **kwargs):
         self.form = self.get_form()
         self.search_value = self.get_search_value()
@@ -180,6 +181,8 @@ class StaffBlackListView(PermissionRequiredMixin, ListView):
     context_object_name = "user_objects"
     search_form_class = SearchForm
     permission_required = "accounts.view_staff_blacklist"
+    paginate_by = 10
+    paginate_orphans = 0
 
 
     def get(self, request, *args, **kwargs):

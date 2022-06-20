@@ -14,6 +14,8 @@ class BonusListView(PermissionRequiredMixin, ListView):
     context_object_name = 'bonuses'
     template_name = 'bonus/list.html'
     permission_required = "crmapp.view_bonus"
+    paginate_by = 10
+    paginate_orphans = 0
 
 
 class BonusCreateView(PermissionRequiredMixin, CreateView):
