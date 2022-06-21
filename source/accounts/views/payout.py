@@ -61,9 +61,14 @@ class CashManagerCreateView(PermissionRequiredMixin, CreateView):
         group = Group(name="Manager")
         if staff.groups.filter(name=group):
             if staff.cash > 0:
-                staff.nullify_cash()
-                messages.success(self.request,
-                                 f'Касса менеджера {staff.first_name} {staff.last_name} успешно анулирован!')
+                try:
+                    with transaction.atomic():
+                        staff.nullify_cash()
+                        messages.success(self.request,
+                                         f'Касса менеджера {staff.first_name} {staff.last_name} успешно анулирован!')
+                except:
+                    messages.success(self.request,
+                                     f'Операция отменена, попробуйте снова')
             else:
                 messages.warning(self.request,
                                  f'Касса менеджера {staff.first_name} {staff.last_name} составляет {staff.cash} cом! Операция невозможна! ')
