@@ -41,7 +41,7 @@ class PayoutCreateView(PermissionRequiredMixin, CreateView):
                     messages.success(self.request,
                                      f'Баланс сотрудника {staff.first_name} {staff.last_name} успешно списан!')
             except:
-                messages.success(self.request,
+                messages.warning(self.request,
                                  f'Операция отменена, попробуйте снова')
         else:
             messages.warning(self.request,
