@@ -3,7 +3,7 @@ import datetime
 from django.test import TestCase
 
 
-from crmapp.models import Inventory, Order, ObjectType, Client, Fine
+from crmapp.models import Inventory, Order, ObjectType, Client, Fine, Service
 
 
 class TestCreateInventory(TestCase):
@@ -55,3 +55,18 @@ class TestCreateInventory(TestCase):
         self.assertEqual(fine.value, 500)
         self.assertEqual(fine.description, "fine_description")
         self.assertEqual(fine.criteria, "fine_criteria")
+
+    def test_success_create_service(self):
+        service = Service.objects.create(
+            name="service_name",
+            unit="squire_meter",
+            price=234,
+            is_extra=True,
+        )
+
+        self.assertTrue(service is not None)
+        self.assertEqual(service.name, "service_name")
+        self.assertEqual(service.unit, "squire_meter")
+        self.assertEqual(service.price, 234)
+        self.assertEqual(service.is_extra, True)
+
