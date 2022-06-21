@@ -26,6 +26,8 @@ class OrderListView(PermissionRequiredMixin, ListView):
     context_object_name = 'orders'
     permission_required = "crmapp.view_order"
     search_form_class = SearchForm
+    paginate_by = 10
+    paginate_orphans = 0
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_form()
@@ -201,6 +203,8 @@ class OrderDeletedListView(PermissionRequiredMixin, ListView):
     template_name = 'order/order_deleted_list.html'
     context_object_name = "orders"
     permission_required = "crmapp:can_view_order_deleted_list"
+    paginate_by = 10
+    paginate_orphans = 0
 
     def get_queryset(self):
         queryset = Order.objects.filter(is_deleted=True)

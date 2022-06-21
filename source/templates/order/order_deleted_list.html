@@ -36,4 +36,7 @@
     {% else %}
         <p>Список заказов пуст</p>
     {% endif %}
+    {% if is_paginated %}
+   {% include 'partial/pagination.html' %}
+{% endif %}
 {% endblock content %}
