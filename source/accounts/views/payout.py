@@ -10,6 +10,7 @@ from accounts.forms import PayoutForm
 from accounts.models import Payout, Staff
 from crmapp.models import CashManager
 from crmapp.forms import ManagerCashForm
+from tgbot.handlers.orders.tg_order_staff import staff_salary_alert
 
 
 class PayoutListView(PermissionRequiredMixin, ListView):
@@ -32,6 +33,7 @@ class PayoutCreateView(PermissionRequiredMixin, CreateView):
         staff = get_object_or_404(Staff, pk=self.kwargs['pk'])
         if staff.balance > 0:
             Payout.objects.create(staff=staff, salary=staff.balance)
+            staff_salary_alert(staff)
             staff.nullify_salary()
             messages.success(self.request, f'Баланс сотрудника {staff.first_name} {staff.last_name} успешно списан!')
         else:
