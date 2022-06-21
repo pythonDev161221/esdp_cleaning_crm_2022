@@ -23,12 +23,18 @@ class InventoryCreateView(PermissionRequiredMixin, CreateView):
     template_name = 'inventories/create.html'
     permission_required = "crmapp.add_inventory"
 
+    def has_permission(self):
+        return super().has_permission() or self.request.user.is_staff
+
 
 class InventoryUpdateView(PermissionRequiredMixin, UpdateView):
     model = Inventory
     form_class = InventoryForm
     template_name = 'inventories/update.html'
     permission_required = "crmapp.change_inventory"
+
+    def has_permission(self):
+        return super().has_permission() or self.request.user.is_staff
 
 
 class InventoryDeleteView(PermissionRequiredMixin, DeleteView):
@@ -38,6 +44,13 @@ class InventoryDeleteView(PermissionRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy("crmapp:inventory_index")
+
+    def post(self, request, *args, **kwargs):
+        print("YA tut Ormon")
+        return super(InventoryDeleteView, self).post(request, *args, **kwargs)
+
+    def has_permission(self):
+        return super().has_permission() or self.request.user.is_staff
 
 
 class InventoryOrderCreateView(PermissionRequiredMixin, FormView):
