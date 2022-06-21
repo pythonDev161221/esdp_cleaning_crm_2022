@@ -67,7 +67,7 @@ class CashManagerCreateView(PermissionRequiredMixin, CreateView):
                         messages.success(self.request,
                                          f'Касса менеджера {staff.first_name} {staff.last_name} успешно анулирован!')
                 except:
-                    messages.success(self.request,
+                    messages.warning(self.request,
                                      f'Операция отменена, попробуйте снова')
             else:
                 messages.warning(self.request,
