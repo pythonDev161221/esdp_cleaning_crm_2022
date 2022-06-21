@@ -3,4 +3,7 @@
 {% block content %}
     {% include '../partial/simple_search.html' %}
     {% include 'partial/orders.html' %}
+    {% if is_paginated %}
+   {% include 'partial/pagination.html' %}
+{% endif %}
 {% endblock content %}

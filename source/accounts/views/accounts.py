@@ -87,6 +87,7 @@ class StaffListView(PermissionRequiredMixin, ListView):
     search_form_class = SearchForm
     permission_required = "accounts.view_staff"
 
+
     def get(self, request, *args, **kwargs):
         self.form = self.get_form()
         self.search_value = self.get_search_value()
@@ -111,6 +112,9 @@ class StaffListView(PermissionRequiredMixin, ListView):
     def get_search_value(self):
         if self.form.is_valid():
             return self.form.cleaned_data.get("search")
+
+    def has_permission(self):
+        return super().has_permission() or self.request.user.is_staff
 
 
 class StaffEditView(PermissionRequiredMixin, UpdateView):
@@ -167,6 +171,9 @@ class StaffDeleteView(PermissionRequiredMixin, DeleteView):
         messages.success(self.request, f'{self.object.last_name} {self.object.first_name} успешно удален(a)!')
         return HttpResponseRedirect(self.get_success_url())
 
+    def has_permission(self):
+        return super().has_permission() or self.request.user.is_staff
+
 
 class StaffBlackListView(PermissionRequiredMixin, ListView):
     model = Staff
@@ -174,6 +181,8 @@ class StaffBlackListView(PermissionRequiredMixin, ListView):
     context_object_name = "user_objects"
     search_form_class = SearchForm
     permission_required = "accounts.view_staff_blacklist"
+    paginate_by = 10
+    paginate_orphans = 0
 
 
     def get(self, request, *args, **kwargs):

@@ -12,6 +12,8 @@ class ObjectTypeListView(PermissionRequiredMixin, ListView):
     context_object_name = 'object_types'
     template_name = 'object_type/list.html'
     permission_required = "crmapp.view_objecttype"
+    paginate_by = 10
+    paginate_orphans = 0
 
 
 class ObjectTypeCreateView(PermissionRequiredMixin, CreateView):
