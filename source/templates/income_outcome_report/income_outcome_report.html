@@ -43,7 +43,21 @@
                     {% endif %}
                 </tr>
             {% endfor %}
+            <tr>
+                <td><b>Итого:</b> </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b>{{ order_sum }}</b></td>
+                <td><b>{{ cleaner_outcome }}</b></td>
+                <td><b>{{ other_outcome }}</b></td>
+                <td><b>{{ total }}</b></td>
+            </tr>
+
             </tbody>
         </table>
     </div>
+
+
+
 {% endblock content %}

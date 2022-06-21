@@ -3,6 +3,7 @@ import uuid
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.models import Group
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect, get_object_or_404, render
@@ -27,6 +28,14 @@ class StaffProfileView(PermissionRequiredMixin, DetailView):
     template_name = 'account/staff_profile.html'
     context_object_name = 'user_object'
     permission_required = "accounts.view_staff"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        group = Group(name="Manager")
+        if self.object.groups.filter(name=group):
+            context["is_manager"] = True
+            context["cash_order_count"] = self.object.manager_cash.filter(is_nullify=False).count()
+        return context
 
     def has_permission(self):
         return super().has_permission() or self.request.user.is_staff or self.request.user == self.get_object()
@@ -78,6 +87,7 @@ class StaffListView(PermissionRequiredMixin, ListView):
     search_form_class = SearchForm
     permission_required = "accounts.view_staff"
 
+
     def get(self, request, *args, **kwargs):
         self.form = self.get_form()
         self.search_value = self.get_search_value()
@@ -102,6 +112,9 @@ class StaffListView(PermissionRequiredMixin, ListView):
     def get_search_value(self):
         if self.form.is_valid():
             return self.form.cleaned_data.get("search")
+
+    def has_permission(self):
+        return super().has_permission() or self.request.user.is_staff
 
 
 class StaffEditView(PermissionRequiredMixin, UpdateView):
@@ -158,6 +171,9 @@ class StaffDeleteView(PermissionRequiredMixin, DeleteView):
         messages.success(self.request, f'{self.object.last_name} {self.object.first_name} успешно удален(a)!')
         return HttpResponseRedirect(self.get_success_url())
 
+    def has_permission(self):
+        return super().has_permission() or self.request.user.is_staff
+
 
 class StaffBlackListView(PermissionRequiredMixin, ListView):
     model = Staff
@@ -165,6 +181,8 @@ class StaffBlackListView(PermissionRequiredMixin, ListView):
     context_object_name = "user_objects"
     search_form_class = SearchForm
     permission_required = "accounts.view_staff_blacklist"
+    paginate_by = 10
+    paginate_orphans = 0
 
 
     def get(self, request, *args, **kwargs):

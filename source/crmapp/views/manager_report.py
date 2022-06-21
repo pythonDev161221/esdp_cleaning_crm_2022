@@ -4,12 +4,15 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db import transaction
 from django.forms import modelformset_factory, HiddenInput
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.generic import ListView, FormView
+from django.urls import reverse
+from django.views.generic import ListView, FormView, UpdateView
 
 from crmapp.forms import ManagerReportForm, BaseManagerReportFormSet
-from crmapp.models import ManagerReport, Order, StaffOrder, ForemanPhoto
+from crmapp.models import ManagerReport, Order, StaffOrder, ForemanPhoto, CashManager
 
-from crmapp.forms import FilterForm
+from crmapp.forms import FilterForm, CleanersPartForm
+
+from tgbot.handlers.orders.tg_order_staff import order_finished
 
 User = get_user_model()
 
@@ -42,6 +45,7 @@ class ManagerReportCreateView(PermissionRequiredMixin, FormView):
         staff_numeric_value = 0
         for forms in formset:
             if not staff_and_salary[staff_numeric_value][1] == None:
+                forms.fields['cleaner'].queryset = order.cleaners.all()
                 forms.initial = {"cleaner": staff_and_salary[staff_numeric_value][0],
                                  "salary": round(staff_and_salary[staff_numeric_value][1], 0)}
             else:
@@ -66,10 +70,10 @@ class ManagerReportCreateView(PermissionRequiredMixin, FormView):
         formset = ManagerFormset(request.POST, request.FILES, prefix="extra")
         if formset.is_valid():
             salary_all_sum = [form.instance.salary for form in [fs for fs in formset.forms]]
-            if sum(salary_all_sum) > order.get_total():  # Вместо order.get_total() указать поле зп выделенное для клинеров
+            if sum(salary_all_sum) > order.cleaners_part:
                 return render(self.request, self.template_name,
-                              {"salary_errors": f"Сумма превышает общий допустимый лимит: {order.get_total()}",
-                               "formset": formset})  # Вместо order.get_total() указать поле зп выделенное для клинеров
+                              {"salary_errors": f"Сумма превышает общий допустимый лимит: {order.cleaners_part}",
+                               "formset": formset})
             else:
                 messages.success(self.request, f'Операция успешно выполнена!')
                 return self.form_valid(formset)
@@ -85,6 +89,10 @@ class ManagerReportCreateView(PermissionRequiredMixin, FormView):
                 form.order = order
                 form.cleaner.add_salary(form.get_salary())
                 form.save()
+            order.manager.add_cash(order.get_total())
+            order.finish_order()
+            order_finished(order)
+            CashManager.objects.create(staff=order.manager, order=order)
         return redirect('crmapp:manager_report_list')
 
     def form_invalid(self, formset):
@@ -94,6 +102,8 @@ class ManagerReportCreateView(PermissionRequiredMixin, FormView):
 
     def has_permission(self):
         order = get_object_or_404(Order, pk=self.kwargs['pk'])
+        if order.status in ["finished", "canceled"]:
+            return False
         return self.request.user == order.manager and super().has_permission() or self.request.user.is_staff
 
 
@@ -131,3 +141,16 @@ class ManagerReportListView(PermissionRequiredMixin, ListView):
     def get_search_value_last(self):
         if self.form.is_valid():
             return self.form.cleaned_data.get("end_date")
+
+
+class GetManagerReportCost(PermissionRequiredMixin, UpdateView):
+    model = Order
+    template_name = "manager_report/add_staff_cost.html"
+    form_class = CleanersPartForm
+    permission_required = "crmapp.add_managerreport"
+
+    def get_success_url(self):
+        return reverse("crmapp:manager_report_create", kwargs={"pk": self.kwargs.get("pk")})
+
+    def has_permission(self):
+        return super().has_permission() and self.get_object().status not in ["finished", "canceled"]

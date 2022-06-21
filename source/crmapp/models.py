@@ -174,7 +174,7 @@ class Order(models.Model):
 
     def manager_report_base_sum(self, staff_is_accept_order):
         staff_part = int(
-            self.get_total()) / staff_is_accept_order.count()  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+            self.cleaners_part) / staff_is_accept_order.count()
         base_sum = 0
         for order_staff in staff_is_accept_order:
             for coefficient in ORDER_STAFF_SALARY_COEFFICIENT:
@@ -184,7 +184,7 @@ class Order(models.Model):
 
     def manager_report_numeric_coefficient(self, staff_is_accept_order):
         staff_part = int(
-            self.get_total()) / staff_is_accept_order.count()  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+            self.cleaners_part) / staff_is_accept_order.count()
         base_num = self.manager_report_base_sum(staff_is_accept_order)
         num_coefficient = []
         for order_staff in staff_is_accept_order:
@@ -199,8 +199,8 @@ class Order(models.Model):
         staff_salary = []
         if staff_list.filter(is_accept=True):
             num_coefficient = self.manager_report_numeric_coefficient(staff_list.filter(is_accept=True))
-            [staff_salary.append([nc[0], int(self.get_total()) * nc[1]]) for nc in
-             num_coefficient]  # Вместо self.get_total() вызвать поле для общей суммы зп клинеров
+            [staff_salary.append([nc[0], int(self.cleaners_part) * nc[1]]) for nc in
+             num_coefficient]
         if staff_list.filter(is_refuse=True):
             [staff_salary.append([staff_is_refuse.staff, None]) for staff_is_refuse in staff_list.filter(is_refuse=True)]
         return staff_salary
@@ -369,3 +369,24 @@ class ObjectType(models.Model):
         db_table = 'object_types'
         verbose_name = _('Тип объекта')
         verbose_name_plural = _('Типы объекта')
+
+
+class CashManager(models.Model):
+    staff = models.ForeignKey(get_user_model(), null=False, blank=False, related_name='manager_cash',
+                              verbose_name=_('Менеджер'), on_delete=models.PROTECT)
+    order = models.ForeignKey('crmapp.Order', related_name='order_manager_cash', verbose_name=_('Заказ'), null=False,
+                              blank=False, on_delete=models.PROTECT)
+    date = models.DateTimeField(auto_now_add=True, verbose_name=_("Дата создание"))
+    is_nullify = models.BooleanField(default=False)
+
+    def set_nullify_true(self):
+        self.is_nullify = True
+        self.save()
+
+    def __str__(self):
+        return f"{self.staff} - {self.order} -- {self.is_nullify}"
+
+    class Meta:
+        db_table = 'payout_cash_manager'
+        verbose_name = _('Касса менеджера')
+        verbose_name_plural = _('Касса менеджеров')

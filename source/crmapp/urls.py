@@ -1,6 +1,6 @@
 from django.urls import path, include
 
-from crmapp.views.excel import (export_manager_report_to_excel, export_expense_excel)
+from crmapp.views.excel import (export_manager_report_to_excel, export_expense_excel, export_cash_manager_excel)
 from crmapp.views.client_views import (ClientCreateView,
                                        ClientListView,
                                        ClientUpdateView)
@@ -24,7 +24,7 @@ from crmapp.views.foreman import (ForemanOrderUpdateCreateView,
 
 from crmapp.views.service_views import ServiceListView, ServiceCreateView, ServiceUpdateView, ServiceDeleteView
 
-from crmapp.views.manager_report import ManagerReportCreateView, ManagerReportListView
+from crmapp.views.manager_report import ManagerReportCreateView, ManagerReportListView, GetManagerReportCost
 
 from crmapp.views.order_staff import OrderStaffCreateView, OrderStaffDeleteView
 
@@ -34,12 +34,14 @@ from crmapp.views.order import OrderListView, OrderDetailView, FirstStepOrderCre
 
 from crmapp.views.income_outcome_report import IncomeOutcomeReportView
 
+from crmapp.views.manager_cash import ManagerCashList
 from crmapp.views.object_type import ObjectTypeListView, ObjectTypeCreateView, ObjectTypeUpdateView, \
     ObjectTypeDeleteView
 
 from crmapp.views.fine import FineListView, FineCreateView, FineUpdateView, FineDeleteView
 
 from crmapp.views.bonus import BonusListView, BonusCreateView, BonusUpdateView, BonusDeleteView
+
 
 app_name = 'crmapp'
 
@@ -51,7 +53,8 @@ client_urlpatterns = [
 
 excel_urlpatterns = [
     path('expense/', export_expense_excel, name='expense-excel'),
-    path('manager-report/', export_manager_report_to_excel, name='manager-excel')
+    path('manager-report/', export_manager_report_to_excel, name='manager-excel'),
+    path('manager/cash/', export_cash_manager_excel, name='cash_excel')
 ]
 order_urlpatterns = [
     path('', OrderListView.as_view(), name='order_index'),
@@ -97,6 +100,7 @@ brigadier_urlpatterns = [
 manager_report_urlpatterns = [
     path('order/<int:pk>/manager_report/create/', ManagerReportCreateView.as_view(), name='manager_report_create'),
     path('manager_report/all/', ManagerReportListView.as_view(), name='manager_report_list'),
+    path('order/<int:pk>/manager_report/add/cost/', GetManagerReportCost.as_view(), name='manager_report_add_cost'),
 ]
 
 object_type_urlpatterns = [
@@ -128,6 +132,7 @@ urlpatterns = [
     path('', include(manager_report_urlpatterns)),
     path('order/', include(order_urlpatterns)),
     path('income_outcome_report', IncomeOutcomeReportView.as_view(), name='income_outcome_report'),
+    path('manager/cash/list/', ManagerCashList.as_view(), name='manager_cash_list'),
     path('excel/', include(excel_urlpatterns)),
     path('object_type/', include(object_type_urlpatterns)),
     path('fine/', include(fine_urlpatterns)),

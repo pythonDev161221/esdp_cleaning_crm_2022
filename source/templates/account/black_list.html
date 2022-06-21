@@ -34,4 +34,7 @@
     {% else %}
         <p class="p-5">Черный список пуст</p>
     {% endif %}
+    {% if is_paginated %}
+   {% include 'partial/pagination.html' %}
+{% endif %}
 {% endblock content %}

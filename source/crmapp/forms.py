@@ -1,13 +1,13 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from django.forms import inlineformset_factory, modelformset_factory
+from django.forms import modelformset_factory
 
 from django.contrib.auth import get_user_model
 from django.forms import BaseModelFormSet
 
-from crmapp.models import Inventory, Client, ForemanOrderUpdate, ServiceOrder, \
-    Service, ManagerReport, StaffOrder, Order, InventoryOrder, ForemanExpenses, ObjectType, Fine, Bonus
+from crmapp.models import Inventory, Client, ServiceOrder, \
+    Service, ManagerReport, StaffOrder, Order, InventoryOrder, ForemanExpenses, ObjectType, Fine, Bonus, CashManager
 
 User = get_user_model()
 
@@ -174,6 +174,12 @@ class OrderCommentForm(forms.ModelForm):
     class Meta:
         model = Order
         fields = ['description', ]
+
+
+class ManagerCashForm(forms.ModelForm):
+    class Meta:
+        model = CashManager
+        fields = ['staff', ]
 
 
 class ObjectTypeForm(forms.ModelForm):

@@ -29,6 +29,15 @@ class IncomeOutcomeReportView(PermissionRequiredMixin, ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
         context['form'] = self.filter_form_class()
+        context["order_sum"] = 0
+        context["cleaner_outcome"] = 0
+        context["other_outcome"] = 0
+        context["total"] = 0
+        for order in self.get_queryset():
+            context["order_sum"] += order.get_total()
+            context["cleaner_outcome"] += order.get_all_staff_expenses()
+            context["other_outcome"] += order.get_foreman_expenses()
+            context["total"] += order.get_income_outcome()
         return context
 
     def get_form(self):
