@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import Group
+from django.db import transaction
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
@@ -32,12 +33,14 @@ class PayoutCreateView(PermissionRequiredMixin, CreateView):
     def post(self, request, *args, **kwargs):
         staff = get_object_or_404(Staff, pk=self.kwargs['pk'])
         if staff.balance > 0:
-            Payout.objects.create(staff=staff, salary=staff.balance)
-            staff_salary_alert(staff)
-            staff.nullify_salary()
-            messages.success(self.request, f'Баланс сотрудника {staff.first_name} {staff.last_name} успешно списан!')
+            with transaction.atomic():
+                Payout.objects.create(staff=staff, salary=staff.balance)
+                staff_salary_alert(staff)
+                staff.nullify_salary()
+                messages.success(self.request, f'Баланс сотрудника {staff.first_name} {staff.last_name} успешно списан!')
         else:
-            messages.warning(self.request, f'Баланс сотрудника {staff.first_name} {staff.last_name} составляет {staff.balance} cом! Операция невозможна! ')
+            messages.warning(self.request,
+                             f'Баланс сотрудника {staff.first_name} {staff.last_name} составляет {staff.balance} cом! Операция невозможна! ')
         return HttpResponseRedirect(self.success_url)
 
 
@@ -54,7 +57,8 @@ class CashManagerCreateView(PermissionRequiredMixin, CreateView):
         if staff.groups.filter(name=group):
             if staff.cash > 0:
                 staff.nullify_cash()
-                messages.success(self.request, f'Касса менеджера {staff.first_name} {staff.last_name} успешно анулирован!')
+                messages.success(self.request,
+                                 f'Касса менеджера {staff.first_name} {staff.last_name} успешно анулирован!')
             else:
                 messages.warning(self.request,
                                  f'Касса менеджера {staff.first_name} {staff.last_name} составляет {staff.cash} cом! Операция невозможна! ')
