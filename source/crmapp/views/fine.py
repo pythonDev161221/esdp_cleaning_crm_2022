@@ -14,6 +14,8 @@ class FineListView(PermissionRequiredMixin, ListView):
     context_object_name = 'fines'
     template_name = 'fine/list.html'
     permission_required = "crmapp.view_fine"
+    paginate_by = 10
+    paginate_orphans = 0
 
 
 class FineCreateView(PermissionRequiredMixin, CreateView):
