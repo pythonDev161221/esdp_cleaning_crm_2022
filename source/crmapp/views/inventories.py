@@ -45,10 +45,6 @@ class InventoryDeleteView(PermissionRequiredMixin, DeleteView):
     def get_success_url(self):
         return reverse_lazy("crmapp:inventory_index")
 
-    def post(self, request, *args, **kwargs):
-        print("YA tut Ormon")
-        return super(InventoryDeleteView, self).post(request, *args, **kwargs)
-
     def has_permission(self):
         return super().has_permission() or self.request.user.is_staff
 
