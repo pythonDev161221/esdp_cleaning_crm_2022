@@ -72,3 +72,10 @@ def manager_expense_alert(order):
 ◉ Дата: {order.work_start.date()}
 Бригадир добавил новый расход в заказ!'''
     bot.send_message(chat_id=order.manager.telegram_id, text=text)
+
+
+def staff_salary_alert(staff):
+    text = f'''
+C Вашего баланса списана заработная плата в размере {staff.balance} cом.
+Текущий баланс составляет: 0 сом'''
+    bot.send_message(chat_id=staff.telegram_id, text=text)

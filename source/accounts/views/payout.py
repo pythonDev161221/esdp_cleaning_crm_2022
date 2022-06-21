@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import Group
+from django.db import transaction
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
@@ -10,6 +11,7 @@ from accounts.forms import PayoutForm
 from accounts.models import Payout, Staff
 from crmapp.models import CashManager
 from crmapp.forms import ManagerCashForm
+from tgbot.handlers.orders.tg_order_staff import staff_salary_alert
 
 
 class PayoutListView(PermissionRequiredMixin, ListView):
@@ -31,11 +33,19 @@ class PayoutCreateView(PermissionRequiredMixin, CreateView):
     def post(self, request, *args, **kwargs):
         staff = get_object_or_404(Staff, pk=self.kwargs['pk'])
         if staff.balance > 0:
-            Payout.objects.create(staff=staff, salary=staff.balance)
-            staff.nullify_salary()
-            messages.success(self.request, f'Баланс сотрудника {staff.first_name} {staff.last_name} успешно списан!')
+            try:
+                with transaction.atomic():
+                    Payout.objects.create(staff=staff, salary=staff.balance)
+                    staff_salary_alert(staff)
+                    staff.nullify_salary()
+                    messages.success(self.request,
+                                     f'Баланс сотрудника {staff.first_name} {staff.last_name} успешно списан!')
+            except:
+                messages.warning(self.request,
+                                 f'Операция отменена, попробуйте снова')
         else:
-            messages.warning(self.request, f'Баланс сотрудника {staff.first_name} {staff.last_name} составляет {staff.balance} cом! Операция невозможна! ')
+            messages.warning(self.request,
+                             f'Баланс сотрудника {staff.first_name} {staff.last_name} составляет {staff.balance} cом! Операция невозможна! ')
         return HttpResponseRedirect(self.success_url)
 
 
@@ -51,8 +61,14 @@ class CashManagerCreateView(PermissionRequiredMixin, CreateView):
         group = Group(name="Manager")
         if staff.groups.filter(name=group):
             if staff.cash > 0:
-                staff.nullify_cash()
-                messages.success(self.request, f'Касса менеджера {staff.first_name} {staff.last_name} успешно анулирован!')
+                try:
+                    with transaction.atomic():
+                        staff.nullify_cash()
+                        messages.success(self.request,
+                                         f'Касса менеджера {staff.first_name} {staff.last_name} успешно анулирован!')
+                except:
+                    messages.warning(self.request,
+                                     f'Операция отменена, попробуйте снова')
             else:
                 messages.warning(self.request,
                                  f'Касса менеджера {staff.first_name} {staff.last_name} составляет {staff.cash} cом! Операция невозможна! ')
