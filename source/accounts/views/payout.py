@@ -33,11 +33,16 @@ class PayoutCreateView(PermissionRequiredMixin, CreateView):
     def post(self, request, *args, **kwargs):
         staff = get_object_or_404(Staff, pk=self.kwargs['pk'])
         if staff.balance > 0:
-            with transaction.atomic():
-                Payout.objects.create(staff=staff, salary=staff.balance)
-                staff_salary_alert(staff)
-                staff.nullify_salary()
-                messages.success(self.request, f'Баланс сотрудника {staff.first_name} {staff.last_name} успешно списан!')
+            try:
+                with transaction.atomic():
+                    Payout.objects.create(staff=staff, salary=staff.balance)
+                    staff_salary_alert(staff)
+                    staff.nullify_salary()
+                    messages.success(self.request,
+                                     f'Баланс сотрудника {staff.first_name} {staff.last_name} успешно списан!')
+            except:
+                messages.success(self.request,
+                                 f'Операция отменена, попробуйте снова')
         else:
             messages.warning(self.request,
                              f'Баланс сотрудника {staff.first_name} {staff.last_name} составляет {staff.balance} cом! Операция невозможна! ')
