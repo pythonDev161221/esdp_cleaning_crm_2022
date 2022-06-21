@@ -45,6 +45,7 @@ class ManagerReportCreateView(PermissionRequiredMixin, FormView):
         staff_numeric_value = 0
         for forms in formset:
             if not staff_and_salary[staff_numeric_value][1] == None:
+                forms.fields['cleaner'].queryset = order.cleaners.all()
                 forms.initial = {"cleaner": staff_and_salary[staff_numeric_value][0],
                                  "salary": round(staff_and_salary[staff_numeric_value][1], 0)}
             else:
