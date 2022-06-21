@@ -12,10 +12,12 @@ async function make_request(url, method = 'GET') {
 
 }
 
-const copyBtn = document.getElementById('copy-btn');
-console.log(copyBtn);
-window.addEventListener('click', () => {
-    const token = copyBtn.getAttribute('data-token');
-    navigator.clipboard.writeText(token);
-    copyBtn.textContent = 'Token скопирован';
-})
+function copy_token(event) {
+    const copyBtn = document.getElementById('copy-btn');
+    console.log(copyBtn);
+    window.addEventListener('click', () => {
+        const token = copyBtn.getAttribute('data-token');
+        navigator.clipboard.writeText(token);
+        copyBtn.textContent = 'Token скопирован';
+    })
+}
