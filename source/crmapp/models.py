@@ -217,10 +217,10 @@ class Order(models.Model):
                 return 2000
         else:
             return 0
-
-    def save(self, *args, **kwargs):
-        self.work_end = self.work_start + self.cleaning_time
-        super(Order, self).save(*args, **kwargs)
+    #
+    # def save(self, *args, **kwargs):
+    #     self.work_end = self.work_start + self.cleaning_time
+    #     super(Order, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'order'

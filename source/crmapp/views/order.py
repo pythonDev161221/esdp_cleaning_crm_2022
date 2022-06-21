@@ -5,13 +5,13 @@ from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
-from django.views.generic import DetailView, UpdateView, DeleteView, ListView
+from django.views.generic import DetailView, UpdateView, DeleteView, ListView, FormView
 
 from crmapp.helpers.crispy_form_helpers import OrderFormHelper, ServiceFormHelper, CleanersPartHelper, StaffFormHelper
-from crmapp.forms import CleanersPartForm, OrderForm, OrderCommentForm
-from crmapp.helpers.order_helpers import BaseOrderCreateView, ServiceFormset, StaffFormset
+from crmapp.forms import CleanersPartForm, OrderForm, OrderCommentForm, ServiceOrderForm
+from crmapp.helpers.order_helpers import BaseOrderCreateView, ServiceFormset, StaffFormset, ModalFormView
 
-from crmapp.models import Order, ForemanOrderUpdate
+from crmapp.models import Order, ForemanOrderUpdate, ServiceOrder
 
 from tgbot.handlers.orders.tg_order_staff import staff_accept_order, order_finished, manager_alert, order_canceled
 
@@ -22,7 +22,7 @@ User = get_user_model()
 
 class OrderListView(PermissionRequiredMixin, ListView):
     model = Order
-    template_name = 'order/order_list.html'
+    template_name = 'new_base.html'
     context_object_name = 'orders'
     permission_required = "crmapp.view_order"
     search_form_class = SearchForm
@@ -62,11 +62,18 @@ class OrderDetailView(PermissionRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['brigadir'] = self.object.order_cleaners.get(is_brigadier=True)
+        context['brigadir'] = self.get_brigadier()
+        context['service_form'] = ServiceOrderForm
         return context
 
+    def get_brigadier(self):
+        if self.object.order_cleaners.all():
+            return self.object.order_cleaners.get(is_brigadier=True)
+        return None
+
     def has_permission(self):
-        return super().has_permission() or self.get_object().order_cleaners.get(is_brigadier=True).staff == self.request.user
+        return super().has_permission() or self.get_object().order_cleaners.get(
+            is_brigadier=True).staff == self.request.user
 
 
 class OrderDeleteView(PermissionRequiredMixin, DeleteView):
@@ -85,24 +92,19 @@ class OrderDeleteView(PermissionRequiredMixin, DeleteView):
         return self.request.user == self.get_object().manager or self.request.user.is_staff
 
 
-class FirstStepOrderCreateView(PermissionRequiredMixin, BaseOrderCreateView):
+class FirstStepOrderCreateView(PermissionRequiredMixin, FormView):
     model = Order
     form_class = OrderForm
-    formset = ServiceFormset
     template_name = 'order/order_create.html'
-    form_helper = OrderFormHelper
-    formset_helper = ServiceFormHelper
     permission_required = "crmapp.add_order"
 
     def form_valid(self, form, formset=None):
         form.instance.manager = self.request.user
-        self.object = form.save()
-        formset.instance = self.object
-        formset.save()
+        self.kwargs['pk'] = form.save().pk
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse_lazy('crmapp:cleaners_add', kwargs={'pk': self.object.pk})
+        return reverse_lazy('crmapp:order_detail', kwargs={'pk': self.kwargs.get('pk')})
 
 
 class SecondStepOrderCreateView(PermissionRequiredMixin, BaseOrderCreateView):
@@ -205,3 +207,10 @@ class OrderDeletedListView(PermissionRequiredMixin, ListView):
     def get_queryset(self):
         queryset = Order.objects.filter(is_deleted=True)
         return queryset
+
+
+class ServiceAddModalView(ModalFormView):
+    form_class = ServiceOrderForm
+
+    def get_success_url(self):
+        return reverse('crmapp:order_detail', kwargs={'pk': self.kwargs.get('pk')})

@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.forms import inlineformset_factory
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from django.views.generic import FormView
 
 from crmapp.forms import ServiceOrderForm, OrderStaffForm
@@ -57,3 +59,20 @@ class BaseOrderCreateView(FormView):
                 formset=formset,
             )
         )
+
+
+class ModalFormView(FormView):
+    form_class = None
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(self.request.POST)
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        form.instance.order_id = self.kwargs.get('pk')
+        form.save()
+        return HttpResponseRedirect(self.get_success_url())
+

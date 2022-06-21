@@ -1,0 +1,11 @@
+.label {
+  color: white;
+  padding: 5px;
+}
+
+.success {
+  background-color: #000;
+  border-radius: 15px;
+  margin-left: 15px;
+  margin-bottom: auto;
+}
