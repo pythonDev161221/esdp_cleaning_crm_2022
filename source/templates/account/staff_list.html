@@ -1,51 +1,43 @@
-{% extends 'base.html' %}
-{% block title %}Сотрудники{% endblock title %}
-
-{% block content %}
-    {% if user_objects %}
-        {% include '../partial/simple_search.html' %}
-        <div class="container">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">ФИО Сотрудника</th>
-                    <th scope="col">Баланс</th>
-                    <th scope="col">Телефон</th>
-                    <th scope="col">Квалификация</th>
-                    <th scope="col">График работы</th>
-                    <th scope="col"></th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for staff in user_objects %}
-                    <tr>
-                        <td><a style="text-decoration: none" href="{% url 'accounts:profile' staff.pk %}">
-                            {{ staff.last_name | capfirst }} {{ staff.first_name | capfirst }} </a></td>
-                        <td>{{ staff.balance }}</td>
-                        <td>{{ staff.phone }}</td>
-                        <td>{{ staff.get_experience_display }}</td>
-                        <td>
-                            {% for day in staff.schedule.all %}
-                                <span>{{ day }}{% if not forloop.last %}, {% else %}. {% endif %}</span>
-                            {% endfor %}
-                        </td>
-                        <td><a class="btn btn-outline-success" href="{% url 'accounts:staff-edit' staff.pk %}"><i
-                                class="fa-solid fa-pen-to-square"></i></a>
-                            <a class="btn btn-outline-dark" href="{% url 'accounts:black-list-add' staff.pk %}"><i
-                                    class="fa-solid fa-file-excel"></i></a>
-                            <a class="btn btn-outline-danger" href="{% url 'accounts:staff-delete' staff.pk %}"><i
-                                    class="fa-solid fa-trash"></i></a></td>
-                    </tr>
+{% extends 'partial/paginnated_table.html' %}
+{% block title %}
+    Список сотрудников
+{% endblock title %}
+{% block table_title %}
+    Список сотрудников
+{% endblock table_title %}
+{% block thead %}
+    <th>ФИО Сотрудника</th>
+    <th>Баланс</th>
+    <th>Телефон</th>
+    <th>Квалификация</th>
+    <th>График работы</th>
+    <th>Действия</th>
+{% endblock thead %}
+{% block tbody %}
+    {% for staff in user_objects %}
+        <tr>
+            <td class="text-center">
+                <a class="btn btn-outline-light btn-rounded btn-md" href="{% url 'accounts:profile' staff.pk %}">
+                    {{ staff.last_name | capfirst }} {{ staff.first_name | capfirst }}</a>
+            </td>
+            <td>{{ staff.balance }}</td>
+            <td>{{ staff.phone }}</td>
+            <td>{{ staff.get_experience_display }}</td>
+            <td>
+                {% for day in staff.schedule.all %}
+                    <span>{{ day }}{% if not forloop.last %}, {% else %}. {% endif %}</span>
                 {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    {% else %}
-        <p class="p-5">Список сотрудников пуст</p>
-    {% endif %}
-    <div class="container text-center">
-        {% if perms.accounts.add_staff %}
-        <a class="btn btn-success" href="{% url 'accounts:register' %}">Добавить сотрудника</a>
-        {% endif %}
-    </div>
-{% endblock content %}
+            </td>
+            <td>
+                <a title="Редактировать" href="{% url 'accounts:staff-edit' staff.pk %}"><i
+                        class="fa fa-pencil text-dark hover-blue fs-5 mx-1"></i></a>
+                <a title="Добавить в черный список" href="{% url 'accounts:black-list-add' staff.pk %}"><i
+                        class="fa fa-file text-dark hover-blue fs-6 mx-1"></i></a>
+
+                <a title="Удалить" href="{% url 'accounts:staff-delete' staff.pk %}"><i
+                        class="fa fa-trash text-dark hover-blue fs-5 mx-1"></i></a>
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock tbody %}
+

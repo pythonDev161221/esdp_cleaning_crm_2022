@@ -1,55 +1,33 @@
-{% extends 'new_base.html' %}
-{% load static %}
-{% block title %}Список клиентов{% endblock title %}
-{% block content %}
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h3 class="card-title text-center">Постоянные клиенты
-                        </h3>
-                        <hr>
-                        <div class="table-responsive">
-                            <table class="table table-striped table-bordered zero-configuration">
-                                <thead>
-                                <tr role="row">
-                                    <th>#</th>
-                                    <th>Фамилия</th>
-                                    <th>Имя</th>
-                                    <th>Телефон</th>
-                                    <th>Организация</th>
-                                    <th>Редактировать</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for client in clients %}
-                                    <tr>
-                                        <th scope="row">{{ client.id }}</th>
-                                        <td>{{ client.last_name }}</td>
-                                        <td>{{ client.first_name }}</td>
-                                        <td>{{ client.phone }}</td>
-                                        <td>{{ client.organization|default:"" }}</td>
-                                        <td>
-                                            <a title="Редактировать" href="{% url 'crmapp:client_update' client.id %}">
-                                                <i class="fa fa-pencil text-dark hover-blue fs-5 mx-1"
-                                                   aria-hidden="true"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
+{% extends 'partial/paginnated_table.html' %}
+{% block title %}
+    Список клиентов
+{% endblock title %}
+{% block table_title %}
+    Постоянные клиенты
+{% endblock table_title %}
+{% block thead %}
+    <th>#</th>
+    <th>Фамилия</th>
+    <th>Имя</th>
+    <th>Телефон</th>
+    <th>Организация</th>
+    <th>Редактировать</th>
+{% endblock thead %}
+{% block tbody %}
+    {% for client in clients %}
+        <tr>
+            <th scope="row">{{ client.id }}</th>
+            <td>{{ client.last_name }}</td>
+            <td>{{ client.first_name }}</td>
+            <td>{{ client.phone }}</td>
+            <td>{{ client.organization|default:"" }}</td>
+            <td>
+                <a title="Редактировать" href="{% url 'crmapp:client_update' client.id %}">
+                    <i class="fa fa-pencil text-dark hover-blue fs-5 mx-1"
+                       aria-hidden="true"></i>
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock tbody %}
 
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-{% endblock content %}
-{% block scripts %}
-    <script src="{% static 'plugins/tables/js/jquery.dataTables.min.js' %}"></script>
-    <script src="{% static 'plugins/tables/js/datatable/dataTables.bootstrap4.min.js' %}"></script>
-    <script src="{% static 'plugins/tables/js/datatable-init/datatable-basic.min.js' %}"></script>
-{% endblock scripts %}

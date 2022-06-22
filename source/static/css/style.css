@@ -108,6 +108,10 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
     display: none !important;
 }
 
+td > .btn{
+    border: none !important;
+}
+
 .fs-1 {
     font-size: calc(1.375rem + 1.5vw) !important
 }

@@ -29,7 +29,7 @@
     <!--********************************** Логотип ***********************************-->
     <div class="nav-header">
         <div class="brand-logo">
-            <a href="index.html">
+            <a href="">
                 <b class="logo-abbr"><img src="img/logo.png" alt=""></b>
                 <span class="logo-compact"><img src="./images/logo-compact.png" alt=""></span>
                 <span class="brand-title">
@@ -97,7 +97,6 @@
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="{% url 'accounts:staff-list' %}">Список сотрудников</a></li>
                                 <li><a href="{% url 'accounts:register' %}">Добавить сотрудника</a></li>
-                                <li><a href="{% url 'accounts:payout_list' %}">История выплат</a></li>
                                 <li><a href="{% url 'accounts:black-list' %}">Черный список</a></li>
                             </ul>
                         </li>
@@ -126,7 +125,7 @@
                                     <ul aria-expanded="false" class="collapse">
                                         <li><a href="{% url 'crmapp:object_type_create' %}">Добавить тип объекта</a>
                                         </li>
-                                        <li><a href="{% url 'crmapp:object_type_list' %}">Список объуктов</a></li>
+                                        <li><a href="{% url 'crmapp:object_type_list' %}">Список объектов</a></li>
                                     </ul>
                                 </li>
                             </ul>
