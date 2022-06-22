@@ -1,5 +1,5 @@
 {% for error in form.non_field_errors %}
-   <p class="text-danger">{{ error }}</p>
+    <p class="text-danger">{{ error }}</p>
 {% endfor %}
 
 {% for field in form %}
@@ -12,5 +12,24 @@
 
 <br>
 {% if not fields_only %}
-    <input class="btn btn-primary mt-3" type="submit" value={{ button_text|default:"Сохранить" }} >
+    <input class="btn btn-primary mt-3" type="submit" value={{ button_text|default:"Сохранить" }}>
 {% endif %}
+
+{#{% for error in form.non_field_errors %}#}
+{#    <div id="val-username-error" class="invalid-feedback animated fadeInDown"#}
+{#         style="display: block;">{{ error }}#}
+{#    </div>#}
+{#{% endfor %}#}
+{#<div class="row">#}
+{#    {% for field in form %}#}
+{#        <div class="form-group col-lg-6">#}
+{#            <label for="{{ field.id_for_label }}">{{ field.label }}</label>#}
+{#            {{ field }}#}
+{#            {% for error in field.errors %}#}
+{#                <div id="val-username-error" class="invalid-feedback animated fadeInDown"#}
+{#                     style="display: block;">{{ error }}#}
+{#                </div>#}
+{#            {% endfor %}#}
+{#        </div>#}
+{#    {% endfor %}#}
+{#</div>#}

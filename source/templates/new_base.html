@@ -1,0 +1,283 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>Qlean</title>
+    <!-- Fonts -->
+    <link rel="stylesheet" href="{% static 'icons/font-awesome/css/font-awesome.min.css' %}">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon.png' %}">
+    <!-- Custom Stylesheet -->
+    {% block style %}{% endblock style %}
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+<body>
+<!--******************* Анимация загрузки ********************-->
+<div id="preloader">
+    <div class="loader">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3" stroke-miterlimit="10"></circle>
+        </svg>
+    </div>
+</div>
+<!--********************************** Главная страница ***********************************-->
+<div id="main-wrapper" class="show">
+    <!--********************************** Логотип ***********************************-->
+    <div class="nav-header">
+        <div class="brand-logo">
+            <a href="index.html">
+                <b class="logo-abbr"><img src="img/logo.png" alt=""></b>
+                <span class="logo-compact"><img src="./images/logo-compact.png" alt=""></span>
+                <span class="brand-title">
+                        <img src="{% static 'img/logo.png' %}" alt="">
+                    </span>
+            </a>
+        </div>
+    </div>
+    <!--********************************** Header ***********************************-->
+    <div class="header">
+        <div class="header-content clearfix">
+            <div class="nav-control">
+                <div class="hamburger">
+                    <span class="toggle-icon"><i class="icon-menu"></i></span>
+                </div>
+            </div>
+            <div class="header-left">
+
+                <div class="input-group icons">
+                    <div class="text-left ml-4">
+                        <a class="mx-1 btn btn-secondary btn-md" href="{% url 'crmapp:order_create' %}">Создать
+                            заказ</a>
+                        <a class="mx-1 btn btn-secondary btn-md" href="{% url 'crmapp:order_index' %}">Список
+                            заказов</a>
+                    </div>
+                </div>
+            </div>
+            <div class="header-right">
+                <ul class="clearfix">
+                    <li class="icons dropdown d-none d-md-flex">
+                        <a href="javascript:void(0)" class="log-user" data-toggle="dropdown" aria-expanded="false">
+                            <span>Аккаунт</span> <i class="icon-user f-s-20" aria-hidden="true"></i>
+                        </a>
+                        <div class="drop-down dropdown-profile animated fadeIn dropdown-menu">
+                            <div class="dropdown-content-body">
+                                <ul>
+                                    <li>
+                                        <a class="btn mb-1 btn-rounded btn-info"
+                                           href="{% url 'accounts:profile' user.id %}"><i class="icon-user"></i>
+                                            <span>Мой профиль</span></a>
+                                    </li>
+                                    <li>
+                                        <hr class="my-2">
+                                    </li>
+                                    <li><a href="{% url 'accounts:logout' %}"><i class="icon-key"></i>
+                                        <span>Выйти</span></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--********************************** Sidebar ***********************************-->
+    <div class="nk-sidebar">
+        <div class="slimScrollDiv">
+            <div class="nk-nav-scroll active">
+                <ul class="metismenu in" id="menu">
+                    {% block links %}
+                        <li>
+                            <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                                <i class="icon-people menu-icon"></i><span class="nav-text">Сотрудники</span>
+                            </a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="{% url 'accounts:staff-list' %}">Список сотрудников</a></li>
+                                <li><a href="{% url 'accounts:register' %}">Добавить сотрудника</a></li>
+                                <li><a href="{% url 'accounts:payout_list' %}">История выплат</a></li>
+                                <li><a href="{% url 'accounts:black-list' %}">Черный список</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                                <i class="icon-notebook menu-icon"></i><span class="nav-text">Справочники</span>
+                            </a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Услуги</a>
+                                    <ul aria-expanded="false" class="collapse">
+                                        <li><a href="{% url 'crmapp:service_create' %}">Добавить услугу</a></li>
+                                        <li><a href="{% url 'crmapp:service_list' %}">Список услуг</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Инвентарь</a>
+                                    <ul aria-expanded="false" class="collapse">
+                                        <li><a href="{% url 'crmapp:inventory_create' %}">Добавить инвентарь</a></li>
+                                        <li><a href="{% url 'crmapp:inventory_index' %}">Список инвентаря</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Объкеты</a>
+                                    <ul aria-expanded="false" class="collapse">
+                                        <li><a href="{% url 'crmapp:object_type_create' %}">Добавить тип объекта</a>
+                                        </li>
+                                        <li><a href="{% url 'crmapp:object_type_list' %}">Список объуктов</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Штрафы</a>
+                                    <ul aria-expanded="false" class="collapse">
+                                        {% if perms.crmapp.add_fine %}
+                                            <li><a href="{% url 'crmapp:fine_create' %}">Добавить штраф</a></li>
+                                        {% endif %}
+                                        <li><a href="{% url 'crmapp:fine_list' %}">Список штрафов</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Бонусы</a>
+                                    <ul aria-expanded="false" class="collapse">
+                                        <li><a href="{% url 'crmapp:bonus_create' %}">Добавить бонус</a></li>
+                                        <li><a href="{% url 'crmapp:bonus_list' %}">Список бонусов</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Клиенты</a>
+                                    <ul aria-expanded="false" class="collapse">
+                                        <li><a href="{% url 'crmapp:client_create' %}">Добавить клиента</a></li>
+                                        <li><a href="{% url 'crmapp:client_index' %}">Список клиентов</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                                <i class="icon-docs menu-icon"></i><span class="nav-text">Отчеты</span>
+                            </a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="{% url 'crmapp:manager_cash_list' %}">Отчет по кассе</a></li>
+                                <li><a href="{% url 'crmapp:income_outcome_report' %}">Отчет о расходах и доходах</a>
+                                </li>
+                                <li><a href="{% url 'crmapp:manager_report_list' %}">Отчет менеджера</a></li>
+                                <li><a href="{% url 'accounts:payout_list' %}">Отчет по выплатам</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="{% url 'crmapp:order_deleted_list' %}" aria-expanded="false">
+                                <i class="icon-trash menu-icon"></i><span class="nav-text">Удаленные заказы</span>
+                            </a>
+                        </li>
+                        <li class="hidden">
+                            <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                            </a>
+                        </li>
+                        <li class="hidden">
+                            <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                            </a>
+                        </li>
+                    {% endblock links %}
+                </ul>
+            </div>
+            <div class="slimScrollBar"></div>
+            <div class="slimScrollRail"></div>
+        </div>
+    </div>
+    <!--********************************** Контент ***********************************-->
+    <div class="content-body">
+        <div class="container-fluid">
+            {% block content %}
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-title">
+                                    <h4>Таблица заказов</h4>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Дата уборки</th>
+                                            <th>Адрес</th>
+                                            <th>Статус</th>
+                                            <th>Прогресс</th>
+                                            <th>Сумма</th>
+                                            <th>*</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% if orders %}
+                                            {% for order in orders %}
+                                                <tr>
+                                                    <th>{{ order.id }}</th>
+                                                    <td>{{ order.work_start }}</td>
+                                                    <td>{{ order.address }}</td>
+                                                    <td>
+                                                        <span class="badge badge-primary px-2">{{ order.get_status_display }}</span>
+                                                    </td>
+                                                    <td>Прогрессбар</td>
+
+
+                                                    <td>{{ order.get_total }}</td>
+                                                    <td>
+
+                                                        <div class="dropdown custom-dropdown">
+                                                            <div data-toggle="dropdown" aria-expanded="false"><i
+                                                                    class="ti-more-alt"></i>
+                                                            </div>
+                                                            <div class="dropdown-menu" x-placement="bottom-start">
+                                                                <a class="dropdown-item"
+                                                                   href="{% url 'crmapp:order_detail' order.pk %}">Подробнее</a>
+                                                                {% if perms.crmapp.change_order and order.manager == request.user or request.user.is_staff %}
+                                                                    <a class="dropdown-item"
+                                                                       href="{% url 'crmapp:order_update' order.pk %}">Редактировать</a>
+                                                                {% endif %}
+                                                                {% if perms.crmapp.delete_order and order.manager == request.user or request.user.is_staff %}
+                                                                    <a class="dropdown-item"
+                                                                       href="{% url 'crmapp:order_delete' order.pk %}">Удалить</a>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% else %}
+                                            <p>Список заказов пуст</p>
+                                        {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /# card -->
+                    </div>
+                </div>
+            {% endblock content %}
+        </div>
+        <!-- #/ container -->
+    </div>
+    <!--********************************** Футер ***********************************-->
+    <div class="footer">
+        <div class="copyright">
+            <p>Copyright © Designed &amp; 2022</p>
+        </div>
+    </div>
+</div>
+<!--********************************** Скрипты ***********************************-->
+<script src="{% static 'plugins/common/common.min.js' %}"></script>
+<script src="{% static 'js/custom.min.js' %}"></script>
+<script src="{% static 'js/settings.js' %}"></script>
+<script src="{% static 'js/gleek.js' %}"></script>
+<script src="{% static 'js/styleSwitcher.js' %}"></script>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+{% block scripts %}{% endblock scripts %}
+</body>
+</html>
