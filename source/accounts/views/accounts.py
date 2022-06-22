@@ -87,6 +87,46 @@ class StaffListView(PermissionRequiredMixin, ListView):
     search_form_class = SearchForm
     permission_required = "accounts.view_staff"
 
+    def get(self, request, *args, **kwargs):
+        self.form = self.get_form()
+        self.search_value = self.get_search_value()
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        queryset = Staff.objects.filter(black_list=False).\
+            exclude(is_active=False).exclude(groups__name="Manager")
+        if self.search_value:
+            query = Q(last_name__icontains=self.search_value) | \
+                    Q(first_name__icontains=self.search_value) | \
+                    Q(inn_passport__icontains=self.search_value) | \
+                    Q(address__icontains=self.search_value) | \
+                    Q(phone__icontains=self.search_value) | \
+                    Q(experience__icontains=self.search_value)
+            queryset = queryset.filter(query)
+        return queryset
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(object_list=object_list, **kwargs)
+        context['form'] = self.search_form_class()
+        return context
+
+    def get_form(self):
+        return self.search_form_class(self.request.GET)
+
+    def get_search_value(self):
+        if self.form.is_valid():
+            return self.form.cleaned_data.get("search")
+
+    def has_permission(self):
+        return super().has_permission() or self.request.user.is_staff
+
+
+class StaffManagerListView(PermissionRequiredMixin, ListView):
+    model = Staff
+    template_name = 'account/staff_list.html'
+    context_object_name = "user_objects"
+    search_form_class = SearchForm
+    permission_required = "accounts.view_staff"
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_form()
@@ -94,10 +134,15 @@ class StaffListView(PermissionRequiredMixin, ListView):
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        queryset = Staff.objects.filter(black_list=False).exclude(is_active=False)
+        queryset = Staff.objects.filter(black_list=False, groups__name="Manager").\
+            exclude(is_active=False)
         if self.search_value:
-            query = Q(last_name__icontains=self.search_value) | Q(first_name__icontains=self.search_value) | Q(inn_passport__icontains=self.search_value) | Q(address__icontains=self.search_value) | Q(phone__icontains=self.search_value) | Q(experience__icontains=self.search_value)
+            query = Q(last_name__icontains=self.search_value) | \
+                    Q(first_name__icontains=self.search_value) | \
+                    Q(inn_passport__icontains=self.search_value) | \
+                    Q(address__icontains=self.search_value) | \
+                    Q(phone__icontains=self.search_value) | \
+                    Q(experience__icontains=self.search_value)
             queryset = queryset.filter(query)
         return queryset
 
