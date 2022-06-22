@@ -73,7 +73,7 @@ class OrderDetailView(PermissionRequiredMixin, DetailView):
 
     def has_permission(self):
         return super().has_permission() or self.get_object().order_cleaners.get(
-            is_brigadier=True).staff == self.request.user
+            is_brigadier=True).staff == self.request.user or self.request.user.is_staff
 
 
 class OrderDeleteView(PermissionRequiredMixin, DeleteView):
