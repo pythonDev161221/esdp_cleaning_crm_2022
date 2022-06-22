@@ -1,14 +1,13 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from django.forms import inlineformset_factory, modelformset_factory
+from django.forms import modelformset_factory
 
 from django.contrib.auth import get_user_model
 from django.forms import BaseModelFormSet
 
-from crmapp.models import Inventory, Client, ForemanOrderUpdate, ServiceOrder, \
-    Service, ManagerReport, StaffOrder, Order, InventoryOrder, ForemanExpenses, ObjectType, Fine, Bonus,CashManager
-
+from crmapp.models import Inventory, Client, ServiceOrder, \
+    Service, ManagerReport, StaffOrder, Order, InventoryOrder, ForemanExpenses, ObjectType, Fine, Bonus, CashManager
 
 User = get_user_model()
 
@@ -48,28 +47,30 @@ class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
         fields = (
-            'object_type',
-            'payment_type',
-            'work_start',
-            'cleaning_time',
             'client_info',
             'address',
+            'work_start',
+            'object_type',
+            'payment_type',
         )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['work_start'].widget = forms.DateInput(
-            attrs={
-                "type": 'datetime-local',
-                'required': True,
-                'class': 'date-time-picker',
-                'data-options': '{'
-                                '"format":"Y-m-d H:i", '
-                                '"timepicker":"true"'
-                                '}'
-            }
-        )
-        self.fields["cleaning_time"].widget = forms.TimeInput(attrs={"placeholder": "ЧЧ:ММ:СС", "value": "00:00:00"})
+        for field in self.fields:
+            if field == 'work_start':
+                self.fields[field].widget = forms.DateInput(
+                    attrs={
+                        "type": 'datetime-local',
+                        'required': True,
+                        'class': 'date-time-picker form-control input-default',
+                        'data-options': '{'
+                                        '"format":"Y-m-d H:i", '
+                                        '"timepicker":"true"'
+                                        '}'
+                    }
+                )
+            else:
+                self.fields[field].widget.attrs.update({'class': 'form-control input-default'})
 
 
 class CleanersPartForm(forms.ModelForm):
@@ -172,7 +173,7 @@ class SearchForm(forms.Form):
 class OrderCommentForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ['description',]
+        fields = ['description', ]
 
 
 class ManagerCashForm(forms.ModelForm):
