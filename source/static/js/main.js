@@ -68,5 +68,4 @@ async function createClient() {
         }
     })
     console.log(response.status)
-    alert(response.status)
 }
