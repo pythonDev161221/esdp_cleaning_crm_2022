@@ -22,12 +22,10 @@ User = get_user_model()
 
 class OrderListView(PermissionRequiredMixin, ListView):
     model = Order
-    template_name = 'new_base.html'
+    template_name = 'order/order_list.html'
     context_object_name = 'orders'
     permission_required = "crmapp.view_order"
     search_form_class = SearchForm
-    paginate_by = 10
-    paginate_orphans = 0
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_form()

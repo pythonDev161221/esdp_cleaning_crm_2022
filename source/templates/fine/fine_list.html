@@ -1,13 +1,13 @@
 {% extends 'new_base.html' %}
 {% load static %}
-{% block title %}Список услуг{% endblock title %}
+{% block title %}Список штрафов{% endblock title %}
 {% block content %}
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <h3 class="card-title text-center">Список услуг
+                        <h3 class="card-title text-center">Список штрафов
                         </h3>
                         <hr>
                         <div class="table-responsive">
@@ -15,30 +15,31 @@
                                 <thead>
                                 <tr role="row">
                                     <th>#</th>
-                                    <th>Услуга</th>
-                                    <th>Цена</th>
-                                    <th>Ед. изм.</th>
+                                    <th>Категория</th>
+                                    <th>Штраф</th>
+                                    <th>Критерий</th>
+                                    <th>Сумма штрафа</th>
+                                    <th>Пояснение</th>
                                     <th>Действия</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% for service in services %}
+                                {% for fine in fines %}
                                     <tr>
-                                        <td>{{ service.id }}</td>
-                                        <td>{{ service.name }}</td>
-                                        <td>{{ service.price }}</td>
-                                        <td>{{ service.get_unit_display }}</td>
-                                        <td>
-                                            <a title="Редактировать"
-                                               href="{% url 'crmapp:service_update' service.pk %}">
-                                                <i class="fa fa-pencil text-dark hover-blue fs-5 mx-1"
-                                                   aria-hidden="true"></i>
-                                            </a>
+                                        <th scope="row">{{ fine.id }}</th>
+                                        <td>{{ fine.category }}</td>
+                                        <td>{{ fine.fine }}</td>
+                                        <td>{{ fine.criteria }}</td>
+                                        <td>{{ fine.value|default:"" }}</td>
+                                        <td>{{ fine.description }}</td>
+                                        <td><a title="Редактировать"
+                                               href="{% url 'crmapp:fine_update' fine.id %}">
+                                            <i class="fa fa-pencil text-dark hover-blue fs-5 mx-1" aria-hidden="true"></i>
+                                        </a>
                                             <a title="Удалить"
-                                               href="{% url 'crmapp:service_delete' service.pk %}">
-                                                <i class="fa fa-trash text-dark hover-blue fs-5 mx-1"
-                                                   aria-hidden="true"></i>
-                                            </a>
+                                               href="{% url 'crmapp:fine_delete' fine.id %}">
+                                            <i class="fa fa-trash text-dark hover-blue fs-5 mx-1" aria-hidden="true"></i>
+                                        </a>
                                         </td>
                                     </tr>
                                 {% endfor %}

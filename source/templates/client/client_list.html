@@ -1,13 +1,13 @@
 {% extends 'new_base.html' %}
 {% load static %}
-{% block title %}Список объектов{% endblock title %}
+{% block title %}Список клиентов{% endblock title %}
 {% block content %}
     <div class="container-fluid">
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-body">
-                        <h3 class="card-title text-center">Доступные типы объектов
+                        <h3 class="card-title text-center">Постоянные клиенты
                         </h3>
                         <hr>
                         <div class="table-responsive">
@@ -15,34 +15,30 @@
                                 <thead>
                                 <tr role="row">
                                     <th>#</th>
-                                    <th>Бонус</th>
-                                    <th>Сумма бонуса</th>
+                                    <th>Фамилия</th>
+                                    <th>Имя</th>
+                                    <th>Телефон</th>
+                                    <th>Организация</th>
                                     <th>Редактировать</th>
-                                    <th>Удалить</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {% for bonus in bonuses %}
+                                {% for client in clients %}
                                     <tr>
-                                        <th>{{ bonus.id }}</th>
-                                        <td>{{ bonus.bonus }}</td>
-                                        <td>{{ bonus.value|default:"" }}</td>
+                                        <th scope="row">{{ client.id }}</th>
+                                        <td>{{ client.last_name }}</td>
+                                        <td>{{ client.first_name }}</td>
+                                        <td>{{ client.phone }}</td>
+                                        <td>{{ client.organization|default:"" }}</td>
                                         <td>
-                                            <a title="Редактировать"
-                                               href="{% url 'crmapp:bonus_update' bonus.id %}">
+                                            <a title="Редактировать" href="{% url 'crmapp:client_update' client.id %}">
                                                 <i class="fa fa-pencil text-dark hover-blue fs-5 mx-1"
-                                                   aria-hidden="true"></i>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <a title="Удалить"
-                                               href="{% url 'crmapp:bonus_delete' bonus.id %}">
-                                                <i class="fa fa-trash text-dark hover-blue fs-5 mx-1"
                                                    aria-hidden="true"></i>
                                             </a>
                                         </td>
                                     </tr>
                                 {% endfor %}
+
                                 </tbody>
                             </table>
                         </div>

@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.http import QueryDict
 
 from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
@@ -16,6 +17,15 @@ class Service(models.Model):
                             verbose_name=_('Единица измерения'), default='square_meter')
     price = models.PositiveIntegerField(verbose_name=_('Цена за единицу'), null=False, blank=False)
     is_extra = models.BooleanField(verbose_name=_('Доп. услуга'))
+
+    def get_field_value(self, field_name):
+        if field_name == 'unit':
+            return self.get_unit_display()
+        return getattr(self, field_name)
+
+    def __iter__(self):
+        for field in self._meta.fields:
+            yield field.verbose_name, self.get_field_value(field.name)
 
     def __str__(self):
         return f'{self.name}'

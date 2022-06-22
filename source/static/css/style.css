@@ -104,6 +104,10 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
     --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
+.hidden {
+    display: none !important;
+}
+
 .fs-1 {
     font-size: calc(1.375rem + 1.5vw) !important
 }
@@ -15586,18 +15590,18 @@ input[type="checkbox"]:checked:after {
     margin-top: 10px;
 }
 
-.dataTables_filter input {
-    background-color: transparent;
-    background-position: center bottom, center calc(100% - 1px);
-    background-repeat: no-repeat;
-    background-size: 0 2px, 100% 1px;
-    border: 0 none;
-    border-radius: 0;
-    box-shadow: none;
-    float: none;
-    margin-left: 10px;
-    transition: background 0s ease-out 0s;
-}
+/*.dataTables_filter input {*/
+/*    background-color: transparent;*/
+/*    background-position: center bottom, center calc(100% - 1px);*/
+/*    background-repeat: no-repeat;*/
+/*    background-size: 0 2px, 100% 1px;*/
+/*    border: 0 none;*/
+/*    border-radius: 0;*/
+/*    box-shadow: none;*/
+/*    float: none;*/
+/*    margin-left: 10px;*/
+/*    transition: background 0s ease-out 0s;*/
+/*}*/
 
 .dataTables_filter input:focus {
     background-size: 100% 2px, 100% 1px;

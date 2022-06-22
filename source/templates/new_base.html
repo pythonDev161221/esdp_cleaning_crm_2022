@@ -16,30 +16,17 @@
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
 </head>
 <body>
-
-<!--*******************
-    Preloader start
-********************-->
-<div id="preloader" style="display: none;">
+<!--******************* Анимация загрузки ********************-->
+<div id="preloader">
     <div class="loader">
         <svg class="circular" viewBox="25 25 50 50">
             <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3" stroke-miterlimit="10"></circle>
         </svg>
     </div>
 </div>
-<!--*******************
-    Preloader end
-********************-->
-
-
-<!--**********************************
-    Main wrapper start
-***********************************-->
+<!--********************************** Главная страница ***********************************-->
 <div id="main-wrapper" class="show">
-
-    <!--**********************************
-        Nav header start
-    ***********************************-->
+    <!--********************************** Логотип ***********************************-->
     <div class="nav-header">
         <div class="brand-logo">
             <a href="index.html">
@@ -51,13 +38,7 @@
             </a>
         </div>
     </div>
-    <!--**********************************
-        Nav header end
-    ***********************************-->
-
-    <!--**********************************
-        Header start
-    ***********************************-->
+    <!--********************************** Header ***********************************-->
     <div class="header">
         <div class="header-content clearfix">
             <div class="nav-control">
@@ -66,17 +47,13 @@
                 </div>
             </div>
             <div class="header-left">
+
                 <div class="input-group icons">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text bg-transparent border-0 pr-2 pr-sm-3" id="basic-addon1"><i
-                                class="mdi mdi-magnify"></i></span>
-                    </div>
-                    <input type="search" class="form-control" placeholder="Search Dashboard"
-                           aria-label="Search Dashboard">
-                    <div class="drop-down animated flipInX d-md-none">
-                        <form action="#">
-                            <input type="submit" class="form-control" placeholder="Поиск">
-                        </form>
+                    <div class="text-left ml-4">
+                        <a class="mx-1 btn btn-secondary btn-md" href="{% url 'crmapp:order_create' %}">Создать
+                            заказ</a>
+                        <a class="mx-1 btn btn-secondary btn-md" href="{% url 'crmapp:order_index' %}">Список
+                            заказов</a>
                     </div>
                 </div>
             </div>
@@ -84,19 +61,21 @@
                 <ul class="clearfix">
                     <li class="icons dropdown d-none d-md-flex">
                         <a href="javascript:void(0)" class="log-user" data-toggle="dropdown" aria-expanded="false">
-                            <span>Аккаунт</span> <i class="icon-login f-s-20" aria-hidden="true"></i>
+                            <span>Аккаунт</span> <i class="icon-user f-s-20" aria-hidden="true"></i>
                         </a>
                         <div class="drop-down dropdown-profile animated fadeIn dropdown-menu">
                             <div class="dropdown-content-body">
                                 <ul>
                                     <li>
-                                        <a href="app-profile.html"><i class="icon-user"></i> <span>Мой профиль</span></a>
+                                        <a class="btn mb-1 btn-rounded btn-info"
+                                           href="{% url 'accounts:profile' user.id %}"><i class="icon-user"></i>
+                                            <span>Мой профиль</span></a>
                                     </li>
-                                    <li><hr class="my-2"></li>
                                     <li>
-                                        <a href="page-lock.html"><i class="icon-lock"></i> <span>Телеграм токен</span></a>
+                                        <hr class="my-2">
                                     </li>
-                                    <li><a href="page-login.html"><i class="icon-key"></i> <span>Выйти</span></a></li>
+                                    <li><a href="{% url 'accounts:logout' %}"><i class="icon-key"></i>
+                                        <span>Выйти</span></a></li>
                                 </ul>
                             </div>
                         </div>
@@ -105,24 +84,12 @@
             </div>
         </div>
     </div>
-    <!--**********************************
-        Header end ti-comment-alt
-    ***********************************-->
-
-    <!--**********************************
-        Sidebar start
-    ***********************************-->
+    <!--********************************** Sidebar ***********************************-->
     <div class="nk-sidebar">
-        <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 100%;">
-            <div class="nk-nav-scroll active" style="overflow: hidden; width: auto; height: 100%;">
+        <div class="slimScrollDiv">
+            <div class="nk-nav-scroll active">
                 <ul class="metismenu in" id="menu">
                     {% block links %}
-                        <li>
-                            <a href="{% url 'crmapp:order_create' %}" aria-expanded="false">
-                                <i class="icon-plus menu-icon"></i><span class="nav-text">Создать заказ</span>
-                            </a>
-                        </li>
-
                         <li>
                             <a class="has-arrow" href="javascript:void()" aria-expanded="false">
                                 <i class="icon-people menu-icon"></i><span class="nav-text">Сотрудники</span>
@@ -139,32 +106,91 @@
                                 <i class="icon-notebook menu-icon"></i><span class="nav-text">Справочники</span>
                             </a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a href="{% url 'crmapp:service_list' %}" aria-expanded="false">Услуги</a></li>
-                                <li><a href="{% url 'crmapp:inventory_index' %}" aria-expanded="false">Инвентарь</a></li>
-                                <li><a href="{% url 'crmapp:object_type_list' %}" aria-expanded="false">Объкеты</a></li>
-                                <li><a href="{% url 'crmapp:fine_list' %}" aria-expanded="false">Штрафы</a></li>
-                                <li><a href="{% url 'crmapp:bonus_list' %}" aria-expanded="false">Бонусы</a></li>
-                                <li><a href="{% url 'crmapp:client_index' %}" aria-expanded="false">Клиенты</a></li>
+                                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Услуги</a>
+                                    <ul aria-expanded="false" class="collapse">
+                                        <li><a href="{% url 'crmapp:service_create' %}">Добавить услугу</a></li>
+                                        <li><a href="{% url 'crmapp:service_list' %}">Список услуг</a></li>
+                                    </ul>
+                                </li>
                             </ul>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Инвентарь</a>
+                                    <ul aria-expanded="false" class="collapse">
+                                        <li><a href="{% url 'crmapp:inventory_create' %}">Добавить инвентарь</a></li>
+                                        <li><a href="{% url 'crmapp:inventory_index' %}">Список инвентаря</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Объкеты</a>
+                                    <ul aria-expanded="false" class="collapse">
+                                        <li><a href="{% url 'crmapp:object_type_create' %}">Добавить тип объекта</a>
+                                        </li>
+                                        <li><a href="{% url 'crmapp:object_type_list' %}">Список объуктов</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Штрафы</a>
+                                    <ul aria-expanded="false" class="collapse">
+                                        {% if perms.crmapp.add_fine %}
+                                            <li><a href="{% url 'crmapp:fine_create' %}">Добавить штраф</a></li>
+                                        {% endif %}
+                                        <li><a href="{% url 'crmapp:fine_list' %}">Список штрафов</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Бонусы</a>
+                                    <ul aria-expanded="false" class="collapse">
+                                        <li><a href="{% url 'crmapp:bonus_create' %}">Добавить бонус</a></li>
+                                        <li><a href="{% url 'crmapp:bonus_list' %}">Список бонусов</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Клиенты</a>
+                                    <ul aria-expanded="false" class="collapse">
+                                        <li><a href="{% url 'crmapp:client_create' %}">Добавить клиента</a></li>
+                                        <li><a href="{% url 'crmapp:client_index' %}">Список клиентов</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                                <i class="icon-docs menu-icon"></i><span class="nav-text">Отчеты</span>
+                            </a>
+                            <ul aria-expanded="false" class="collapse">
+                                <li><a href="{% url 'crmapp:manager_cash_list' %}">Отчет по кассе</a></li>
+                                <li><a href="{% url 'crmapp:income_outcome_report' %}">Отчет о расходах и доходах</a>
+                                </li>
+                                <li><a href="{% url 'crmapp:manager_report_list' %}">Отчет менеджера</a></li>
+                                <li><a href="{% url 'accounts:payout_list' %}">Отчет по выплатам</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="{% url 'crmapp:order_deleted_list' %}" aria-expanded="false">
+                                <i class="icon-trash menu-icon"></i><span class="nav-text">Удаленные заказы</span>
+                            </a>
+                        </li>
+                        <li class="hidden">
+                            <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                            </a>
+                        </li>
+                        <li class="hidden">
+                            <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                            </a>
                         </li>
                     {% endblock links %}
                 </ul>
             </div>
-            <div class="slimScrollBar"
-                 style="background: transparent none repeat scroll 0% 0%; width: 5px; position: absolute; top: 0px; opacity: 0.4; display: block; border-radius: 7px; z-index: 99; right: 1px; height: 30px;"></div>
-            <div class="slimScrollRail"
-                 style="width: 5px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51) none repeat scroll 0% 0%; opacity: 0.2; z-index: 90; right: 1px;"></div>
+            <div class="slimScrollBar"></div>
+            <div class="slimScrollRail"></div>
         </div>
     </div>
-    <!--**********************************
-        Sidebar end
-    ***********************************-->
-
-    <!--**********************************
-        Content body start
-    ***********************************-->
-    <div class="content-body" style="min-height: 928px;">
-        <!-- container -->
+    <!--********************************** Контент ***********************************-->
+    <div class="content-body">
         <div class="container-fluid">
             {% block content %}
                 <div class="row">
@@ -197,7 +223,7 @@
                                                     <td>
                                                         <span class="badge badge-primary px-2">{{ order.get_status_display }}</span>
                                                     </td>
-                                                    <td>{{ order.created_at }}</td>
+                                                    <td>Прогрессбар</td>
 
 
                                                     <td>{{ order.get_total }}</td>
@@ -207,8 +233,7 @@
                                                             <div data-toggle="dropdown" aria-expanded="false"><i
                                                                     class="ti-more-alt"></i>
                                                             </div>
-                                                            <div class="dropdown-menu" x-placement="bottom-start"
-                                                                 style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(89px, 37px, 0px);">
+                                                            <div class="dropdown-menu" x-placement="bottom-start">
                                                                 <a class="dropdown-item"
                                                                    href="{% url 'crmapp:order_detail' order.pk %}">Подробнее</a>
                                                                 {% if perms.crmapp.change_order and order.manager == request.user or request.user.is_staff %}
@@ -239,30 +264,14 @@
         </div>
         <!-- #/ container -->
     </div>
-    <!--**********************************
-        Content body end
-    ***********************************-->
-
-
-    <!--**********************************
-        Footer start
-    ***********************************-->
+    <!--********************************** Футер ***********************************-->
     <div class="footer">
         <div class="copyright">
             <p>Copyright © Designed &amp; 2022</p>
         </div>
     </div>
-    <!--**********************************
-        Footer end
-    ***********************************-->
 </div>
-<!--**********************************
-    Main wrapper end
-***********************************-->
-
-<!--**********************************
-    Scripts
-***********************************-->
+<!--********************************** Скрипты ***********************************-->
 <script src="{% static 'plugins/common/common.min.js' %}"></script>
 <script src="{% static 'js/custom.min.js' %}"></script>
 <script src="{% static 'js/settings.js' %}"></script>
@@ -270,8 +279,5 @@
 <script src="{% static 'js/styleSwitcher.js' %}"></script>
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 {% block scripts %}{% endblock scripts %}
-<!--**********************************
-    Scripts end
-***********************************-->
 </body>
 </html>
