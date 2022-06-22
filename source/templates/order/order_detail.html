@@ -4,254 +4,259 @@
 {% block title %}Заказ №{{ order.id }} {% endblock title %}
 {% block content %}
     <div class="container-fluide mt-1">
-    <div class="card">
-        <div class="card-body">
-            <div class="text-center mb-0">
-                <h3 class="mb-0">Заказ №{{ order.id }}</h3>
-            </div>
-            <hr>
-            <div class="row px-5">
-                <div class="col-12">
-                    <strong class="text-dark mr-3">Статус: </strong>
-                    <span class="badge badge-pill badge-secondary">{{ order.get_status_display }}</span>
+        <div class="card">
+            <div class="card-body">
+                <div class="text-center mb-0">
+                    <h3 class="mb-0">Заказ №{{ order.id }}</h3>
                 </div>
-            </div>
-            <div class="row px-5 mb-5">
-                <div class="col-lg-6 col-md-12">
-                    <h4 class="mt-4 mb-3">Основная информация:</h4>
-                    <p class="mb-0">
-                        <strong class="text-dark mr-3">Менеджер: </strong><span>{{ order.manager.first_name }} {{ order.manager.last_name }}</span>
-                    </p>
-                    <p class="mb-0">
-                        <strong class="text-dark mr-3">Вид
-                            оплаты: </strong><span>{{ order.get_payment_type_display }}</span></p>
-                    <p class="mb-0">
-                        <strong class="text-dark mr-3">Дата
-                            создания: </strong><span>{{ order.created_at }}</span></p>
-                    <p class="mb-0">
-                        <strong class="text-dark mr-3">Зарегистрирован на:</strong>
-                        <span>{{ order.work_start }}</span>
-                    </p>
-                    <p class="mb-0">
-                        <strong class="text-dark mr-3">Время выполнения:</strong>
-                        {% if order.cleaning_time %}
-                            <span>{{ order.cleaning_time }} ч.</span>
-                        {% else %}
-                            <button type="button" class="btn mb-1 btn-primary btn-xs">Добавить
-                                время
-                            </button>
-                        {% endif %}
-                    </p>
+                <hr>
+                <div class="row px-5">
+                    <div class="col-12">
+                        <strong class="mr-3">Статус: </strong>
+                        <span class="badge badge-pill badge-secondary">{{ order.get_status_display }}</span>
+                    </div>
                 </div>
-                <div class="col-lg-6 col-md-12">
-                    <h4 class="text-lg-right mt-4 mb-3">Информация по заказчику:</h4>
-                    <p class="text-lg-right mb-0">
-                        <strong class="text-dark mr-3">Адрес:</strong>
-                        <span>{{ order.address }}</span>
-                    </p>
-                    <p class="text-lg-right mb-0">
-                        <strong class="text-dark mr-3">ФИО:</strong>
-                        <span>{{ order.client_info.first_name }} {{ order.client_info.last_name }}</span>
-                    </p>
-                    <p class="text-lg-right mb-0">
-                        <strong class="text-dark mr-3">Телефон:</strong>
-                        <span>{{ order.client_info.phone }}</span>
-                    </p>
-                    <p class="text-lg-right mb-0">
-                        <strong class="text-dark mr-3">Тип объекта:</strong>
-                        <span>{{ order.object_type }}</span>
-                    </p>
-                    {#                                <p class="text-lg-right mt-3">#}
-                    {#                                    <strong class="text-dark mr-3">Описание:</strong>#}
-                    {#                                    <span>{{ order.description }}</span>#}
-                    {#                                </p>#}
-                    {#                            </div>#}
+                <div class="row px-5">
+                    <div class="col-lg-6 col-md-12">
+                        <h4 class="mt-4 mb-3">Основная информация:</h4>
+                        <p class="mb-0">
+                            <strong class="mr-3">Менеджер: </strong><span>{{ order.manager.first_name }} {{ order.manager.last_name }}</span>
+                        </p>
+                        <p class="mb-0">
+                            <strong class="mr-3">Вид
+                                оплаты: </strong><span>{{ order.get_payment_type_display }}</span></p>
+                        <p class="mb-0">
+                            <strong class="mr-3">Дата
+                                создания: </strong><span>{{ order.created_at }}</span></p>
+                        <p class="mb-0">
+                            <strong class="mr-3">Зарегистрирован на:</strong>
+                            <span>{{ order.work_start }}</span>
+                        </p>
+                        <p class="mb-0">
+                            <strong class="mr-3">Время выполнения:</strong>
+                            {% if order.cleaning_time %}
+                                <span>{{ order.cleaning_time }} ч.</span>
+                            {% else %}
+                                <button type="button" class="btn mb-1 btn-secondary btn-xs">Добавить
+                                    время
+                                </button>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="col-lg-6 col-md-12">
+                        <h4 class="text-lg-right mt-4 mb-3">Информация по заказчику:</h4>
+                        <p class="text-lg-right mb-0">
+                            <strong class="mr-3">Адрес:</strong>
+                            <span>{{ order.address }}</span>
+                        </p>
+                        <p class="text-lg-right mb-0">
+                            <strong class="mr-3">ФИО:</strong>
+                            <span>{{ order.client_info.first_name }} {{ order.client_info.last_name }}</span>
+                        </p>
+                        <p class="text-lg-right mb-0">
+                            <strong class="mr-3">Телефон:</strong>
+                            <span>{{ order.client_info.phone }}</span>
+                        </p>
+                        <p class="text-lg-right mb-0">
+                            <strong class="mr-3">Тип объекта:</strong>
+                            <span>{{ order.object_type }}</span>
+                        </p>
+                        {#                                <p class="text-lg-right mt-3">#}
+                        {#                                    <strong class="text-dark mr-3">Описание:</strong>#}
+                        {#                                    <span>{{ order.description }}</span>#}
+                        {#                                </p>#}
+                        {#                            </div>#}
+                    </div>
                 </div>
-            </div>
-            <hr>
-            <div class="row px-3">
-                <div class="col-12">
-                    <p class="text-dark my-0">
-                        <strong class="mr-3 fs-5">Общая стоимость: </strong>
-                        <span class="fs-5">{{ order.get_total }} сом</span>
-                    </p>
-                </div>
-            </div>
-            <hr>
-
-            <!-- **************************************  Услуги #####################################-->
-
-            <div class="row">
-                <div class="col-12">
-                    <h5 class="mt-5 ml-4 mb-1 text-muted">Добавленные услуги:</h5>
-                    <div class="content-container">
-                        {% if order.order_services %}
-                            {% for service in order.order_services.all %}
-                                <span class="badge badge-pill badge-secondary fs-6 m-1 text-dark">{{ service }}
+                <!-- **************************************  Услуги #####################################-->
+                <div class="text-center my-4"><h5>Добавленные услуги:</h5></div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped verticle-middle">
+                        <thead>
+                        <tr>
+                            <th>Услуга</th>
+                            <th>Объем</th>
+                            <th>Слож.</th>
+                            <th>Итого</th>
+                            <th>Действие</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for service in order.order_services.all %}
+                            <tr>
+                                <th>{{ service.service.name }}</th>
+                                <td>{{ service.amount }} {{ service.service.get_unit_display }}</td>
+                                <td>{{ service.rate }}</td>
+                                <td>{{ service.total }}</td>
+                                <td>
                                     {% if perms.crmapp.change_serviceorder and order.manager == request.user or request.user.is_staff %}
                                         <a class="ml-1" href="{% url 'crmapp:service_order_update' service.id %}">
-                                            <i title="Редактировать" class="fa fa-pencil text-dark hover-blue"></i>
+                                            <i title="Редактировать" class="fa fa-pencil text-dark hover-blue fs-5"></i>
                                         </a>
                                     {% endif %}
-                                    {% if perms.crmapp.add_serviceorder and order.manager == request.user or request.user.is_staff %}
-                                        <a class="ml-1" href="{% url 'crmapp:service_order_delete' service.id %}">
-                                            <i title="Удалить" class="fa fa-trash text-dark hover-blue"></i>
+                                    {% if perms.crmapp.delete_stafforder and order.manager == request.user or request.user.is_staff %}
+                                        <a class="ml-1" href="{% url 'crmapp:order_staff_delete' service.id %}">
+                                            <i title="Удалить из заказа"
+                                               class="fa fa-trash text-dark hover-blue fs-5"></i>
                                         </a>
                                     {% endif %}
-                                    </span>
-                            {% endfor %}
-                        {% endif %}
-                        <button type="button" class="btn mb-1 btn-primary btn-sm"
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                        <tfoot>
+                        <tr class="text-right">
+                            <td colspan="5">
+                                <div class="mr-5">
+                                    <strong class="mr-3 fs-5">Итого: </strong>
+                                    <span class="fs-5">{{ order.get_total }} сом</span>
+                                </div>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                    <div class="text-center">
+                        <button type="button" class="btn mb-1 btn-secondary btn-sm"
                                 data-bs-toggle="modal" data-bs-target="#exampleModal">Добавить услугу
                         </button>
+                        {% if order.manager == request.user or request.user.is_staff %}
+                            <button class="btn mb-1 btn-success btn-sm">Завершить</button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-            {% if order.manager == request.user or request.user.is_staff %}
-                {#                    <a class="btn btn-outline-success" href="{% url 'crmapp:order_finish' order.pk %}">#}
-                {#                        Статус заказa</a>#}
-                {% if order.manager == request.user or request.user.is_staff %}
-                    <div class="row mt-5">
-                        <div class="col-12 text-center">
-                            <a class="btn btn-primary px-5"
-                               href="{% url 'crmapp:order_finish' order.pk %}">Статус заказa</a>
-                            <button class="btn btn-success px-5">Завершить</button>
-                        </div>
-                    </div>
-                {% endif %}
-            {% endif %}
         </div>
-    </div>
 
 
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <!-- ######################################### Карточка бригады #################################-->
-                    <h5 class="mb-0">Бригада клинеров</h5>
-                    <hr>
-                    {% for cleaner in order.order_cleaners.all %}
-                        <span class="badge badge-pill bg-light-grey fs-6">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- ######################################### Карточка бригады #################################-->
+                        <h5 class="mb-0">Бригада клинеров</h5>
+                        <hr>
+                        {% for cleaner in order.order_cleaners.all %}
+                            <span class="badge badge-pill bg-light-grey fs-6">
                                 <a class="text-dark fw-bold" href="{% url 'accounts:profile' cleaner.staff.id %}">
                                     {{ cleaner.staff.first_name }} {{ cleaner.staff.last_name }}
                                 </a>
-                            {% if order.manager == request.user or request.user.is_staff %}
-                                {% if cleaner.is_brigadier %}
-                                    <i class="fa fa-star text-warning ml-1"></i>
-                                {% else %}
-                                    <a class="ml-1" href="#">
+                                {% if order.manager == request.user or request.user.is_staff %}
+                                    {% if cleaner.is_brigadier %}
+                                        <i class="fa fa-star text-warning ml-1"></i>
+                                    {% else %}
+                                        <a class="ml-1" href="#">
                                             <i title="Сделать бригадиром" class="fa fa-star text-dark hover-blue"></i>
                                         </a>
+                                    {% endif %}
                                 {% endif %}
-                            {% endif %}
-                            {% if perms.crmapp.delete_stafforder and order.manager == request.user or request.user.is_staff %}
-                                <a class="ml-1" href="{% url 'crmapp:order_staff_delete' cleaner.id %}">
+                                {% if perms.crmapp.delete_stafforder and order.manager == request.user or request.user.is_staff %}
+                                    <a class="ml-1" href="{% url 'crmapp:order_staff_delete' cleaner.id %}">
                                         <i title="Удалить из заказа" class="fa fa-trash text-dark hover-blue"></i>
                                     </a>
-                            {% endif %}
+                                {% endif %}
                             </span>
-                    {% endfor %}
-                    {% if perms.crmapp.add_stafforder and order.manager == request.user or request.user.is_staff %}
-                        {% if order.status == 'new' %}
-                            <button type="button" class="btn mb-1 btn-primary btn-sm">Добавить клинера
-                            </button>
-                        {% endif %}
-                    {% endif %}
-                    <hr>
-                    <!-- ####################################### Карточка инвентаря #################################-->
-                    <h5 class="mt-5">Необходимый инвентарь</h5>
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Наименование</th>
-                                <th>Количество</th>
-                                <th>Действие</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for inventory in order.order_inventories.all %}
-                                <tr>
-                                    <th>{{ forloop.counter }}</th>
-                                    <td>{{ inventory.inventory.name }}</td>
-                                    <td>{{ inventory.amount }}</td>
-                                    <td>
-                                        {% if perms.crmapp.delete_inventoryorder and order.manager == request.user or request.user.is_staff %}
-                                            <a class="text-danger"
-                                               href="{% url 'crmapp:inventory_order_remove' inventory.pk %}"><i
-                                                    class="fa fa-trash text-dark hover-blue fs-5"></i></a>
-                                        {% endif %}</td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                        {% if perms.crmapp.add_inventoryorder and order.manager == request.user or request.user.is_staff %}
+                        {% endfor %}
+                        {% if perms.crmapp.add_stafforder and order.manager == request.user or request.user.is_staff %}
                             {% if order.status == 'new' %}
-                                <div class="mx-4 text-center"><a class="btn btn-primary btn-sm"
-                                                                 href="{% url 'crmapp:inventory_order_add' order.id %}">Добавить/Изменить
-                                    инвентарь</a></div>
+                                <a href="{% url 'crmapp:order_staff_add' order.pk %}"
+                                   class="btn mb-1 btn-secondary btn-sm">Добавить клинера
+                                </a>
                             {% endif %}
                         {% endif %}
+                        <hr>
+                        <!-- ####################################### Карточка инвентаря #################################-->
+                        <h5 class="mt-5">Необходимый инвентарь</h5>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Наименование</th>
+                                    <th>Количество</th>
+                                    <th>Действие</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for inventory in order.order_inventories.all %}
+                                    <tr>
+                                        <th>{{ forloop.counter }}</th>
+                                        <td>{{ inventory.inventory.name }}</td>
+                                        <td>{{ inventory.amount }}</td>
+                                        <td>
+                                            {% if perms.crmapp.delete_inventoryorder and order.manager == request.user or request.user.is_staff %}
+                                                <a class="text-danger"
+                                                   href="{% url 'crmapp:inventory_order_remove' inventory.pk %}"><i
+                                                        class="fa fa-trash text-dark hover-blue fs-5"></i></a>
+                                            {% endif %}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            {% if perms.crmapp.add_inventoryorder and order.manager == request.user or request.user.is_staff %}
+                                {% if order.status == 'new' %}
+                                    <div class="mx-4 text-center"><a class="btn btn-secondary btn-sm"
+                                                                     href="{% url 'crmapp:inventory_order_add' order.id %}">Добавить/Изменить
+                                        инвентарь</a></div>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                        <!-- ########################################### Конец инвенторя ################################-->
                     </div>
-                    <!-- ########################################### Конец инвенторя ################################-->
                 </div>
             </div>
         </div>
+
+
+
+
+        {% if brigadir %}
+            <p><small class="text-muted">Расходы:</small></p>
+            {% for expense in brigadir.foreman_expense.all %}
+                <p>{{ expense.description }}: {{ expense.amount }} сом</p>
+            {% endfor %}
+            <h5><strong>Итого: {{ brigadir.get_total_expenses }} сом</strong></h5>
+        {% else %}
+            <p><small class="text-muted">Расходов нет</small></p>
+        {% endif %}
     </div>
-
-
-
-
-            {% if brigadir %}
-                <p><small class="text-muted">Расходы:</small></p>
-                {% for expense in brigadir.foreman_expense.all %}
-                    <p>{{ expense.description }}: {{ expense.amount }} сом</p>
-                {% endfor %}
-                <h5><strong>Итого: {{ brigadir.get_total_expenses }} сом</strong></h5>
-            {% else %}
-                <p><small class="text-muted">Расходов нет</small></p>
-            {% endif %}
-        </div>
-        {% if order.status != 'finished' %}
-            {% if order.status != 'canceled' %}
-                {% if brigadir.staff == request.user %}
-                    {% if brigadir.in_place %}
-                        <a href="{% url 'crmapp:foreman_create_service' order.id %}"
-                           class="btn btn-outline-success">Добавить
-                            услугу в
+    {% if order.status != 'finished' %}
+        {% if order.status != 'canceled' %}
+            {% if brigadir.staff == request.user %}
+                {% if brigadir.in_place %}
+                    <a href="{% url 'crmapp:foreman_create_service' order.id %}"
+                       class="btn btn-outline-success">Добавить
+                        услугу в
+                        заказ</a>
+                    <a href="{% url 'crmapp:foreman_create_expense' order.id %}"
+                       class="btn btn-outline-success">Добавить
+                        расход</a>
+                    {% if not brigadir.work_start %}
+                        <a href="{% url 'crmapp:foremanorder_create' order.id %}"
+                           class="btn btn-outline-success">Внести
+                            изменения в
                             заказ</a>
-                        <a href="{% url 'crmapp:foreman_create_expense' order.id %}"
-                           class="btn btn-outline-success">Добавить
-                            расход</a>
-                        {% if not brigadir.work_start %}
-                            <a href="{% url 'crmapp:foremanorder_create' order.id %}"
-                               class="btn btn-outline-success">Внести
-                                изменения в
-                                заказ</a>
-                            <form class="mt-3" action="{% url 'crmapp:foreman_photo_before' order.id %}"
-                                  method="POST"
-                                  enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <input class="btn btn-outline-success" type="file" name="photo_before" multiple>
-                                <button type="submit" class="btn btn-success">Отправить фото до</button>
-                            </form>
-                        {% else %}
-                            <form class="mt-3" action="{% url 'crmapp:foreman_photo_before' order.id %}"
-                                  method="POST"
-                                  enctype="multipart/form-data">
-                                {% csrf_token %}
-                                <input class="btn btn-outline-success" type="file" name="photo_after" multiple>
-                                <button type="submit" class="btn btn-success">Отправить фото после</button>
-                            </form>
-                        {% endif %}
+                        <form class="mt-3" action="{% url 'crmapp:foreman_photo_before' order.id %}"
+                              method="POST"
+                              enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input class="btn btn-outline-success" type="file" name="photo_before" multiple>
+                            <button type="submit" class="btn btn-success">Отправить фото до</button>
+                        </form>
+                    {% else %}
+                        <form class="mt-3" action="{% url 'crmapp:foreman_photo_before' order.id %}"
+                              method="POST"
+                              enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input class="btn btn-outline-success" type="file" name="photo_after" multiple>
+                            <button type="submit" class="btn btn-success">Отправить фото после</button>
+                        </form>
                     {% endif %}
                 {% endif %}
             {% endif %}
         {% endif %}
-        {#            </div>#}
-        {#        </div>#}
+    {% endif %}
+    {#            </div>#}
+    {#        </div>#}
     </div>
 
     <!-- Modal -->
