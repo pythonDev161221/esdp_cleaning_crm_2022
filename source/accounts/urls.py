@@ -19,7 +19,7 @@ from accounts.views.accounts import (StaffProfileView,
                                      StaffOrderDetailView,)
 from accounts.views.payout import PayoutListView, PayoutCreateView, CashManagerCreateView
 
-from source.accounts.views.accounts import StaffManagerListView
+from accounts.views.accounts import StaffManagerListView
 
 app_name = 'accounts'
 
