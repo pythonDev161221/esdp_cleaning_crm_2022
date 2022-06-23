@@ -17,6 +17,7 @@ xlwt = "*"
 selenium = "*"
 behave = "*"
 behave-django = "*"
+djangorestframework = "*"
 
 [dev-packages]
 

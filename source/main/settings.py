@@ -43,13 +43,15 @@ INSTALLED_APPS = [
     'crmapp',
     'accounts',
     'tgbot',
+    'api_v1',
 
     # lib app
     'phonenumber_field',
     'fontawesomefree',
     'crispy_forms',
     'behave_django',
-    'crispy_bootstrap5'
+    'crispy_bootstrap5',
+    'rest_framework',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
