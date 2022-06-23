@@ -1,6 +1,13 @@
 from rest_framework import serializers
 
-from crmapp.models import Fine, Bonus, Inventory, ObjectType
+from crmapp.models import Client, Fine, Bonus, Inventory, ObjectType
+
+
+class ClientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Client
+        fields = ('id', 'first_name', 'last_name', 'phone', 'organization')
+        read_only_fields = ('id',)
 
 
 class FineSerializer(serializers.ModelSerializer):

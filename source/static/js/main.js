@@ -9,17 +9,6 @@ async function make_request(url, method = 'GET') {
         error.response = response;
         throw error;
     }
-
-}
-
-function copy_token(event) {
-    const copyBtn = document.getElementById('copy-btn');
-    console.log(copyBtn);
-    window.addEventListener('click', () => {
-        const token = copyBtn.getAttribute('data-token');
-        navigator.clipboard.writeText(token);
-        copyBtn.textContent = 'Token скопирован';
-    })
 }
 
 function getCookie(name) {
@@ -35,6 +24,46 @@ function getCookie(name) {
         }
     }
     return cookieValue;
+}
+
+function copy_token(event) {
+    const copyBtn = document.getElementById('copy-btn');
+    console.log(copyBtn);
+    window.addEventListener('click', () => {
+        const token = copyBtn.getAttribute('data-token');
+        navigator.clipboard.writeText(token);
+        copyBtn.textContent = 'Token скопирован';
+    })
+}
+
+async function modalClientOpen() {
+    let modal = document.getElementById('ClientModal');
+    modal.style.display = "block"
+    modal.style.background = 'rgba(0, 0 , 0, 0.2)'
+    modal.focus()
+}
+
+async function modalClientClose() {
+    let modal = document.getElementById('ClientModal');
+    modal.style.display = "none"
+}
+
+async function createClient() {
+    let pathname = window.location.pathname
+    let first_name = document.getElementById("first_name").value;
+    let last_name = document.getElementById("last_name").value;
+    let phone = document.getElementById("phone").value;
+    let organization = document.getElementById("organization").value;
+    let csrftokens = getCookie('csrftoken');
+    let url = "/api/client/create/".replace(pathname, '')
+    let data = {"first_name": first_name, "last_name": last_name, "phone": phone, "organization": organization};
+    let response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftokens
+        }})
 }
 
 async function modalFineOpen() {
@@ -70,7 +99,6 @@ async function createFine() {
     if (response.ok) {
         modalFineClose()}
 }
-
 
 async function modalBonusOpen() {
     let modal = document.getElementById('BonusModal');
@@ -150,7 +178,7 @@ async function createObjectType() {
     let pathname = window.location.pathname
     let object_type_name = document.getElementById("object_type_name").value;
     let csrftoken = getCookie('csrftoken');
-    let url =  "/api/object_type/create/".replace(pathname, '')
+    let url = "/api/object_type/create/".replace(pathname, '')
     let data = {"name": object_type_name};
     let response = await fetch(url, {
         method: "POST",
@@ -162,5 +190,6 @@ async function createObjectType() {
     })
     if (response.ok) {
         modalObjectTypeClose()}
-
 }
+
+

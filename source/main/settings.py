@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'crmapp',
     'accounts',
     'tgbot',
-    'api_v1',
+    'api',
 
     # lib app
     'phonenumber_field',

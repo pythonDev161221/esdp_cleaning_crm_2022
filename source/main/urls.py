@@ -25,7 +25,7 @@ urlpatterns = [
     path('', index, name='index'),
     path('', include('crmapp.urls')),
     path('accounts/', include('accounts.urls')),
-    path('api/', include('api_v1.urls')),
+    path('api/', include('api.urls')),
     # path("telegram-bot/", include("tgbot.urls"))  # Включить при использование бота в режиме webhook
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

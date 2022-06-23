@@ -576,6 +576,10 @@ mark,
     margin-right: 0.5rem;
 }
 
+.select2-selection{
+    padding-bottom: 40px;
+}
+
 .initialism {
     font-size: 90%;
     text-transform: uppercase;

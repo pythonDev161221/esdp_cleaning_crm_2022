@@ -27,7 +27,9 @@
                             {% if field.name == 'client_info' %}
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <button class="btn btn-outline-dark" type="button">Добавить клиента</button>
+                                        <button class="btn btn-outline-dark" onclick="modalClientOpen()">
+                                            Добавить клиента
+                                        </button>
                                     </div>
                                     {{ field }}
                                 </div>
@@ -49,4 +51,53 @@
             </div>
         </div>
     </div>
+
+    <div id="ClientModal" class="modal mt-5">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Добавить Клиента</h2>
+                    <button onclick="modalClientClose()" class="btn btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">x</button>
+                </div>
+                <form>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <input placeholder="Имя" class="form-control" maxlength="2000" type="text"
+                                   required
+                                   id="first_name">
+                        </div>
+                        <div class="mb-3">
+                            <input placeholder="Фамилия" class="form-control" maxlength="200" type="text"
+                                   id="last_name">
+                        </div>
+                        <div class="mb-3">
+                            <input placeholder="Телефон в формате +996 без пробелов" class="form-control"
+                                   maxlength="200" type="tel"
+                                   id="phone">
+                        </div>
+                        <div class="mb-3">
+                            <input placeholder="Организация" class="form-control" maxlength="200"
+                                   type="text"
+                                   id="organization">
+                        </div>
+                        <div class="mb-3">
+                            <button class="btn btn-success w-100" onclick="createClient()" type="submit"
+                                    id="create-button">Сохранить
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 {% endblock content %}
+{% block scripts %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#id_client_info').select2();
+        });
+    </script>
+{% endblock scripts %}
