@@ -264,7 +264,7 @@ class Fine(models.Model):
 
 
 class Bonus(models.Model):
-    bonus = models.CharField(max_length=300, null=True, blank=True, verbose_name=_('Бонус'))
+    bonus = models.CharField(max_length=300, null=False, blank=False, verbose_name=_('Бонус'))
     value = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name=_('Сумма бонуса'))
 
     def __str__(self):
