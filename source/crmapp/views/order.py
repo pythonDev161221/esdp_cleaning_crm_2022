@@ -7,13 +7,13 @@ from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import DetailView, UpdateView, DeleteView, ListView, FormView
 
-from crmapp.helpers.crispy_form_helpers import OrderFormHelper, ServiceFormHelper, CleanersPartHelper, StaffFormHelper
+from crmapp.helpers.crispy_form_helpers import OrderFormHelper, CleanersPartHelper, StaffFormHelper
 from crmapp.forms import CleanersPartForm, OrderForm, OrderCommentForm, ServiceOrderForm
-from crmapp.helpers.order_helpers import BaseOrderCreateView, ServiceFormset, StaffFormset, ModalFormView
+from crmapp.helpers.order_helpers import BaseOrderCreateView, StaffFormset, ModalFormView
 
-from crmapp.models import Order, ForemanOrderUpdate, ServiceOrder
+from crmapp.models import Order
 
-from tgbot.handlers.orders.tg_order_staff import staff_accept_order, order_finished, manager_alert, order_canceled
+from tgbot.handlers.orders.tg_order_staff import staff_accept_order, order_canceled
 
 from crmapp.forms import SearchForm
 
@@ -62,14 +62,8 @@ class OrderDetailView(PermissionRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['brigadir'] = self.get_brigadier()
         context['service_form'] = ServiceOrderForm
         return context
-
-    def get_brigadier(self):
-        if self.object.order_cleaners.all():
-            return self.object.order_cleaners.get(is_brigadier=True)
-        return None
 
     def has_permission(self):
         return super().has_permission() or self.get_object().order_cleaners.get(
@@ -92,7 +86,7 @@ class OrderDeleteView(PermissionRequiredMixin, DeleteView):
         return self.request.user == self.get_object().manager or self.request.user.is_staff
 
 
-class FirstStepOrderCreateView(PermissionRequiredMixin, FormView):
+class OrderCreateView(PermissionRequiredMixin, FormView):
     model = Order
     form_class = OrderForm
     template_name = 'order/order_create.html'

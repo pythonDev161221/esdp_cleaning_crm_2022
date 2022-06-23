@@ -1,63 +1,47 @@
-{% extends 'base.html' %}
-
-{% block tittle %}Отчет {% endblock tittle %}
-
-{% block content %}
-    <form class="text-center mt-3" action="" method="GET">
-        <label>с: </label><input name="start_date" type="date">
-        <label>по: </label><input name="end_date" type="date">
-        <input class="btn btn-outline-secondary" type="submit" value="Поиск">
-    </form>
-    <div class="container">
-        <a class="btn btn-success" href="{% url 'crmapp:expense-excel' %}">Экспорт в Excel</a>
-        <h3>Отчет по доходам и расходам</h3>
-        <table class="table">
-            <thead>
-            <tr>
-                <th scope="col">№</th>
-                <th scope="col">Адрес</th>
-                <th scope="col">Статус</th>
-                <th scope="col">Дата</th>
-                <th scope="col">Сумма заказа</th>
-                <th scope="col">Расходы на клинеров</th>
-                <th scope="col">Прочие расходы</th>
-                <th scope="col">Итого</th>
-
-            </tr>
-            </thead>
-            <tbody>
-            {% for order in orders %}
-                <tr>
-                    <th>{{ order.id }}</th>
-                    <th><a class="text-success" style="text-decoration: none"
-                           href="{% url 'crmapp:order_detail' order.pk %}"> {{ order.address }}</a></th>
-                    <th>{{ order.get_status_display }}</th>
-                    <th scope="row">{{ order.work_start }}</th>
-                    <td>{{ order.get_total }}</td>
-                    <td>{{ order.get_all_staff_expenses }}</td>
-                    <td>{{ order.get_foreman_expenses }}</td>
-                    {% if  order.get_income_outcome < 0 %}
-                        <td class="text-danger">{{ order.get_income_outcome }}</td>
-                    {% else %}
-                        <td>{{ order.get_income_outcome }}</td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-            <tr>
-                <td><b>Итого:</b> </td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><b>{{ order_sum }}</b></td>
-                <td><b>{{ cleaner_outcome }}</b></td>
-                <td><b>{{ other_outcome }}</b></td>
-                <td><b>{{ total }}</b></td>
-            </tr>
-
-            </tbody>
-        </table>
-    </div>
-
-
-
-{% endblock content %}
+{% extends 'partial/paginnated_table.html' %}
+{% block title %}
+    История заказов
+{% endblock title %}
+{% block table_title %}
+    История заказов {{ staff }}
+{% endblock table_title %}
+{% block thead %}
+    <th>#</th>
+    <th>Адрес</th>
+    <th>Дата</th>
+    <th>Сумма заказа</th>
+    <th>Расходы на клинеров</th>
+    <th>Прочие расходы</th>
+    <th>Итого</th>
+{% endblock thead %}
+{% block tbody %}
+    {% for order in orders %}
+        <tr>
+            <td>
+                <a class="btn btn-outline-light btn-rounded btn-md"
+                   href="{% url 'crmapp:order_detail' order.pk %}">Заказ №{{ order.pk }}</a>
+            </td>
+            <td>{{ order.address }}</td>
+            <td>{{ order.created_at }}</td>
+            <td>{{ order.get_total }}</td>
+            <td>{{ order.get_all_staff_expenses }}</td>
+            <td>{{ order.get_foreman_expenses }}</td>
+            {% if  order.get_income_outcome < 0 %}
+                <td class="text-danger">-{{ order.get_income_outcome }}</td>
+            {% else %}
+                <td>{{ order.get_income_outcome }}</td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+{% endblock tbody %}
+{#{% block tfoot %}#}
+{#    <tfoot>#}
+{#        <tr>#}
+{#            <td colspan="3"><b>Итого:</b></td>#}
+{#            <td><b>{{ order_sum }}</b></td>#}
+{#            <td><b>{{ cleaner_outcome }}</b></td>#}
+{#            <td><b>{{ other_outcome }}</b></td>#}
+{#            <td><b>{{ total }}</b></td>#}
+{#        </tr>#}
+{#    </tfoot>#}
+{#{% endblock tfoot %}#}

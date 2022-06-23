@@ -5,6 +5,11 @@
 {% block table_title %}
     Постоянные клиенты
 {% endblock table_title %}
+{% block button %}
+    <div class="text-right">
+        <a class="mb-2 btn btn-secondary btn-sm" href="{% url 'crmapp:client_create' %}">Добавить клиента</a>
+    </div>
+{% endblock button %}
 {% block thead %}
     <th>#</th>
     <th>Фамилия</th>

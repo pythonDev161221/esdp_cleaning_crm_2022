@@ -122,7 +122,7 @@ class Payout(models.Model):
     staff = models.ForeignKey('accounts.Staff', null=False, blank=False, related_name='payouts',
                               verbose_name=_('Работник'), on_delete=models.PROTECT)
     salary = models.IntegerField(null=False, blank=False,
-                                 verbose_name=_('Заработная плата'))
+                                 verbose_name=_('Сумма'))
     date_payout = models.DateTimeField(auto_now=True)
 
     def get_absolute_url(self):

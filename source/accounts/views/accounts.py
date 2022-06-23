@@ -266,7 +266,7 @@ class GetAuthTokenTelegram(PermissionRequiredMixin, DetailView):
 class StaffPayoutDetailView(LoginRequiredMixin, DetailView):
     model = Staff
     context_object_name = 'staff'
-    template_name = 'account/staff_payouts.html'
+    template_name = 'account/payout_list.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -282,6 +282,5 @@ class StaffOrderDetailView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print(context['staff'].orders.all())
         return context
 

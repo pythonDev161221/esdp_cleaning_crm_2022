@@ -16,7 +16,7 @@
 {% block tbody %}
     {% for staff in user_objects %}
         <tr>
-            <td class="text-center">
+            <td>
                 <a class="btn btn-outline-light btn-rounded btn-md" href="{% url 'accounts:profile' staff.pk %}">
                     {{ staff.last_name | capfirst }} {{ staff.first_name | capfirst }}</a>
             </td>

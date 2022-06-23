@@ -5,6 +5,11 @@
 {% block table_title %}
     Список услуг
 {% endblock table_title %}
+{% block button %}
+    <div class="text-right">
+        <a class="mb-2 btn btn-secondary btn-sm" href="{% url 'crmapp:service_create' %}">Добавить услугу</a>
+    </div>
+{% endblock button %}
 {% block thead %}
     <th>#</th>
     <th>Услуга</th>

@@ -28,9 +28,8 @@ from crmapp.views.manager_report import ManagerReportCreateView, ManagerReportLi
 
 from crmapp.views.order_staff import OrderStaffCreateView, OrderStaffDeleteView
 
-from crmapp.views.order import OrderListView, OrderDetailView, FirstStepOrderCreateView, \
-    SecondStepOrderCreateView, OrderFinishView, OrderDeleteView, OrderDeletedListView, OrderUpdateView, \
-    ServiceAddModalView
+from crmapp.views.order import OrderListView, OrderDetailView, OrderFinishView, OrderDeleteView, OrderDeletedListView, \
+    OrderUpdateView, ServiceAddModalView, OrderCreateView
 
 from crmapp.views.income_outcome_report import IncomeOutcomeReportView
 
@@ -41,7 +40,6 @@ from crmapp.views.object_type import ObjectTypeListView, ObjectTypeCreateView, O
 from crmapp.views.fine import FineListView, FineCreateView, FineUpdateView, FineDeleteView
 
 from crmapp.views.bonus import BonusListView, BonusCreateView, BonusUpdateView, BonusDeleteView
-
 
 app_name = 'crmapp'
 
@@ -58,6 +56,7 @@ excel_urlpatterns = [
 ]
 order_urlpatterns = [
     path('', OrderListView.as_view(), name='order_index'),
+    path('create/', OrderCreateView.as_view(), name='order_create'),
     path('<int:pk>/', OrderDetailView.as_view(), name='order_detail'),
     path('<int:pk>/delete/', OrderDeleteView.as_view(), name='order_delete'),
     path('deleted_list', OrderDeletedListView.as_view(), name='order_deleted_list'),

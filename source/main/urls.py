@@ -3,9 +3,11 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 
+from crmapp.views.order import OrderListView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('', , name='index'),
+    path('', OrderListView.as_view(), name='index'),
     path('', include('crmapp.urls')),
     path('accounts/', include('accounts.urls'))
     # path("telegram-bot/", include("tgbot.urls"))  # Включить при использование бота в режиме webhook
