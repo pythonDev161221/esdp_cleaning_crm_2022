@@ -19,6 +19,7 @@ from accounts.views.accounts import (StaffProfileView,
                                      StaffOrderDetailView,)
 from accounts.views.payout import PayoutListView, PayoutCreateView, CashManagerCreateView
 
+from accounts.views.accounts import StaffManagerListView
 
 app_name = 'accounts'
 
@@ -44,4 +45,5 @@ urlpatterns = [
     path('staff/<int:pk>/cash/', CashManagerCreateView.as_view(), name='cash_manager_create'),
     path("staff/<int:pk>/telegram/token/", GetAuthTokenTelegram.as_view(), name="auth_tg_token"),
     path('staff/<int:pk>/order/', StaffOrderDetailView.as_view(), name='staff_orders'),
+    path('staff/manager/', StaffManagerListView.as_view(), name='staff-manager-list'),
 ]

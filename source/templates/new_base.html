@@ -14,8 +14,12 @@
     <!-- Custom Stylesheet -->
     {% block style %}{% endblock style %}
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+<<<<<<< HEAD
     <link rel="stylesheet" href="{% static 'plugins/metismenu/css/metisMenu.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
+=======
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+>>>>>>> developer
 </head>
 <body>
 <!--******************* Анимация загрузки ********************-->
@@ -168,6 +172,134 @@
         </div>
     </div>
 </div>
+<!--********************************** Modal ***********************************-->
+<!--********************************** Modal Fine ***********************************-->
+<div id="FineModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Добавить Штраф</h2>
+                <button onclick="modalFineClose()" class="btn btn-close" data-bs-dismiss="modal"
+                        aria-label="Close">x</button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input placeholder="Категория" class="form-control" maxlength="255" type="text"
+                               id="category">
+                    </div>
+                    <div class="mb-3">
+                        <input placeholder="Название штрафа" class="form-control" maxlength="300" type="text"
+                               id="fine" required>
+                    </div>
+                    <div class="mb-3">
+                        <input placeholder="Критерий" class="form-control"
+                               maxlength="255" type="tel"
+                               id="criteria">
+                    </div>
+                    <div class="mb-3">
+                        <input placeholder="Сумма штрафа" class="form-control" maxlength="10"
+                               type="number"
+                               id="fine_value">
+                    </div>
+                    <div class="mb-3">
+                        <input placeholder="Пояснение" class="form-control" maxlength="500"
+                               type="text"
+                               id="description">
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-success w-100" onclick="createFine()" type="submit"
+                                id="create-button">Сохранить
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--********************************** Modal Bonus ***********************************-->
+<div id="BonusModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Добавить бонус</h2>
+                <button onclick="modalBonusClose()" class="btn btn-close" data-bs-dismiss="modal"
+                        aria-label="Close">x</button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input placeholder="Бонус" class="form-control" maxlength="300" type="text"
+                               id="bonus" required>
+                    </div>
+                    <div class="mb-3">
+                        <input placeholder="Сумма бонуса" class="form-control" maxlength="10"
+                               type="number" id="bonus_value">
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-success w-100" onclick="createBonus()" type="submit"
+                                id="create-button">Сохранить
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--********************************** Modal Inventory ***********************************-->
+<div id="InventoryModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Добавить инвентарь</h2>
+                <button onclick="modalInventoryClose()" class="btn btn-close" data-bs-dismiss="modal"
+                        aria-label="Close">x</button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input placeholder="Инвентарь" class="form-control" maxlength="255" type="text"
+                               id="inventory_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <input placeholder="Описание" class="form-control" maxlength="1000" type="text"
+                               id="inventory_description">
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-success w-100" onclick="createInventory()" type="submit"
+                                id="create-button">Сохранить
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--********************************** Modal ObjectType ***********************************-->
+<div id="ObjectTypeModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Добавить тип объекта</h2>
+                <button onclick="modalObjectTypeClose()" class="btn btn-close" data-bs-dismiss="modal"
+                        aria-label="Close">x</button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input placeholder="Тип объекта" class="form-control" maxlength="255" type="text"
+                               id="object_type_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-success w-100" onclick="createObjectType()" type="submit"
+                                id="create-button">Сохранить
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <!--********************************** Скрипты ***********************************-->
 <script src="{% static 'plugins/common/common.min.js' %}"></script>
 <script src="{% static 'js/custom.min.js' %}"></script>
@@ -176,6 +308,10 @@
 <script src="{% static 'js/styleSwitcher.js' %}"></script>
 <script src="{% static 'plugins/metismenu/js/metisMenu.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'js/modal_windows.js' %}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 {% block scripts %}{% endblock scripts %}
 </body>
 </html>

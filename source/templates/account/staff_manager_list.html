@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Сотрудники{% endblock title %}
+
+{% block content %}
+    {% if user_objects %}
+        {% include '../partial/simple_search.html' %}
+        <div class="container">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">ФИО Сотрудника</th>
+                    <th scope="col">Касса</th>
+                    <th scope="col">Телефон</th>
+                    <th scope="col"></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for staff in user_objects %}
+                    <tr>
+                        <td><a style="text-decoration: none" href="{% url 'accounts:profile' staff.pk %}">
+                            {{ staff.last_name | capfirst }} {{ staff.first_name | capfirst }} </a></td>
+                        <td>{{ staff.cash }}</td>
+                        <td>{{ staff.phone }}</td>
+
+                        <td><a class="btn btn-outline-success" href="{% url 'accounts:staff-edit' staff.pk %}"><i
+                                class="fa-solid fa-pen-to-square"></i></a>
+                            <a class="btn btn-outline-dark" href="{% url 'accounts:black-list-add' staff.pk %}"><i
+                                    class="fa-solid fa-file-excel"></i></a>
+                            <a class="btn btn-outline-danger" href="{% url 'accounts:staff-delete' staff.pk %}"><i
+                                    class="fa-solid fa-trash"></i></a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="p-5">Список менеджеров пуст</p>
+    {% endif %}
+{% endblock content %}

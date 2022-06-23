@@ -45,6 +45,11 @@
                                     <li><a class="dropdown-item" href="{% url 'accounts:staff-list' %}">Cписок
                                         сотрудников</a>
                                     </li>
+                                    {% if request.user.is_staff %}
+                                    <li><a class="dropdown-item" href="{% url 'accounts:staff-manager-list' %}">Cписок
+                                        менеджеров</a>
+                                    </li>
+                                    {% endif %}
                                     {% if perms.accounts.add_staff %}
                                         <a class="dropdown-item" href="{% url 'accounts:register' %}">Добавить
                                             сотрудника</a>
@@ -173,6 +178,6 @@
 {% endblock script %}
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'fontawesomefree/js/all.min.js' %}" crossorigin="anonymous"></script>
-<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/modal_windows.js' %}"></script>
 </body>
 </html>
