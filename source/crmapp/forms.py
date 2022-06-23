@@ -113,6 +113,11 @@ class ServiceOrderForm(forms.ModelForm):
             'total'
         )
 
+    def __init__(self, *args, **kwargs):
+        super(ServiceOrderForm, self).__init__(*args, **kwargs)
+        self.fields['amount'].widget.attrs['min'] = 1
+        self.fields['rate'].widget.attrs['max'] = 3
+
     def save(self, commit=True):
         service = super().save(commit=False)
         self.instance.total = service.service_total()

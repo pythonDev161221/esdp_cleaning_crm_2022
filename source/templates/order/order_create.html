@@ -52,14 +52,15 @@
         </div>
     </div>
 
-    <div id="ClientModal" class="modal mt-5">
+    <div id="ClientModal" class="modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2>Добавить Клиента</h2>
                     <button onclick="modalClientClose()" class="btn btn-close"
                             data-bs-dismiss="modal"
-                            aria-label="Close">x</button>
+                            aria-label="Close">x
+                    </button>
                 </div>
                 <form>
                     <div class="modal-body">
@@ -70,11 +71,13 @@
                         </div>
                         <div class="mb-3">
                             <input placeholder="Фамилия" class="form-control" maxlength="200" type="text"
+                                   required
                                    id="last_name">
                         </div>
                         <div class="mb-3">
                             <input placeholder="Телефон в формате +996 без пробелов" class="form-control"
-                                   maxlength="200" type="tel"
+                                   required minlength="13"
+                                   maxlength="13" type="tel"
                                    id="phone">
                         </div>
                         <div class="mb-3">
