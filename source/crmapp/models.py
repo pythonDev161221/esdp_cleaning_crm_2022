@@ -212,7 +212,8 @@ class Order(models.Model):
             [staff_salary.append([nc[0], int(self.cleaners_part) * nc[1]]) for nc in
              num_coefficient]
         if staff_list.filter(is_refuse=True):
-            [staff_salary.append([staff_is_refuse.staff, None]) for staff_is_refuse in staff_list.filter(is_refuse=True)]
+            [staff_salary.append([staff_is_refuse.staff, None]) for staff_is_refuse in
+             staff_list.filter(is_refuse=True)]
         return staff_salary
 
     def get_total(self):
@@ -227,6 +228,7 @@ class Order(models.Model):
                 return 2000
         else:
             return 0
+
     #
     # def save(self, *args, **kwargs):
     #     self.work_end = self.work_start + self.cleaning_time
@@ -237,13 +239,13 @@ class Order(models.Model):
         verbose_name = _('Заказ')
         verbose_name_plural = _('Заказы')
         permissions = [
-        ('сan_view_income_outcome_report', 'Может просмотреть отчет о расходах и доходах'),
-        ('can_view_order_deleted_list', 'Может просмотреть список удаленных заказов')
-    ]
+            ('сan_view_income_outcome_report', 'Может просмотреть отчет о расходах и доходах'),
+            ('can_view_order_deleted_list', 'Может просмотреть список удаленных заказов')
+        ]
 
 
 class Fine(models.Model):
-    category = models.CharField(max_length=255,null=True, blank=True, verbose_name=_('Категория'))
+    category = models.CharField(max_length=255, null=True, blank=True, verbose_name=_('Категория'))
     fine = models.CharField(max_length=300, null=True, blank=True, verbose_name=_('Штраф'))
     criteria = models.CharField(max_length=255, null=True, blank=True, verbose_name=_('Критерий'))
     value = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name=_('Сумма штрафа'))
@@ -298,7 +300,8 @@ class ServiceOrder(models.Model):
                               blank=True, on_delete=models.PROTECT)
     service = models.ForeignKey('crmapp.Service', related_name='service_orders', verbose_name=_('Услуга'),
                                 null=False, blank=False, on_delete=models.PROTECT)
-    amount = models.IntegerField(verbose_name=_('Объем работы'), null=False, blank=False)
+    amount = models.IntegerField(verbose_name=_('Объем работы'), null=False, blank=False,
+                                 validators=[MinValueValidator(1)])
     rate = models.DecimalField(default=1, null=False, blank=False, verbose_name=_('Коэффицент сложности'),
                                max_digits=2, decimal_places=1,
                                validators=[MinValueValidator(1.0), MaxValueValidator(3.0)])
