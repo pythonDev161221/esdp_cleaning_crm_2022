@@ -90,15 +90,18 @@
                                 <td>{{ service.total }}</td>
                                 <td>
                                     {% if perms.crmapp.change_serviceorder and order.manager == request.user or request.user.is_staff %}
-                                        <a class="ml-1" href="{% url 'crmapp:service_order_update' service.id %}">
-                                            <i title="Редактировать" class="fa fa-pencil text-dark hover-blue fs-5"></i>
-                                        </a>
+                                        <button class="btn" data-pk="{{ service.id }}"
+                                                onclick='modalServiceOrderUpdateOpen(event)'><i title="Редактировать"
+                                                                                                class="fa fa-pencil text-dark hover-blue fs-5"></i>
+                                        </button>
                                     {% endif %}
                                     {% if perms.crmapp.delete_stafforder and order.manager == request.user or request.user.is_staff %}
-                                        <a class="ml-1" href="{% url 'crmapp:order_staff_delete' service.id %}">
-                                            <i title="Удалить из заказа"
-                                               class="fa fa-trash text-dark hover-blue fs-5"></i>
-                                        </a>
+                                        <button class="btn" data-name-text="{{ service.service.name  }}"
+                                                data-pk="{{ service.id }}"
+                                                onclick='modalServiceOrderDeleteOpen(event)'><i
+                                                title="Удалить из заказа"
+                                                class="fa fa-trash text-dark hover-blue fs-5"></i>
+                                        </button>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -264,8 +267,8 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h2 class="modal-title" id="exampleModalLabel">Добавление услуги</h2>
+                    <button class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
                 </div>
                 <div class="modal-body">
                     <form id="service-form" action="{% url 'crmapp:order_add_service' order.id %}" method="post">
@@ -274,9 +277,73 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button form="service-form" type="submit" class="btn btn-primary">Save changes</button>
+                    <button form="service-form" type="submit" class="btn btn-success w-100">Добавить</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Service Update-->
+    <div id="ServiceOrderUpdate" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Услуга</h2>
+                    <button onclick="modalServiceOrderUpdateClose()" class="btn btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">x
+                    </button>
+                </div>
+                <form>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <select class="form-control" name="service" id="service">
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <input placeholder="Колличество" class="form-control" maxlength="2000" type="number" required min="1"
+                                   id="amount">
+                        </div>
+                        <div class="mb-3">
+                            <input placeholder="Коэффициент сложности" class="form-control" type="number"
+                                   required max="3"
+                                   id="rate">
+                        </div>
+                        <div class="mb-3">
+                            <button class="btn btn-success w-100" id='unique' onclick="updateServiceOrder(event)"
+                                    type="submit">Изменить
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Service Delete-->
+    <div id="ServiceOrderDelete" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Подтвердите удаление</h2>
+                    <button onclick="modalServiceOrderDeleteClose()"
+                            class="btn btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">x</button>
+                </div>
+                <form>
+                    <div class="modal-body">
+                        <div class="service-info" id="service-info">
+                        </div>
+                        <div class="mb-3">
+                            <button class="btn btn-success w-100"
+                                    id='unique-delete'
+                                    onclick="deleteServiceOrder(event)"
+                                    type="submit">Удалить
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
