@@ -117,15 +117,15 @@
                             <ul aria-expanded="false" class="collapse">
                                 <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Инвентарь</a>
                                     <ul aria-expanded="false" class="collapse">
-                                        <li><a href="{% url 'crmapp:inventory_create' %}">Добавить инвентарь</a></li>
+                                        <li><a onclick="modalInventoryOpen()">Добавить инвентарь</a></li>
                                         <li><a href="{% url 'crmapp:inventory_index' %}">Список инвентаря</a></li>
                                     </ul>
                                 </li>
                             </ul>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Объкеты</a>
+                                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Объекты</a>
                                     <ul aria-expanded="false" class="collapse">
-                                        <li><a href="{% url 'crmapp:object_type_create' %}">Добавить тип объекта</a>
+                                        <li><a href="#" onclick="modalObjectTypeOpen()">Добавить тип объекта</a>
                                         </li>
                                         <li><a href="{% url 'crmapp:object_type_list' %}">Список объeктов</a></li>
                                     </ul>
@@ -134,8 +134,8 @@
                             <ul aria-expanded="false" class="collapse">
                                 <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Штрафы</a>
                                     <ul aria-expanded="false" class="collapse">
-                                        {% if perms.crmapp.add_fine %}
-                                            <li><a href="{% url 'crmapp:fine_create' %}">Добавить штраф</a></li>
+                                        {% if perms.crmapp.add_fine or request.user.is_staff %}
+                                            <li><a href="#" onclick="modalFineOpen()">Добавить штраф</a></li>
                                         {% endif %}
                                         <li><a href="{% url 'crmapp:fine_list' %}">Список штрафов</a></li>
                                     </ul>
@@ -144,7 +144,7 @@
                             <ul aria-expanded="false" class="collapse">
                                 <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Бонусы</a>
                                     <ul aria-expanded="false" class="collapse">
-                                        <li><a href="{% url 'crmapp:bonus_create' %}">Добавить бонус</a></li>
+                                        <li><a href="#" onclick="modalBonusOpen()">Добавить бонус</a></li>
                                         <li><a href="{% url 'crmapp:bonus_list' %}">Список бонусов</a></li>
                                     </ul>
                                 </li>
@@ -262,6 +262,7 @@
                     </div>
                 </div>
             {% endblock content %}
+
         </div>
         <!-- #/ container -->
     </div>
@@ -269,6 +270,134 @@
     <div class="footer">
         <div class="copyright">
             <p>Copyright © Designed &amp; 2022</p>
+        </div>
+    </div>
+</div>
+<!--********************************** Modal ***********************************-->
+<!--********************************** Modal Fine ***********************************-->
+<div id="FineModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Добавить Штраф</h2>
+                <button onclick="modalFineClose()" class="btn btn-close" data-bs-dismiss="modal"
+                        aria-label="Close">x</button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input placeholder="Категория" class="form-control" maxlength="255" type="text"
+                               id="category">
+                    </div>
+                    <div class="mb-3">
+                        <input placeholder="Название штрафа" class="form-control" maxlength="300" type="text"
+                               id="fine" required>
+                    </div>
+                    <div class="mb-3">
+                        <input placeholder="Критерий" class="form-control"
+                               maxlength="255" type="tel"
+                               id="criteria">
+                    </div>
+                    <div class="mb-3">
+                        <input placeholder="Сумма штрафа" class="form-control" maxlength="10"
+                               type="number"
+                               id="fine_value">
+                    </div>
+                    <div class="mb-3">
+                        <input placeholder="Пояснение" class="form-control" maxlength="500"
+                               type="text"
+                               id="description">
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-success w-100" onclick="createFine()" type="submit"
+                                id="create-button">Сохранить
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--********************************** Modal Bonus ***********************************-->
+<div id="BonusModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Добавить бонус</h2>
+                <button onclick="modalBonusClose()" class="btn btn-close" data-bs-dismiss="modal"
+                        aria-label="Close">x</button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input placeholder="Бонус" class="form-control" maxlength="300" type="text"
+                               id="bonus" required>
+                    </div>
+                    <div class="mb-3">
+                        <input placeholder="Сумма бонуса" class="form-control" maxlength="10"
+                               type="number" id="bonus_value">
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-success w-100" onclick="createBonus()" type="submit"
+                                id="create-button">Сохранить
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--********************************** Modal Inventory ***********************************-->
+<div id="InventoryModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Добавить инвентарь</h2>
+                <button onclick="modalInventoryClose()" class="btn btn-close" data-bs-dismiss="modal"
+                        aria-label="Close">x</button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input placeholder="Инвентарь" class="form-control" maxlength="255" type="text"
+                               id="inventory_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <input placeholder="Описание" class="form-control" maxlength="1000" type="text"
+                               id="inventory_description">
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-success w-100" onclick="createInventory()" type="submit"
+                                id="create-button">Сохранить
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--********************************** Modal ObjectType ***********************************-->
+<div id="ObjectTypeModal" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Добавить тип объекта</h2>
+                <button onclick="modalObjectTypeClose()" class="btn btn-close" data-bs-dismiss="modal"
+                        aria-label="Close">x</button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input placeholder="Тип объекта" class="form-control" maxlength="255" type="text"
+                               id="object_type_name" required>
+                    </div>
+                    <div class="mb-3">
+                        <button class="btn btn-success w-100" onclick="createObjectType()" type="submit"
+                                id="create-button">Сохранить
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -282,6 +411,7 @@
 <script src="{% static 'js/modal_windows.js' %}"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 {% block scripts %}{% endblock scripts %}
 </body>
 </html>
