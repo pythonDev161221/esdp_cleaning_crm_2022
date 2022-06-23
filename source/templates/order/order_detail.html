@@ -171,15 +171,16 @@
                                             {% if perms.crmapp.change_serviceorder and order.manager == request.user or request.user.is_staff %}
                                                 <a class="ml-1"
                                                    href="javascript:void()" data-pk="{{ service.id }}"
-                                                onclick='modalServiceOrderUpdateOpen(event)'>
+                                                   onclick='modalServiceOrderUpdateOpen(event)'>
                                                     <i title="Редактировать"
                                                        class="fa fa-pencil text-dark hover-blue fs-5"></i>
                                                 </a>
                                             {% endif %}
                                             {% if perms.crmapp.delete_serviceorder and order.manager == request.user or request.user.is_staff %}
-                                                <a class="ml-1" href="javascript:void()" data-name-text="{{ service.service.name  }}"
-                                                data-pk="{{ service.id }}"
-                                                onclick='modalServiceOrderDeleteOpen(event)'>
+                                                <a class="ml-1" href="javascript:void()"
+                                                   data-name-text="{{ service.service.name }}"
+                                                   data-pk="{{ service.id }}"
+                                                   onclick='modalServiceOrderDeleteOpen(event)'>
                                                     <i title="Удалить из заказа"
                                                        class="fa fa-trash text-dark hover-blue fs-5"></i>
                                                 </a>
@@ -407,7 +408,8 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <input placeholder="Колличество" class="form-control" maxlength="2000" type="number" required min="1"
+                            <input placeholder="Колличество" class="form-control" maxlength="2000" type="number"
+                                   required min="1"
                                    id="amount">
                         </div>
                         <div class="mb-3">
@@ -435,7 +437,8 @@
                     <button onclick="modalServiceOrderDeleteClose()"
                             class="btn btn-close"
                             data-bs-dismiss="modal"
-                            aria-label="Close">x</button>
+                            aria-label="Close">x
+                    </button>
                 </div>
                 <form>
                     <div class="modal-body">
