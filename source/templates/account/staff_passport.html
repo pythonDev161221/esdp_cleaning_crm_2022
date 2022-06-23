@@ -3,6 +3,11 @@
     <div class="passport mt-3">
         {% if user_object.passport %}
             <img src="{{ user_object.passport.url }}" alt="passport">
+            {% if perms.accounts.add_staff_passport_photo %}
+            <div class="passport mt-3">
+                <a class="btn btn-primary" href="{% url 'accounts:staff-add-passport' user_object.id %}">Изменить</a>
+            </div>
+            {% endif %}
         {% else %}
             {% if perms.accounts.add_staff_passport_photo %}
             <div class="passport mt-3">

@@ -182,7 +182,7 @@ class StaffDeleteView(PermissionRequiredMixin, DeleteView):
     permission_required = "accounts.delete_staff"
 
     def get_object(self, queryset=None):
-        return self.request.user
+        return Staff.objects.get(pk=self.kwargs.get(self.pk_url_kwarg))
 
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -202,7 +202,6 @@ class StaffBlackListView(PermissionRequiredMixin, ListView):
     permission_required = "accounts.view_staff_blacklist"
     paginate_by = 10
     paginate_orphans = 0
-
 
     def get(self, request, *args, **kwargs):
         self.form = self.get_form()

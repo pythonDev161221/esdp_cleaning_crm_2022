@@ -2,8 +2,9 @@ from django.http import HttpResponseNotAllowed, HttpResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateAPIView, DestroyAPIView
 
-from api.serializers import ClientSerializer, FineSerializer, BonusSerializer, InventorySerializer, ObjectTypeSerializer
-from crmapp.models import Client, Fine, Bonus, Inventory, ObjectType
+from api.serializers import ClientSerializer, FineSerializer, BonusSerializer, InventorySerializer, ObjectTypeSerializer, OrderServiceSerializer, ServiceListSerializer
+from crmapp.models import Client, Fine, Bonus, Inventory, ObjectType, ServiceOrder, Service
+
 
 
 @ensure_csrf_cookie
@@ -16,6 +17,16 @@ def get_token_view(request, *args, **kwargs):
 class ApiClientCreateView(CreateAPIView):
     serializer_class = ClientSerializer
     queryset = Client.objects.all()
+
+
+class ApiServiceOrderUpdate(RetrieveUpdateAPIView):
+    serializer_class = OrderServiceSerializer
+    queryset = ServiceOrder.objects.all()
+
+
+class ApiServiceOrderDelete(DestroyAPIView):
+    serializer_class = OrderServiceSerializer
+    queryset = ServiceOrder.objects.all()
 
 
 class ApiFineCreateView(CreateAPIView):
@@ -36,3 +47,4 @@ class ApiInventoryCreateView(CreateAPIView):
 class ApiObjectTypeCreateView(CreateAPIView):
     serializer_class = ObjectTypeSerializer
     queryset = ObjectType.objects.all()
+
