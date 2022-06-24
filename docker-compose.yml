@@ -6,6 +6,11 @@ services:
     restart: always
     image: postgres:14
     container_name: postgres
+    environment:
+      - POSTGRES_DB=test
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:
@@ -15,13 +20,26 @@ services:
     build: .
     env_file:
       - ./source/.env
-    ports:
-      - 8000:8000
     depends_on:
       - postgres_db
     volumes:
       - static:/crm_cleaning/source/static
       - media:/crm_cleaning/source/uploads
+    ports:
+      - 8000:8000
+    networks:
+      crm_network:
+
+  nginx:
+    container_name: crm_nginx
+    volumes:
+      - static:/crm_cleaning/source/static
+      - media:/crm_cleaning/source/uploads
+    build: ./nginx
+    depends_on:
+      - web
+    ports:
+      - "80:80"
     networks:
       crm_network:
 
