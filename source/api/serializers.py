@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from crmapp.models import Client, Fine, Bonus, Inventory, ObjectType, ServiceOrder, Service
+from crmapp.models import Client, Fine, Bonus, Inventory, ObjectType, ServiceOrder, Service, InventoryOrder
 
 
 class ClientSerializer(serializers.ModelSerializer):
@@ -14,13 +14,6 @@ class OrderServiceSerializer(serializers.ModelSerializer):
         model = ServiceOrder
         depth = 1
         fields = ['service', 'amount', 'rate']
-
-
-class ServiceListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Service
-        fields = ('id', 'name',)
-        read_only_fields = ('id',)
 
 
 class FineSerializer(serializers.ModelSerializer):
@@ -46,3 +39,8 @@ class ObjectTypeSerializer(serializers.ModelSerializer):
         model = ObjectType
         fields = ('id', 'name')
 
+
+class InventoryOrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = InventoryOrder
+        fields = ('id', 'inventory', 'amount')
