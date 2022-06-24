@@ -90,18 +90,18 @@
                                 <td>{{ service.total }}</td>
                                 <td>
                                     {% if perms.crmapp.change_serviceorder and order.manager == request.user or request.user.is_staff %}
-                                        <button class="btn btn-outline" data-pk="{{ service.id }}"
+                                        <a href="javascipt:void()" class="btn btn-outline" data-pk="{{ service.id }}"
                                                 onclick='modalServiceOrderUpdateOpen(event)'><i title="Редактировать"
                                                                                                 class="fa fa-pencil text-dark hover-blue fs-5"></i>
-                                        </button>
+                                        </a>
                                     {% endif %}
                                     {% if perms.crmapp.delete_stafforder and order.manager == request.user or request.user.is_staff %}
-                                        <button class="btn" data-name-text="{{ service.service.name }}"
+                                        <a href="javascript:void()" data-name-text="{{ service.service.name }}"
                                                 data-pk="{{ service.id }}"
                                                 onclick='modalServiceOrderDeleteOpen(event)'><i
                                                 title="Удалить из заказа"
                                                 class="fa fa-trash text-dark hover-blue fs-5"></i>
-                                        </button>
+                                        </a>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -188,12 +188,12 @@
                                         <td>
                                             {% if perms.crmapp.delete_inventoryorder and order.manager == request.user or request.user.is_staff %}
 
-                                                <button class="btn" data-name-text="{{ inventory.inventory.name }}"
+                                                <a href="javascript:void()" data-name-text="{{ inventory.inventory.name }}"
                                                         data-pk="{{ inventory.id }}"
                                                         onclick='modalInventoryOrderDeleteOpen(event)'><i
                                                         title="Удалить из заказа"
                                                         class="fa fa-trash text-dark hover-blue fs-5"></i>
-                                                </button>
+                                                </a>
                                             {% endif %}</td>
                                     </tr>
                                 {% endfor %}
