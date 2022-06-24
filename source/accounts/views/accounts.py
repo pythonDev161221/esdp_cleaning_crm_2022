@@ -34,6 +34,7 @@ class StaffProfileView(PermissionRequiredMixin, DetailView):
         if self.object.groups.filter(name=group):
             context["is_manager"] = True
             context["cash_order_count"] = self.object.manager_cash.filter(is_nullify=False).count()
+        context['form_description'] = StaffDescriptionForm
         return context
 
     def has_permission(self):

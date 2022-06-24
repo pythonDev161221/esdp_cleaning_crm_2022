@@ -18,6 +18,7 @@ selenium = "*"
 behave = "*"
 behave-django = "*"
 djangorestframework = "*"
+uwsgi = "*"
 
 [dev-packages]
 

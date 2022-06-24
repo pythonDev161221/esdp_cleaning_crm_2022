@@ -95,6 +95,17 @@ class StaffDescriptionForm(forms.ModelForm):
         model = Staff
         fields = ["description", ]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['description'].widget.attrs.update(
+            {
+                'class': 'form-control',
+                'placeholder': 'Введите примечание',
+                'cols': 30,
+                'rows': 2
+            }
+        )
+
 
 class PasswordChangeForm(forms.ModelForm):
     password = forms.CharField(label="Новый пароль", strip=False, widget=forms.PasswordInput)
