@@ -1,21 +1,24 @@
-{% extends "base.html" %}
+{% extends "new_base.html" %}
 
 {% block content %}
-    <div class="text-center m-5">
-        <h3>Авторизация сотрудника в Telegram боте</h3>
-        <hr>
-        <div class="text-center">
-            <button  onclick="copy_token(event)" class="btn btn-outline-success" id="copy-btn" data-token={{ token }}>Нажмите кнопку,чтобы
-                скопировать
-                token аворизации
-            </button>
+    <div class="card">
+        <div class="text-center m-5">
+            <h3>Авторизация сотрудника в Telegram боте</h3>
+            <hr>
+            <div class="text-center">
+                <button onclick="copy_token(event)" class="btn btn-outline-primary" id="copy-btn"
+                        data-token={{ token }}>Нажмите кнопку,чтобы
+                    скопировать
+                    token аворизации
+                </button>
+            </div>
+            <hr>
+            <h4>Инструкция</h4>
+            <div>
+                <p>Отправьте сотруднику скопированный TOKEN, далее сотрудник должен перейти в telegram по
+                    ссылке и нажать кнопку "START" для авторизации.</p>
+            </div>
         </div>
-        <hr>
-        <h4>Инструкция</h4>
-        <div>
-            <p>Отправьте сотруднику скопированный TOKEN, далее сотрудник должен перейти в telegram по
-                ссылке и нажать кнопку на "start" для авторизации.</p>
-        </div>
+        {% block script %}{% endblock script %}
     </div>
-    {% block script %}{% endblock script %}
 {% endblock %}

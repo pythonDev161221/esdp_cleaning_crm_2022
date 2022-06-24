@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.auth.models import Group
 from django.db.models import Q
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect, get_object_or_404, render
+from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 
 from django.views.generic import DetailView, CreateView, ListView, UpdateView, DeleteView
@@ -18,7 +18,6 @@ from accounts.forms import (LoginForm,
                             StaffDescriptionForm,
                             StaffPassportForm)
 from accounts.models import Staff
-from tgbot.dispatcher import TELEGRAM_BOT_USERNAME
 
 from crmapp.forms import SearchForm
 
