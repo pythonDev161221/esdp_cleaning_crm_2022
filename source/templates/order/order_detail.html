@@ -10,7 +10,7 @@
                     <h3 class="mb-0">Заказ №{{ order.id }}</h3>
                 </div>
                 <hr>
-                <div class="row px-5">
+                <div class="row px-5 mb-5">
                     <div class="col-12">
                         <strong class="mr-3">Статус: </strong>
                         <span class="badge badge-pill badge-secondary">{{ order.get_status_display }}</span>
@@ -18,7 +18,6 @@
                 </div>
                 <div class="row px-5">
                     <div class="col-lg-6 col-md-12">
-                        <h4 class="mt-4 mb-3">Основная информация:</h4>
                         <p class="mb-0">
                             <strong class="mr-3">Менеджер: </strong><span>{{ order.manager.first_name }} {{ order.manager.last_name }}</span>
                         </p>
@@ -37,14 +36,13 @@
                             {% if order.cleaning_time %}
                                 <span>{{ order.cleaning_time }} ч.</span>
                             {% else %}
-                                <button type="button" class="btn mb-1 btn-secondary btn-xs">Добавить
-                                    время
-                                </button>
+                                <a title="Дубавить время на выполнение заказа" href="#">
+                                    <i class="fa fa-plus-circle fs-6"></i>
+                                </a>
                             {% endif %}
                         </p>
                     </div>
                     <div class="col-lg-6 col-md-12">
-                        <h4 class="text-lg-right mt-4 mb-3">Информация по заказчику:</h4>
                         <p class="text-lg-right mb-0">
                             <strong class="mr-3">Адрес:</strong>
                             <span>{{ order.address }}</span>
@@ -68,10 +66,89 @@
                         {#                            </div>#}
                     </div>
                 </div>
-                <!-- **************************************  Услуги #####################################-->
-                <div class="text-center my-4"><h5>Добавленные услуги:</h5></div>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped verticle-middle">
+                <h4 class="fs-6 my-4 text-center">Информация по заказу:</h4>
+                <!-- *********************************************  Таб меню ****************************************-->
+                <input id="services" type="radio" name="tab-link" checked>
+                <input id="inventories" type="radio" name="tab-link">
+                <input id="cleaners" type="radio" name="tab-link">
+                <input id="expences" type="radio" name="tab-link">
+                <input id="fotos" type="radio" name="tab-link">
+                <ul class="nav nav-tabs">
+                    <li class="nav-item">
+                        <label for="services" class="nav-link">Услуги</label>
+                    </li>
+                    <li class="nav-item">
+                        <label for="inventories" class="nav-link">Инвентарь</label>
+                    </li>
+                    <li class="nav-item">
+                        <label for="cleaners" class="nav-link">Бригада</label>
+                    </li>
+                    <li class="nav-item">
+                        <label for="expences" class="nav-link">Расходы</label>
+                    </li>
+                    {% if order.status != 'finished' and order.status != 'canceled' %}
+                        {% if order.get_brigadier.staff == request.user %}
+                            {% if order.get_brigadier.in_place %}
+                                {% if not brigadir.work_start %}
+                                    <li class="nav-item">
+                                        <label for="fotos" class="nav-link">Фото</label>
+                                    </li>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+
+                    <li style="margin: 0 auto;"></li>
+                    {% if order.status == 'new' and perms.crmapp.add_inventoryorder and order.manager == request.user or request.user.is_staff %}
+                        <li id="inventory-add" class="action-button">
+                            <div class="text-right">
+                                <a class="btn btn-secondary btn-sm"
+                                   href="{% url 'crmapp:inventory_order_add' order.id %}">Добавить/Изменить инвентарь
+                                </a>
+                            </div>
+                        </li>
+                    {% endif %}
+                    {% if order.status != 'finished' and order.status != 'canceled' %}
+                        {% if order.get_brigadier.staff == request.user %}
+                            {% if order.get_brigadier.in_place %}
+                                {% if not brigadir.work_start %}
+                                    <li id="service-add" class="action-button">
+                                        <a href="{% url 'crmapp:foreman_create_service' order.id %}"
+                                           class="btn mb-1 btn-secondary btn-sm">Добавить услугу</a>
+                                    </li>
+                                    <li id="service-add" class="action-button">
+                                        <a href="{% url 'crmapp:foremanorder_create' order.id %}"
+                                           class="btn mb-1 btn-secondary btn-sm">Редактировать</a>
+                                    </li>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+                        {% if perms.crmapp.add_inventoryorder and order.manager == request.user or request.user.is_staff %}
+                            <li id="service-add" class="action-button">
+                                <a href="#" class="btn mb-1 btn-secondary btn-sm">Добавить услугу</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                    {% if perms.crmapp.add_stafforder and order.manager == request.user or request.user.is_staff %}
+                        {% if order.status == 'new' %}
+                            <li id="cleaner-add" class="action-button">
+                                <a href="{% url 'crmapp:order_staff_add' order.pk %}"
+                                   class="btn mb-1 btn-secondary btn-sm">Добавить клинера
+                                </a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                    {% if order.status != 'finished' and order.status != 'canceled' and order.manager == request.user or request.user.is_staff or request.user == order.get_brigadier.staff %}
+                        <li id="expence-add" class="action-button">
+                            <a href="{% url 'crmapp:foreman_create_expense' order.pk %}"
+                               class="btn mb-1 btn-secondary btn-sm">Добавить расход
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+                <!-- *********************************************  Услуги ******************************************-->
+                <div id="content-services" class="table-responsive">
+                    <table class="table table-bordered table-striped verticle-middle content-tabs">
                         <thead>
                         <tr>
                             <th>Услуга</th>
@@ -81,187 +158,216 @@
                             <th>Действие</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        {% for service in order.order_services.all %}
-                            <tr>
-                                <th>{{ service.service.name }}</th>
-                                <td>{{ service.amount }} {{ service.service.get_unit_display }}</td>
-                                <td>{{ service.rate }}</td>
-                                <td>{{ service.total }}</td>
-                                <td>
-                                    {% if perms.crmapp.change_serviceorder and order.manager == request.user or request.user.is_staff %}
-                                        <button class="btn" data-pk="{{ service.id }}"
-                                                onclick='modalServiceOrderUpdateOpen(event)'><i title="Редактировать"
-                                                                                                class="fa fa-pencil text-dark hover-blue fs-5"></i>
-                                        </button>
-                                    {% endif %}
-                                    {% if perms.crmapp.delete_stafforder and order.manager == request.user or request.user.is_staff %}
-                                        <button class="btn" data-name-text="{{ service.service.name  }}"
-                                                data-pk="{{ service.id }}"
-                                                onclick='modalServiceOrderDeleteOpen(event)'><i
-                                                title="Удалить из заказа"
-                                                class="fa fa-trash text-dark hover-blue fs-5"></i>
-                                        </button>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                        <tfoot>
-                        <tr class="text-right">
-                            <td colspan="5">
-                                <div class="mr-5">
-                                    <strong class="mr-3 fs-5">Итого: </strong>
-                                    <span class="fs-5">{{ order.get_total }} сом</span>
-                                </div>
-                            </td>
-                        </tr>
-                        </tfoot>
-                    </table>
-                    <div class="text-center">
-                        <button type="button" class="btn mb-1 btn-secondary btn-sm"
-                                data-bs-toggle="modal" data-bs-target="#exampleModal">Добавить услугу
-                        </button>
-                        {% if order.manager == request.user or request.user.is_staff %}
-                            <button class="btn mb-1 btn-success btn-sm">Завершить</button>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <!-- ######################################### Карточка бригады #################################-->
-                        <h5 class="mb-0">Бригада клинеров</h5>
-                        <hr>
-                        {% for cleaner in order.order_cleaners.all %}
-                            <span class="badge badge-pill bg-light-grey fs-6">
-                                <a class="text-dark fw-bold" href="{% url 'accounts:profile' cleaner.staff.id %}">
-                                    {{ cleaner.staff.first_name }} {{ cleaner.staff.last_name }}
-                                </a>
-                                {% if order.manager == request.user or request.user.is_staff %}
-                                    {% if cleaner.is_brigadier %}
-                                        <i class="fa fa-star text-warning ml-1"></i>
-                                    {% else %}
-                                        <a class="ml-1" href="#">
-                                            <i title="Сделать бригадиром" class="fa fa-star text-dark hover-blue"></i>
-                                        </a>
-                                    {% endif %}
-                                {% endif %}
-                                {% if perms.crmapp.delete_stafforder and order.manager == request.user or request.user.is_staff %}
-                                    <a class="ml-1" href="{% url 'crmapp:order_staff_delete' cleaner.id %}">
-                                        <i title="Удалить из заказа" class="fa fa-trash text-dark hover-blue"></i>
-                                    </a>
-                                {% endif %}
-                            </span>
-                        {% endfor %}
-                        {% if perms.crmapp.add_stafforder and order.manager == request.user or request.user.is_staff %}
-                            {% if order.status == 'new' %}
-                                <a href="{% url 'crmapp:order_staff_add' order.pk %}"
-                                   class="btn mb-1 btn-secondary btn-sm">Добавить клинера
-                                </a>
-                            {% endif %}
-                        {% endif %}
-                        <hr>
-                        <!-- ####################################### Карточка инвентаря #################################-->
-                        <h5 class="mt-5">Необходимый инвентарь</h5>
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Наименование</th>
-                                    <th>Количество</th>
-                                    <th>Действие</th>
-                                </tr>
-                                </thead>
+                        {% with services=order.order_services.all %}
+                            {% if services %}
                                 <tbody>
-                                {% for inventory in order.order_inventories.all %}
+                                {% for service in services %}
                                     <tr>
-                                        <th>{{ forloop.counter }}</th>
-                                        <td>{{ inventory.inventory.name }}</td>
-                                        <td>{{ inventory.amount }}</td>
+                                        <th>{{ service.service.name }}</th>
+                                        <td>{{ service.amount }} {{ service.service.get_unit_display }}</td>
+                                        <td>{{ service.rate }}</td>
+                                        <td>{{ service.total }}</td>
                                         <td>
-                                            {% if perms.crmapp.delete_inventoryorder and order.manager == request.user or request.user.is_staff %}
-                                                <a class="text-danger"
-                                                   href="{% url 'crmapp:inventory_order_remove' inventory.pk %}"><i
-                                                        class="fa fa-trash text-dark hover-blue fs-5"></i></a>
-                                            {% endif %}</td>
+                                            {% if perms.crmapp.change_serviceorder and order.manager == request.user or request.user.is_staff %}
+                                                <a class="ml-1"
+                                                   href="javascript:void()" data-pk="{{ service.id }}"
+                                                   onclick='modalServiceOrderUpdateOpen(event)'>
+                                                    <i title="Редактировать"
+                                                       class="fa fa-pencil text-dark hover-blue fs-5"></i>
+                                                </a>
+                                            {% endif %}
+                                            {% if perms.crmapp.delete_serviceorder and order.manager == request.user or request.user.is_staff %}
+                                                <a class="ml-1" href="javascript:void()"
+                                                   data-name-text="{{ service.service.name }}"
+                                                   data-pk="{{ service.id }}"
+                                                   onclick='modalServiceOrderDeleteOpen(event)'>
+                                                    <i title="Удалить из заказа"
+                                                       class="fa fa-trash text-dark hover-blue fs-5"></i>
+                                                </a>
+                                            {% endif %}
+                                        </td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
-                            </table>
-                            {% if perms.crmapp.add_inventoryorder and order.manager == request.user or request.user.is_staff %}
-                                {% if order.status == 'new' %}
-                                    <div class="mx-4 text-center"><a class="btn btn-secondary btn-sm"
-                                                                     href="{% url 'crmapp:inventory_order_add' order.id %}">Добавить/Изменить
-                                        инвентарь</a></div>
-                                {% endif %}
+                                <tfoot class="border-none">
+                                <tr class="text-right">
+                                    <td colspan="5">
+                                        <div class="mr-5">
+                                            <strong class="mr-3 fs-5">Итого: </strong>
+                                            <span class="fs-5">{{ order.get_total }} сом</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                                </tfoot>
+                            {% else %}
+                                <tbody>
+                                <tr>
+                                    <td colspan="5" class="text-center">
+                                        Услуги не добавлены
+                                    </td>
+                                </tr>
+                                </tbody>
                             {% endif %}
-                        </div>
-                        <!-- ########################################### Конец инвенторя ################################-->
-                    </div>
+                        {% endwith %}
+                    </table>
+                </div>
+                <!-- *************************************** Карточка инвентаря *********************************-->
+                <div id="content-inventories" class="table-responsive">
+                    <table class="table table-bordered table-striped verticle-middle content-tabs">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Наименование</th>
+                            <th>Количество</th>
+                            <th>Действие</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% with inventories=order.order_inventories.all %}
+                            {% for inventory in inventories %}
+                                <tr>
+                                    <th>{{ forloop.counter }}</th>
+                                    <td>{{ inventory.inventory.name }}</td>
+                                    <td>{{ inventory.amount }}</td>
+                                    <td>
+                                        {% if perms.crmapp.delete_inventoryorder and order.manager == request.user or request.user.is_staff %}
+                                            <a class="text-danger"
+                                               href="{% url 'crmapp:inventory_order_remove' inventory.pk %}"><i
+                                                    class="fa fa-trash text-dark hover-blue fs-5"></i></a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            {% if not inventories %}
+                                <tr>
+                                    <td colspan="4" class="text-center">
+                                        Инвентарь не добавлен
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endwith %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- ******************************************** Клинеры *******************************************-->
+                <div id="content-cleaners" class="table-responsive">
+                    <table class="table table-bordered table-striped verticle-middle content-tabs">
+                        <tbody>
+                        {% with cleaners=order.order_cleaners.all %}
+                            <tr>
+                                {% if not cleaners %}
+                                    <td class="text-center">Клинеры не добавлены</td>
+                                {% else %}
+                                    <td>
+                                        {% for cleaner in cleaners %}
+                                            <span class="badge badge-pill bg-light-grey fs-6">
+                                                <a class="text-dark fw-bold"
+                                                   href="{% url 'accounts:profile' cleaner.staff.id %}">
+                                                    {{ cleaner.staff.first_name }} {{ cleaner.staff.last_name }}
+                                                </a>
+                                                {% if order.manager == request.user or request.user.is_staff %}
+                                                    {% if cleaner.is_brigadier %}
+                                                        <i class="fa fa-star text-warning ml-1"></i>
+                                                    {% else %}
+                                                        {% if not order.get_brigadier %}
+                                                            <a class="ml-1" href="#">
+                                                                <i title="Назначить бригадиром"
+                                                                   class="fa fa-star text-dark hover-blue"></i>
+                                                            </a>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endif %}
+                                                {% if perms.crmapp.delete_stafforder and order.manager == request.user or request.user.is_staff %}
+                                                    <a title="Удалить из заказа" class="ml-1"
+                                                       href="{% url 'crmapp:order_staff_delete' cleaner.id %}">
+                                                        <i class="fa fa-trash text-dark hover-blue"></i>
+                                                    </a>
+                                                {% endif %}
+                                            </span>
+                                        {% endfor %}
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endwith %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- ******************************************** Расходы *******************************************-->
+                <div id="content-expences" class="table-responsive">
+                    <table class="table table-bordered table-striped verticle-middle content-tabs">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Сумма</th>
+                            <th>Пояснение</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% with expences=order.get_brigadier.foreman_expense.all %}
+                            {% for expence in expences %}
+                                <tr>
+                                    <th>{{ forloop.counter }}</th>
+                                    <td>{{ expence.amount }}</td>
+                                    <td>{{ expence.description }}</td>
+                                </tr>
+                            {% endfor %}
+                            {% if not expences %}
+                                <tr>
+                                    <td colspan="4" class="text-center">
+                                        Расходов нет
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endwith %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- ********************************************** Фото ********************************************-->
+                <div id="content-fotos" class="table-responsive">
+                    <table class="table table-bordered table-striped verticle-middle content-tabs">
+                        <tbody>
+                        <tr>
+                            <td class="text-center">
+                                {% if order.status != 'finished' and order.status != 'canceled' %}
+                                    {% if order.get_brigadier.staff == request.user %}
+                                        {% if order.get_brigadier.in_place %}
+                                            {% if not brigadir.work_start %}
+                                                <form action="{% url 'crmapp:foreman_photo_before' order.id %}"
+                                                      method="POST"
+                                                      enctype="multipart/form-data">
+                                                    {% csrf_token %}
+                                                    <lable>Фото до:
+                                                        <input type="file" name="photo_before" required multiple>
+                                                    </lable>
+                                                    <button type="submit" class="btn mb-1 btn-light">Отправить</button>
+                                                </form>
+                                            {% else %}
+                                                <form action="{% url 'crmapp:foreman_photo_before' order.id %}"
+                                                      method="POST"
+                                                      enctype="multipart/form-data">
+                                                    {% csrf_token %}
+                                                    <lable>Фото после:
+                                                        <input type="file" name="photo_after" required multiple>
+                                                    </lable>
+                                                    <button type="submit" class="btn mb-1 btn-light">Отправить</button>
+                                                </form>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center">
+                    {% if order.manager == request.user or request.user.is_staff %}
+                        <button class="btn mb-1 btn-success btn-md">Завершить</button>
+                    {% endif %}
                 </div>
             </div>
         </div>
-
-
-
-
-        {% if brigadir %}
-            <p><small class="text-muted">Расходы:</small></p>
-            {% for expense in brigadir.foreman_expense.all %}
-                <p>{{ expense.description }}: {{ expense.amount }} сом</p>
-            {% endfor %}
-            <h5><strong>Итого: {{ brigadir.get_total_expenses }} сом</strong></h5>
-        {% else %}
-            <p><small class="text-muted">Расходов нет</small></p>
-        {% endif %}
     </div>
-    {% if order.status != 'finished' %}
-        {% if order.status != 'canceled' %}
-            {% if brigadir.staff == request.user %}
-                {% if brigadir.in_place %}
-                    <a href="{% url 'crmapp:foreman_create_service' order.id %}"
-                       class="btn btn-outline-success">Добавить
-                        услугу в
-                        заказ</a>
-                    <a href="{% url 'crmapp:foreman_create_expense' order.id %}"
-                       class="btn btn-outline-success">Добавить
-                        расход</a>
-                    {% if not brigadir.work_start %}
-                        <a href="{% url 'crmapp:foremanorder_create' order.id %}"
-                           class="btn btn-outline-success">Внести
-                            изменения в
-                            заказ</a>
-                        <form class="mt-3" action="{% url 'crmapp:foreman_photo_before' order.id %}"
-                              method="POST"
-                              enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <input class="btn btn-outline-success" type="file" name="photo_before" multiple>
-                            <button type="submit" class="btn btn-success">Отправить фото до</button>
-                        </form>
-                    {% else %}
-                        <form class="mt-3" action="{% url 'crmapp:foreman_photo_before' order.id %}"
-                              method="POST"
-                              enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <input class="btn btn-outline-success" type="file" name="photo_after" multiple>
-                            <button type="submit" class="btn btn-success">Отправить фото после</button>
-                        </form>
-                    {% endif %}
-                {% endif %}
-            {% endif %}
-        {% endif %}
-    {% endif %}
-    {#            </div>#}
-    {#        </div>#}
-    </div>
-
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -277,7 +383,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button form="service-form" type="submit" class="btn btn-success w-100">Добавить</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button form="service-form" type="submit" class="btn btn-primary">Сохранить</button>
                 </div>
             </div>
         </div>
@@ -301,7 +408,8 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <input placeholder="Колличество" class="form-control" maxlength="2000" type="number" required min="1"
+                            <input placeholder="Колличество" class="form-control" maxlength="2000" type="number"
+                                   required min="1"
                                    id="amount">
                         </div>
                         <div class="mb-3">
@@ -329,7 +437,8 @@
                     <button onclick="modalServiceOrderDeleteClose()"
                             class="btn btn-close"
                             data-bs-dismiss="modal"
-                            aria-label="Close">x</button>
+                            aria-label="Close">x
+                    </button>
                 </div>
                 <form>
                     <div class="modal-body">

@@ -1,39 +1,32 @@
-{% extends 'base.html' %}
-{% block title %}Сотрудники{% endblock title %}
+{% extends 'partial/paginnated_table.html' %}
+{% block title %}
+    Список менеджеров
+{% endblock title %}
+{% block table_title %}
+    Список менеджеров
+{% endblock table_title %}
+{% block thead %}
+    <th>ФИО Сотрудника</th>
+    <th>Касса</th>
+    <th>Телефон</th>
+    <th></th>
+{% endblock thead %}
+{% block tbody %}
+    {% for staff in user_objects %}
+        <tr>
+            <td>
+                <a href="{% url 'accounts:profile' staff.pk %}">
+                    {{ staff.last_name | capfirst }} {{ staff.first_name | capfirst }} </a>
+            </td>
+            <td>{{ staff.cash }}</td>
+            <td>{{ staff.phone }}</td>
+            <td><a title="Редактировать" href="{% url 'accounts:staff-edit' staff.pk %}"><i
+                    class="fa fa-pencil text-dark hover-blue fs-5 mx-1"></i></a>
+                <a title="Добавить в черный список" href="{% url 'accounts:black-list-add' staff.pk %}"><i
+                        class="fa fa-file text-dark hover-blue fs-6 mx-1"></i></a>
+                <a title="Удалить" href="{% url 'accounts:staff-delete' staff.pk %}"><i
+                        class="fa fa-trash text-dark hover-blue fs-5 mx-1"></i></a></td>
+        </tr>
+    {% endfor %}
+{% endblock tbody %}
 
-{% block content %}
-    {% if user_objects %}
-        {% include '../partial/simple_search.html' %}
-        <div class="container">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">ФИО Сотрудника</th>
-                    <th scope="col">Касса</th>
-                    <th scope="col">Телефон</th>
-                    <th scope="col"></th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for staff in user_objects %}
-                    <tr>
-                        <td><a style="text-decoration: none" href="{% url 'accounts:profile' staff.pk %}">
-                            {{ staff.last_name | capfirst }} {{ staff.first_name | capfirst }} </a></td>
-                        <td>{{ staff.cash }}</td>
-                        <td>{{ staff.phone }}</td>
-
-                        <td><a class="btn btn-outline-success" href="{% url 'accounts:staff-edit' staff.pk %}"><i
-                                class="fa-solid fa-pen-to-square"></i></a>
-                            <a class="btn btn-outline-dark" href="{% url 'accounts:black-list-add' staff.pk %}"><i
-                                    class="fa-solid fa-file-excel"></i></a>
-                            <a class="btn btn-outline-danger" href="{% url 'accounts:staff-delete' staff.pk %}"><i
-                                    class="fa-solid fa-trash"></i></a></td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    {% else %}
-        <p class="p-5">Список менеджеров пуст</p>
-    {% endif %}
-{% endblock content %}

@@ -1,42 +1,36 @@
-{% extends 'base.html' %}
-{% block title %}Удаление заказа{% endblock title %}
+{% extends 'partial/paginnated_table.html' %}
+{% block title %}
+    Список удаленных заказов
+{% endblock title %}
+{% block table_title %}
+    Список удаленных заказов
+{% endblock table_title %}
+{% block thead %}
+    <th>#</th>
+    <th>Дата создания</th>
+    <th>Адрес</th>
+    <th>Статус</th>
+    <th>Сумма</th>
+    <th>*</th>
+{% endblock thead %}
+{% block tbody %}
+    {% for order in orders %}
+        <tr>
+            <td>
+                <a class="btn btn-outline-light btn-rounded btn-md"
+                   href="{% url 'crmapp:order_detail' order.pk %}">Заказ №{{ order.pk }}
+                </a>
+            </td>
+            <td>{{ order.created_at }}</td>
+            <td>{{ order.address }}</td>
+            <td>{{ order.get_status_display }}</td>
+            <td>{{ order.get_total }}</td>
+            <td>
+                <a title="Перейти к заказу" href="{% url 'crmapp:order_detail' order.pk %}">
+                    <i class="fa fa-eye text-dark hover-blue fs-6 mx-1" aria-hidden="true"></i>
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock tbody %}
 
-{% block content %}
-    {% if orders %}
-    <table class="table table-striped text-center table-hover">
-            <thead>
-                <tr>
-                    <th scope="col">Заказ #</th>
-                    <th scope="col">Дата уборки</th>
-                    <th scope="col">Дата создания</th>
-                    <th scope="col">Адрес</th>
-                    <th scope="col">Статус</th>
-                    <th scope="col">Сумма</th>
-                    <th scope="col" width="15%">Действия</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for order in orders %}
-                    <tr>
-                        <th scope="row">{{ order.id }}</th>
-                        <td>{{ order.work_start }}</td>
-                        <td>{{ order.created_at }}</td>
-                        <td>{{ order.address }}</td>
-                        <td>{{ order.get_status_display }}</td>
-                        <td>{{ order.get_total }}</td>
-                        <td><div class=" btn-group">
-                                    <a class="btn btn-success"
-                                       href="{% url 'crmapp:order_detail' order.pk %}">Просмотреть</a>
-                                    <br>
-                            </div></td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p>Список заказов пуст</p>
-    {% endif %}
-    {% if is_paginated %}
-   {% include 'partial/pagination.html' %}
-{% endif %}
-{% endblock content %}
