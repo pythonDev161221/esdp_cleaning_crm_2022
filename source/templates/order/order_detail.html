@@ -108,7 +108,7 @@
                         <li id="inventory-add" class="action-button">
                             <div class="text-right">
                                 <a href="#" class="btn mb-1 btn-secondary btn-sm"
-                                   data-bs-toggle="modal" data-bs-target="#InventoryModal">Добавить/Изменить инвентарь
+                                   data-bs-toggle="modal" data-bs-target="#InventoryModal">Добавить инвентарь
                                 </a>
                             </div>
                         </li>
@@ -247,7 +247,6 @@
                                     </td>
                                 </tr>
                                 {% if perms.crmapp.add_inventoryorder and order.manager == request.user or request.user.is_staff %}
-                                    #}
                                     {% if order.status == 'new' %}
                                         <div class="mx-4 text-center">
                                             <button type="button" class="btn mb-1 btn-secondary btn-sm"
