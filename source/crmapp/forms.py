@@ -161,6 +161,10 @@ class InventoryOrderForm(forms.ModelForm):
         model = InventoryOrder
         exclude = ('order',)
 
+    def __init__(self, *args, **kwargs):
+        super(InventoryOrderForm, self).__init__(*args, **kwargs)
+        self.fields['amount'].widget.attrs['min'] = 1
+
 
 InventoryOrderFormSet = modelformset_factory(InventoryOrder, form=InventoryOrderForm,
                                              exclude=['order'], extra=3, can_delete=False)

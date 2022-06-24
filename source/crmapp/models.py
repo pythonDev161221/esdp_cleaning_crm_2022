@@ -330,7 +330,8 @@ class InventoryOrder(models.Model):
                               null=True, blank=True, on_delete=models.PROTECT)
     inventory = models.ForeignKey('crmapp.Inventory', related_name='inventories_order',
                                   verbose_name=_('Инвентарь'), null=True, blank=True, on_delete=models.PROTECT)
-    amount = models.PositiveIntegerField(verbose_name=_('Количество'), null=True, blank=True)
+    amount = models.PositiveIntegerField(verbose_name=_('Количество'), null=False, blank=False, default='1',
+                                         validators=[MinValueValidator(1)])
 
     def get_absolute_url(self):
         return reverse('crmapp:inventory_index', pk=self.order.pk)
