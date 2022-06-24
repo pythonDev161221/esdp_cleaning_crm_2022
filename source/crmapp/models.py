@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.http import QueryDict
 
 from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
@@ -64,9 +63,10 @@ class ForemanExpenses(models.Model):
     foreman_report = models.ForeignKey('crmapp.StaffOrder', on_delete=models.CASCADE, null=False, blank=False,
                                        related_name='foreman_expense', verbose_name=_('Отчёт бригадира'))
 
-    db_table = 'foreman_expense'
-    verbose_name = _('Расход бригадира')
-    verbose_name_plural = _('Расходы бригадира')
+    class Meta:
+        db_table = 'foreman_expense'
+        verbose_name = _('Расход бригадира')
+        verbose_name_plural = _('Расходы бригадира')
 
 
 class ForemanPhoto(models.Model):
@@ -154,6 +154,11 @@ class Order(models.Model):
                                          through='crmapp.InventoryOrder'),
     description = models.TextField(max_length=2000, null=True, blank=False, verbose_name=_('Примечание'))
     is_deleted = models.BooleanField(null=True, blank=True, default=False, verbose_name=_('Удален'))
+
+    def get_brigadier(self):
+        cleaners = self.order_cleaners.all()
+        if cleaners.filter(is_brigadier=True).exists():
+            return cleaners.get(is_brigadier=True)
 
     def finish_order(self):
         self.status = 'finished'

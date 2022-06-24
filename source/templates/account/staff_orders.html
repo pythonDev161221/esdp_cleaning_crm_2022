@@ -1,34 +1,25 @@
-{% extends 'base.html' %}
-{% block title %}Заказы {{ staff }}{% endblock title %}
-
-{% block content %}
-{% if staff.orders.all %}
-    <h2 class="text-center">История заказов {{ staff }}</h2>
-    <div class="container">
-    <table class="table">
-    <thead>
-    <tr>
-        <th scope="col">Адрес</th>
-        <th scope="col">Дата</th>
-        <th scope="col">Статус</th>
-        <th scope="col">Сумма</th>
-    </tr>
-    </thead>
-    <tbody>
+{% extends 'partial/paginnated_table.html' %}
+{% block title %}
+    История заказов
+{% endblock title %}
+{% block table_title %}
+    История заказов {{ staff }}
+{% endblock table_title %}
+{% block thead %}
+    <th>Заказ</th>
+    <th>Адрес</th>
+    <th>Дата</th>
+    <th>Статус</th>
+    <th>Сумма</th>
+{% endblock thead %}
+{% block tbody %}
     {% for order in staff.orders.all %}
         <tr>
-            <td><a href="{% url 'crmapp:order_detail' order.pk %}">{{ order.address }}</a></td>
+            <td><a class="btn btn-outline-light btn-rounded btn-md" href="{% url 'crmapp:order_detail' order.pk %}">Заказ №{{ order.pk }}</a></td>
+            <td>{{ order.address }}</td>
             <td>{{ order.work_start }}</td>
             <td>{{ order.get_status_display }}</td>
             <td>{{ order.get_total }}</td>
         </tr>
-        </tbody>
     {% endfor %}
-    </table>
-    </div>
-{% else %}
-    <h2 class="text-center">История заказов {{ staff }} пуста</h2>
-{% endif %}
-
-
-{% endblock content %}
+{% endblock tbody %}

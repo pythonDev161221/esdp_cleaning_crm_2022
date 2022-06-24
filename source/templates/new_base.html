@@ -14,6 +14,8 @@
     <!-- Custom Stylesheet -->
     {% block style %}{% endblock style %}
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'plugins/metismenu/css/metisMenu.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
 </head>
 <body>
@@ -30,12 +32,12 @@
     <!--********************************** Логотип ***********************************-->
     <div class="nav-header">
         <div class="brand-logo">
-            <a href="index.html">
-                <b class="logo-abbr"><img src="img/logo.png" alt=""></b>
-                <span class="logo-compact"><img src="./images/logo-compact.png" alt=""></span>
+            <a href="{% url 'index' %}">
+{#                <b class="logo-abbr"><img src="img/logo.png" alt=""></b>#}
+{#                <span class="logo-compact"><img src="./images/logo-compact.png" alt=""></span>#}
                 <span class="brand-title">
-                        <img src="{% static 'img/logo.png' %}" alt="">
-                    </span>
+                    <img src="{% static 'img/logo.png' %}" alt="">
+                </span>
             </a>
         </div>
     </div>
@@ -48,7 +50,6 @@
                 </div>
             </div>
             <div class="header-left">
-
                 <div class="input-group icons">
                     <div class="text-left ml-4">
                         <a class="mx-1 btn btn-secondary btn-md" href="{% url 'crmapp:order_create' %}">Создать
@@ -69,14 +70,20 @@
                                 <ul>
                                     <li>
                                         <a class="btn mb-1 btn-rounded btn-info"
-                                           href="{% url 'accounts:profile' user.id %}"><i class="icon-user"></i>
-                                            <span>Мой профиль</span></a>
+                                           href="{% url 'accounts:profile' user.id %}">
+                                            <i class="icon-user"></i>
+                                            <span>Мой профиль</span>
+                                        </a>
                                     </li>
                                     <li>
                                         <hr class="my-2">
                                     </li>
-                                    <li><a href="{% url 'accounts:logout' %}"><i class="icon-key"></i>
-                                        <span>Выйти</span></a></li>
+                                    <li>
+                                        <a href="{% url 'accounts:logout' %}">
+                                            <i class="icon-key"></i>
+                                            <span>Выйти</span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -93,74 +100,33 @@
                     {% block links %}
                         <li>
                             <a class="has-arrow" href="javascript:void()" aria-expanded="false">
-                                <i class="icon-people menu-icon"></i><span class="nav-text">Сотрудники</span>
+                                <i class="icon-people menu-icon"></i>
+                                <span class="nav-text">Сотрудники</span>
                             </a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="{% url 'accounts:staff-list' %}">Список сотрудников</a></li>
                                 <li><a href="{% url 'accounts:register' %}">Добавить сотрудника</a></li>
-                                <li><a href="{% url 'accounts:payout_list' %}">История выплат</a></li>
                                 <li><a href="{% url 'accounts:black-list' %}">Черный список</a></li>
                             </ul>
                         </li>
                         <li>
                             <a class="has-arrow" href="javascript:void()" aria-expanded="false">
-                                <i class="icon-notebook menu-icon"></i><span class="nav-text">Справочники</span>
+                                <i class="icon-notebook menu-icon"></i>
+                                <span class="nav-text">Справочники</span>
                             </a>
                             <ul aria-expanded="false" class="collapse">
-                                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Услуги</a>
-                                    <ul aria-expanded="false" class="collapse">
-                                        <li><a href="{% url 'crmapp:service_create' %}">Добавить услугу</a></li>
-                                        <li><a href="{% url 'crmapp:service_list' %}">Список услуг</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Инвентарь</a>
-                                    <ul aria-expanded="false" class="collapse">
-                                        <li><a onclick="modalInventoryOpen()">Добавить инвентарь</a></li>
-                                        <li><a href="{% url 'crmapp:inventory_index' %}">Список инвентаря</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Объекты</a>
-                                    <ul aria-expanded="false" class="collapse">
-                                        <li><a href="#" onclick="modalObjectTypeOpen()">Добавить тип объекта</a>
-                                        </li>
-                                        <li><a href="{% url 'crmapp:object_type_list' %}">Список объeктов</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Штрафы</a>
-                                    <ul aria-expanded="false" class="collapse">
-                                        {% if perms.crmapp.add_fine or request.user.is_staff %}
-                                            <li><a href="#" onclick="modalFineOpen()">Добавить штраф</a></li>
-                                        {% endif %}
-                                        <li><a href="{% url 'crmapp:fine_list' %}">Список штрафов</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Бонусы</a>
-                                    <ul aria-expanded="false" class="collapse">
-                                        <li><a href="#" onclick="modalBonusOpen()">Добавить бонус</a></li>
-                                        <li><a href="{% url 'crmapp:bonus_list' %}">Список бонусов</a></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Клиенты</a>
-                                    <ul aria-expanded="false" class="collapse">
-                                        <li><a href="{% url 'crmapp:client_create' %}">Добавить клиента</a></li>
-                                        <li><a href="{% url 'crmapp:client_index' %}">Список клиентов</a></li>
-                                    </ul>
-                                </li>
+                                <li><a href="{% url 'crmapp:service_list' %}" aria-expanded="false">Услуги</a></li>
+                                <li><a href="{% url 'crmapp:inventory_index' %}" aria-expanded="false">Инвентарь</a></li>
+                                <li><a href="{% url 'crmapp:object_type_list' %}" aria-expanded="false">Объкеты</a></li>
+                                <li><a href="{% url 'crmapp:fine_list' %}" aria-expanded="false">Штрафы</a></li>
+                                <li><a href="{% url 'crmapp:bonus_list' %}" aria-expanded="false">Бонусы</a></li>
+                                <li><a href="{% url 'crmapp:client_index' %}" aria-expanded="false">Клиенты</a></li>
                             </ul>
                         </li>
                         <li>
                             <a class="has-arrow" href="javascript:void()" aria-expanded="false">
-                                <i class="icon-docs menu-icon"></i><span class="nav-text">Отчеты</span>
+                                <i class="icon-docs menu-icon"></i>
+                                <span class="nav-text">Отчеты</span>
                             </a>
                             <ul aria-expanded="false" class="collapse">
                                 <li><a href="{% url 'crmapp:manager_cash_list' %}">Отчет по кассе</a></li>
@@ -193,78 +159,8 @@
     <!--********************************** Контент ***********************************-->
     <div class="content-body">
         <div class="container-fluid">
-            {% block content %}
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="card-title">
-                                    <h4>Таблица заказов</h4>
-                                </div>
-                                <div class="table-responsive">
-                                    <table class="table table-striped">
-                                        <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Дата уборки</th>
-                                            <th>Адрес</th>
-                                            <th>Статус</th>
-                                            <th>Прогресс</th>
-                                            <th>Сумма</th>
-                                            <th>*</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        {% if orders %}
-                                            {% for order in orders %}
-                                                <tr>
-                                                    <th>{{ order.id }}</th>
-                                                    <td>{{ order.work_start }}</td>
-                                                    <td>{{ order.address }}</td>
-                                                    <td>
-                                                        <span class="badge badge-primary px-2">{{ order.get_status_display }}</span>
-                                                    </td>
-                                                    <td>Прогрессбар</td>
-
-
-                                                    <td>{{ order.get_total }}</td>
-                                                    <td>
-
-                                                        <div class="dropdown custom-dropdown">
-                                                            <div data-toggle="dropdown" aria-expanded="false"><i
-                                                                    class="ti-more-alt"></i>
-                                                            </div>
-                                                            <div class="dropdown-menu" x-placement="bottom-start">
-                                                                <a class="dropdown-item"
-                                                                   href="{% url 'crmapp:order_detail' order.pk %}">Подробнее</a>
-                                                                {% if perms.crmapp.change_order and order.manager == request.user or request.user.is_staff %}
-                                                                    <a class="dropdown-item"
-                                                                       href="{% url 'crmapp:order_update' order.pk %}">Редактировать</a>
-                                                                {% endif %}
-                                                                {% if perms.crmapp.delete_order and order.manager == request.user or request.user.is_staff %}
-                                                                    <a class="dropdown-item"
-                                                                       href="{% url 'crmapp:order_delete' order.pk %}">Удалить</a>
-                                                                {% endif %}
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-                                        {% else %}
-                                            <p>Список заказов пуст</p>
-                                        {% endif %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /# card -->
-                    </div>
-                </div>
-            {% endblock content %}
-
+            {% block content %}{% endblock content %}
         </div>
-        <!-- #/ container -->
     </div>
     <!--********************************** Футер ***********************************-->
     <div class="footer">
@@ -407,6 +303,7 @@
 <script src="{% static 'js/settings.js' %}"></script>
 <script src="{% static 'js/gleek.js' %}"></script>
 <script src="{% static 'js/styleSwitcher.js' %}"></script>
+<script src="{% static 'plugins/metismenu/js/metisMenu.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'js/modal_windows.js' %}"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>

@@ -1,55 +1,34 @@
-{% extends 'new_base.html' %}
-{% load static %}
-{% block title %}Список отчетов{% endblock title %}
-{% block content %}
-    <div class="container-fluid">
-        <div class="text-right">
-            <a class="mb-4 btn btn-primary btn-md" href="{% url 'crmapp:cash_excel' %}">Экспорт в Excel</a>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h3 class="card-title text-center">Список отчетов
-                        </h3>
-                        <hr>
-                        <div class="table-responsive">
-                            <table class="table table-striped table-bordered zero-configuration">
-                                <thead>
-                                <tr role="row">
-                                    <th>Менеджер</th>
-                                    <th>Дата</th>
-                                    <th>Заказ №</th>
-                                    <th>Сумма заказа</th>
-
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% if manager_cash %}
-                                    {% for object_type in object_types %}
-                                        {% for cash in manager_cash %}
-                                            <tr>
-                                                <td>{{ cash.staff.first_name }} {{ cash.staff.last_name }}</td>
-                                                <td>{{ cash.date }}</td>
-                                                <td><a class="btn mb-1 btn-primary btn-sm"
-                                                       href="{% url 'crmapp:order_detail' cash.order.pk %}"> {{ cash.order.pk }}</a>
-                                                </td>
-                                                <td>{{ cash.order.get_total }}</td>
-                                            </tr>
-                                        {% endfor %}
-                                    {% endfor %}
-                                {% endif %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+{% extends 'partial/paginnated_table.html' %}
+{% block title %}
+    Отчеты по кассе
+{% endblock title %}
+{% block table_title %}
+    Отчеты по кассе
+{% endblock table_title %}
+{% block button %}
+    <div class="text-right">
+        <a class="mb-2 btn btn-secondary btn-sm" href="{% url 'crmapp:cash_excel' %}">Экспорт в Excel</a>
     </div>
-{% endblock content %}
-{% block scripts %}
-    <script src="{% static 'plugins/tables/js/jquery.dataTables.min.js' %}"></script>
-    <script src="{% static 'plugins/tables/js/datatable/dataTables.bootstrap4.min.js' %}"></script>
-    <script src="{% static 'plugins/tables/js/datatable-init/datatable-basic.min.js' %}"></script>
-{% endblock scripts %}
+{% endblock button %}
+{% block thead %}
+    <th>Менеджер</th>
+    <th>Дата</th>
+    <th>Заказ №</th>
+    <th>Сумма заказа</th>
+{% endblock thead %}
+{% block tbody %}
+    {% if manager_cash %}
+        {% for object_type in object_types %}
+            {% for cash in manager_cash %}
+                <tr>
+                    <td>{{ cash.staff.first_name }} {{ cash.staff.last_name }}</td>
+                    <td>{{ cash.date }}</td>
+                    <td><a class="btn mb-1 btn-primary btn-sm"
+                           href="{% url 'crmapp:order_detail' cash.order.pk %}"> {{ cash.order.pk }}</a>
+                    </td>
+                    <td>{{ cash.order.get_total }}</td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+{% endblock tbody %}

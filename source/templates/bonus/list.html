@@ -1,59 +1,40 @@
-{% extends 'new_base.html' %}
-{% load static %}
-{% block title %}Список объектов{% endblock title %}
-{% block content %}
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h3 class="card-title text-center">Доступные типы объектов
-                        </h3>
-                        <hr>
-                        <div class="table-responsive">
-                            <table class="table table-striped table-bordered zero-configuration">
-                                <thead>
-                                <tr role="row">
-                                    <th>#</th>
-                                    <th>Бонус</th>
-                                    <th>Сумма бонуса</th>
-                                    <th>Редактировать</th>
-                                    <th>Удалить</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for bonus in bonuses %}
-                                    <tr>
-                                        <th>{{ bonus.id }}</th>
-                                        <td>{{ bonus.bonus }}</td>
-                                        <td>{{ bonus.value|default:"" }}</td>
-                                        <td>
-                                            <a title="Редактировать"
-                                               href="{% url 'crmapp:bonus_update' bonus.id %}">
-                                                <i class="fa fa-pencil text-dark hover-blue fs-5 mx-1"
-                                                   aria-hidden="true"></i>
-                                            </a>
-                                        </td>
-                                        <td>
-                                            <a title="Удалить"
-                                               href="{% url 'crmapp:bonus_delete' bonus.id %}">
-                                                <i class="fa fa-trash text-dark hover-blue fs-5 mx-1"
-                                                   aria-hidden="true"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+{% extends 'partial/paginnated_table.html' %}
+{% block title %}
+    Список бонусов
+{% endblock title %}
+{% block table_title %}
+    Список бонусов
+{% endblock table_title %}
+{% block button %}
+    <div class="text-right">
+        <a class="mb-2 btn btn-secondary btn-sm" href="{% url 'crmapp:bonus_create' %}">Добавить бонус</a>
     </div>
-{% endblock content %}
-{% block scripts %}
-    <script src="{% static 'plugins/tables/js/jquery.dataTables.min.js' %}"></script>
-    <script src="{% static 'plugins/tables/js/datatable/dataTables.bootstrap4.min.js' %}"></script>
-    <script src="{% static 'plugins/tables/js/datatable-init/datatable-basic.min.js' %}"></script>
-{% endblock scripts %}
+{% endblock button %}
+{% block thead %}
+    <th>#</th>
+    <th>Бонус</th>
+    <th>Сумма бонуса</th>
+    <th>Деуятвия</th>
+{% endblock thead %}
+{% block tbody %}
+    {% for bonus in bonuses %}
+        <tr>
+            <th>{{ bonus.id }}</th>
+            <td>{{ bonus.bonus }}</td>
+            <td>{{ bonus.value|default:"" }}</td>
+            <td>
+                <a title="Редактировать"
+                   href="{% url 'crmapp:bonus_update' bonus.id %}">
+                    <i class="fa fa-pencil text-dark hover-blue fs-5 mx-1"
+                       aria-hidden="true"></i>
+                </a>
+                <a title="Удалить"
+                   href="{% url 'crmapp:bonus_delete' bonus.id %}">
+                    <i class="fa fa-trash text-dark hover-blue fs-5 mx-1"
+                       aria-hidden="true"></i>
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+{% endblock tbody %}
+

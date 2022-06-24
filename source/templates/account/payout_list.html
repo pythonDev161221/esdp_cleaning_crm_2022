@@ -1,11 +1,23 @@
-{% extends 'base.html' %}
-{% block title %}Выплаты сотрудникам{% endblock title %}
-
-{% block content %}
-    {% if payouts %}
-        <h2 class="text-center">История выплат</h2>
-        {% include "partial/payouts.html" %}
-    {% else %}
-        <h2 class="text-center">История выплат пуста</h2>
-    {% endif %}
-{% endblock content %}
+{% extends 'partial/paginnated_table.html' %}
+{% block title %}
+    История выплат
+{% endblock title %}
+{% block table_title %}
+    История выплат {{ staff }}
+{% endblock table_title %}
+{% block thead %}
+    <th>#</th>
+    <th>Сотрудник</th>
+    <th>Сумма</th>
+    <th>Дата</th>
+{% endblock thead %}
+{% block tbody %}
+    {% for payout in payouts %}
+        <tr>
+            <td>{{ payout.id }}</td>
+            <td>{{ payout.staff.last_name }} {{ payout.staff.first_name }}</td>
+            <td>{{ payout.salary }}</td>
+            <td>{{ payout.date_payout }}</td>
+        </tr>
+    {% endfor %}
+{% endblock tbody %}
