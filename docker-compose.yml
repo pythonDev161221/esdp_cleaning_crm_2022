@@ -1,0 +1,34 @@
+version: '3.9'
+
+services:
+
+  postgres_db:
+    restart: always
+    image: postgres:14
+    container_name: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      crm_network:
+
+  web:
+    build: .
+    env_file:
+      - ./source/.env
+    ports:
+      - 8000:8000
+    depends_on:
+      - postgres_db
+    volumes:
+      - static:/crm_cleaning/source/static
+      - media:/crm_cleaning/source/uploads
+    networks:
+      crm_network:
+
+volumes:
+  postgres_data:
+  static:
+  media:
+
+networks:
+  crm_network:
