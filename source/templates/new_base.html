@@ -1,4 +1,5 @@
 {% load static %}
+{% load auth_extras %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -33,8 +34,8 @@
     <div class="nav-header">
         <div class="brand-logo">
             <a href="{% url 'index' %}">
-{#                <b class="logo-abbr"><img src="img/logo.png" alt=""></b>#}
-{#                <span class="logo-compact"><img src="./images/logo-compact.png" alt=""></span>#}
+                {#                <b class="logo-abbr"><img src="img/logo.png" alt=""></b>#}
+                {#                <span class="logo-compact"><img src="./images/logo-compact.png" alt=""></span>#}
                 <span class="brand-title">
                     <img src="{% static 'img/logo.png' %}" alt="">
                 </span>
@@ -98,57 +99,65 @@
             <div class="nk-nav-scroll active">
                 <ul class="metismenu in" id="menu">
                     {% block links %}
-                        <li>
-                            <a class="has-arrow" href="javascript:void()" aria-expanded="false">
-                                <i class="icon-people menu-icon"></i>
-                                <span class="nav-text">Сотрудники</span>
-                            </a>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a href="{% url 'accounts:staff-list' %}">Список сотрудников</a></li>
-                                <li><a href="{% url 'accounts:register' %}">Добавить сотрудника</a></li>
-                                <li><a href="{% url 'accounts:black-list' %}">Черный список</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a class="has-arrow" href="javascript:void()" aria-expanded="false">
-                                <i class="icon-notebook menu-icon"></i>
-                                <span class="nav-text">Справочники</span>
-                            </a>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a href="{% url 'crmapp:service_list' %}" aria-expanded="false">Услуги</a></li>
-                                <li><a href="{% url 'crmapp:inventory_index' %}" aria-expanded="false">Инвентарь</a></li>
-                                <li><a href="{% url 'crmapp:object_type_list' %}" aria-expanded="false">Объкеты</a></li>
-                                <li><a href="{% url 'crmapp:fine_list' %}" aria-expanded="false">Штрафы</a></li>
-                                <li><a href="{% url 'crmapp:bonus_list' %}" aria-expanded="false">Бонусы</a></li>
-                                <li><a href="{% url 'crmapp:client_index' %}" aria-expanded="false">Клиенты</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a class="has-arrow" href="javascript:void()" aria-expanded="false">
-                                <i class="icon-docs menu-icon"></i>
-                                <span class="nav-text">Отчеты</span>
-                            </a>
-                            <ul aria-expanded="false" class="collapse">
-                                <li><a href="{% url 'crmapp:manager_cash_list' %}">Отчет по кассе</a></li>
-                                <li><a href="{% url 'crmapp:income_outcome_report' %}">Отчет о расходах и доходах</a>
-                                </li>
-                                <li><a href="{% url 'crmapp:manager_report_list' %}">Отчет менеджера</a></li>
-                                <li><a href="{% url 'accounts:payout_list' %}">Отчет по выплатам</a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="{% url 'crmapp:order_deleted_list' %}" aria-expanded="false">
-                                <i class="icon-trash menu-icon"></i><span class="nav-text">Удаленные заказы</span>
-                            </a>
-                        </li>
-                        <li class="hidden">
-                            <a class="has-arrow" href="javascript:void()" aria-expanded="false">
-                            </a>
-                        </li>
-                        <li class="hidden">
-                            <a class="has-arrow" href="javascript:void()" aria-expanded="false">
-                            </a>
-                        </li>
+                        {% if request.user|has_group:'Manager' or request.user.is_staff %}
+                            <li>
+                                <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                                    <i class="icon-people menu-icon"></i>
+                                    <span class="nav-text">Сотрудники</span>
+                                </a>
+                                <ul aria-expanded="false" class="collapse">
+                                    <li><a href="{% url 'accounts:staff-list' %}">Список сотрудников</a></li>
+                                    {% if request.user.is_staff %}
+                                        <li><a href="{% url 'accounts:staff-manager-list' %}">Список менеджеров</a></li>
+                                    {% endif %}
+                                    <li><a href="{% url 'accounts:register' %}">Добавить сотрудника</a></li>
+                                    <li><a href="{% url 'accounts:black-list' %}">Черный список</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                                    <i class="icon-notebook menu-icon"></i>
+                                    <span class="nav-text">Справочники</span>
+                                </a>
+                                <ul aria-expanded="false" class="collapse">
+                                    <li><a href="{% url 'crmapp:service_list' %}" aria-expanded="false">Услуги</a></li>
+                                    <li><a href="{% url 'crmapp:inventory_index' %}" aria-expanded="false">Инвентарь</a>
+                                    </li>
+                                    <li><a href="{% url 'crmapp:object_type_list' %}" aria-expanded="false">Объкеты</a>
+                                    </li>
+                                    <li><a href="{% url 'crmapp:fine_list' %}" aria-expanded="false">Штрафы</a></li>
+                                    <li><a href="{% url 'crmapp:bonus_list' %}" aria-expanded="false">Бонусы</a></li>
+                                    <li><a href="{% url 'crmapp:client_index' %}" aria-expanded="false">Клиенты</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                                    <i class="icon-docs menu-icon"></i>
+                                    <span class="nav-text">Отчеты</span>
+                                </a>
+                                <ul aria-expanded="false" class="collapse">
+                                    <li><a href="{% url 'crmapp:manager_cash_list' %}">Отчет по кассе</a></li>
+                                    <li><a href="{% url 'crmapp:income_outcome_report' %}">Отчет о расходах и
+                                        доходах</a>
+                                    </li>
+                                    <li><a href="{% url 'crmapp:manager_report_list' %}">Отчет менеджера</a></li>
+                                    <li><a href="{% url 'accounts:payout_list' %}">Отчет по выплатам</a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="{% url 'crmapp:order_deleted_list' %}" aria-expanded="false">
+                                    <i class="icon-trash menu-icon"></i><span class="nav-text">Удаленные заказы</span>
+                                </a>
+                            </li>
+                            <li class="hidden">
+                                <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                                </a>
+                            </li>
+                            <li class="hidden">
+                                <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                                </a>
+                            </li>
+                        {% endif %}
                     {% endblock links %}
                 </ul>
             </div>
@@ -159,6 +168,7 @@
     <!--********************************** Контент ***********************************-->
     <div class="content-body">
         <div class="container-fluid">
+
             {% block content %}{% endblock content %}
         </div>
     </div>
@@ -177,7 +187,8 @@
             <div class="modal-header">
                 <h2>Добавить Штраф</h2>
                 <button onclick="modalFineClose()" class="btn btn-close" data-bs-dismiss="modal"
-                        aria-label="Close">x</button>
+                        aria-label="Close">x
+                </button>
             </div>
             <form>
                 <div class="modal-body">
@@ -221,7 +232,8 @@
             <div class="modal-header">
                 <h2>Добавить бонус</h2>
                 <button onclick="modalBonusClose()" class="btn btn-close" data-bs-dismiss="modal"
-                        aria-label="Close">x</button>
+                        aria-label="Close">x
+                </button>
             </div>
             <form>
                 <div class="modal-body">
@@ -250,7 +262,8 @@
             <div class="modal-header">
                 <h2>Добавить инвентарь</h2>
                 <button onclick="modalInventoryClose()" class="btn btn-close" data-bs-dismiss="modal"
-                        aria-label="Close">x</button>
+                        aria-label="Close">x
+                </button>
             </div>
             <form>
                 <div class="modal-body">
@@ -279,7 +292,8 @@
             <div class="modal-header">
                 <h2>Добавить тип объекта</h2>
                 <button onclick="modalObjectTypeClose()" class="btn btn-close" data-bs-dismiss="modal"
-                        aria-label="Close">x</button>
+                        aria-label="Close">x
+                </button>
             </div>
             <form>
                 <div class="modal-body">
@@ -306,7 +320,8 @@
 <script src="{% static 'plugins/metismenu/js/metisMenu.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'js/modal_windows.js' %}"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 {% block scripts %}{% endblock scripts %}
