@@ -93,7 +93,7 @@ class StaffListView(PermissionRequiredMixin, ListView):
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
-        queryset = Staff.objects.filter(black_list=False).\
+        queryset = Staff.objects.filter(black_list=False). \
             exclude(is_active=False).exclude(groups__name="Manager")
         if self.search_value:
             query = Q(last_name__icontains=self.search_value) | \
@@ -107,6 +107,7 @@ class StaffListView(PermissionRequiredMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
+        context['staff_form'] = StaffRegistrationForm
         context['form'] = self.search_form_class()
         return context
 
@@ -128,7 +129,7 @@ class StaffManagerListView(PermissionRequiredMixin, ListView):
     permission_required = "accounts.view_staff"
 
     def get_queryset(self):
-        queryset = Staff.objects.filter(black_list=False, groups__name="Manager").\
+        queryset = Staff.objects.filter(black_list=False, groups__name="Manager"). \
             exclude(is_active=False)
         return queryset
 
@@ -301,4 +302,3 @@ class StaffOrderDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
-
