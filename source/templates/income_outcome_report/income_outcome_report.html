@@ -3,8 +3,14 @@
     История заказов
 {% endblock title %}
 {% block table_title %}
-    История заказов {{ staff }}
+    История заказов
 {% endblock table_title %}
+{% block button %}
+    <div class="text-left">
+        <a class="mb-2 btn btn-sm text-white" style="background-color: #00b368;"
+           href="{% url 'crmapp:expense-excel' %}">Экспорт в Excel</a>
+    </div>
+{% endblock button %}
 {% block thead %}
     <th>#</th>
     <th>Адрес</th>

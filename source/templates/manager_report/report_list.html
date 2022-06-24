@@ -1,8 +1,15 @@
 {% extends 'new_base.html' %}
 {% load static %}
 {% block title %}Список отчетов{% endblock title %}
+{% block table_title %}
+    Список отчетов
+{% endblock table_title %}
 {% block content %}
     <div class="container-fluid">
+        <div class="text-left">
+            <a class="mb-2 btn btn-sm text-white" style="background-color: #00b368;"
+               href="{% url 'crmapp:manager-excel' %}">Экспорт в Excel</a>
+        </div>
         <div class="row">
             <div class="col-12">
                 <div class="card">
