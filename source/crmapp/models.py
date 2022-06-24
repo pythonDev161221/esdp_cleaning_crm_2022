@@ -124,7 +124,8 @@ class Order(models.Model):
                                     verbose_name=_('Тип объекта'), null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_('Дата и время создания заказа'))
     work_start = models.DateTimeField(verbose_name=_('Дата и время начала уборки'), null=True, blank=True)
-    cleaning_time = models.DurationField(verbose_name=_('Время выполнения работ'), null=True, blank=True)
+    cleaning_time = models.TimeField(verbose_name=_('Время выполнения работ'), null=True,
+                                     blank=True)
     work_end = models.DateTimeField(null=True, blank=True, verbose_name=_('Дата и время окончания уборки'))
     client_info = models.ForeignKey('crmapp.Client', on_delete=models.PROTECT, related_name='order_client',
                                     verbose_name=_('Информация клиента'))

@@ -207,3 +207,9 @@ class BonusForm(forms.ModelForm):
     class Meta:
         model = Bonus
         fields = ('bonus', 'value')
+
+
+class OrderWorkTimeForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ('cleaning_time', )

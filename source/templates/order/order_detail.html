@@ -35,8 +35,13 @@
                             <strong class="mr-3">Время выполнения:</strong>
                             {% if order.cleaning_time %}
                                 <span>{{ order.cleaning_time }} ч.</span>
+                                <a title="Дoбавить время на выполнение заказа" href="#" data-bs-toggle="modal"
+                                   data-bs-target="#updateWorktimeModal">
+                                    <i class="fa fa-pencil text-dark hover-blue fs-6"></i>
+                                </a>
                             {% else %}
-                                <a title="Дубавить время на выполнение заказа" href="#">
+                                <a title="Дoбавить время на выполнение заказа" href="#" data-bs-toggle="modal"
+                                   data-bs-target="#worktimeModal">
                                     <i class="fa fa-plus-circle fs-6"></i>
                                 </a>
                             {% endif %}
@@ -125,7 +130,8 @@
                         {% endif %}
                         {% if perms.crmapp.add_inventoryorder and order.manager == request.user or request.user.is_staff %}
                             <li id="service-add" class="action-button">
-                                <a href="#" class="btn mb-1 btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Добавить услугу</a>
+                                <a href="#" class="btn mb-1 btn-secondary btn-sm" data-bs-toggle="modal"
+                                   data-bs-target="#exampleModal">Добавить услугу</a>
                             </li>
                         {% endif %}
                     {% endif %}
@@ -382,6 +388,7 @@
             </div>
         </div>
     </div>
+
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -402,6 +409,50 @@
             </div>
         </div>
     </div>
+    <!-- WORK TIME Modal -->
+    <div class="modal fade" id="worktimeModal" tabindex="-1" aria-labelledby="worktimeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="worktimeModalLabel">Укажите время работы</h2>
+                    <button class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <form id="worktime-form" action="{% url 'crmapp:order_add_work_time' order.id %}" method="post">
+                        {% csrf_token %}
+                        {{ work_time_form|crispy }}
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button form="worktime-form" type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- update WORK TIME Modal -->
+    <div class="modal fade" id="updateWorktimeModal" tabindex="-1" aria-labelledby="updateWorktimeModallLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="worktimeModalLabel">Укажите время работы</h2>
+                    <button class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <form id="update-worktime-form" action="{% url 'crmapp:order_update_work_time' order.id %}"
+                          method="post">
+                        {% csrf_token %}
+                        {{ work_time_form|crispy }}
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button form="update-worktime-form" type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Modal Service Update-->
     <div id="ServiceOrderUpdate" class="modal">

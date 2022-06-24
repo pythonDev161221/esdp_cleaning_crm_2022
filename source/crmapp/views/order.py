@@ -8,7 +8,8 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import DetailView, UpdateView, DeleteView, ListView, FormView
 
 from crmapp.helpers.crispy_form_helpers import OrderFormHelper, CleanersPartHelper, StaffFormHelper
-from crmapp.forms import CleanersPartForm, OrderForm, OrderCommentForm, ServiceOrderForm, InventoryOrderForm
+from crmapp.forms import CleanersPartForm, OrderForm, OrderCommentForm, ServiceOrderForm, InventoryOrderForm, \
+    OrderWorkTimeForm
 from crmapp.helpers.order_helpers import BaseOrderCreateView, StaffFormset, ModalFormView
 
 from crmapp.models import Order, InventoryOrder
@@ -76,6 +77,7 @@ class OrderDetailView(PermissionRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['service_form'] = ServiceOrderForm
         context['inventory_form'] = InventoryOrderForm
+        context['work_time_form'] = OrderWorkTimeForm
         return context
 
     def has_permission(self):
@@ -228,6 +230,22 @@ class ServiceAddModalView(ModalFormView):
 class InventoryAddModalView(ModalFormView):
     model = InventoryOrder
     form_class = InventoryOrderForm
+
+    def get_success_url(self):
+        return reverse('crmapp:order_detail', kwargs={'pk': self.kwargs.get('pk')})
+
+
+class WorkTimeModalView(UpdateView):
+    model = Order
+    form_class = OrderWorkTimeForm
+
+    def get_success_url(self):
+        return reverse('crmapp:order_detail', kwargs={'pk': self.kwargs.get('pk')})
+
+
+class UpdateWorkTimeModalView(UpdateView):
+    model = Order
+    form_class = OrderWorkTimeForm
 
     def get_success_url(self):
         return reverse('crmapp:order_detail', kwargs={'pk': self.kwargs.get('pk')})
