@@ -20,6 +20,18 @@ from crmapp.forms import SearchForm
 User = get_user_model()
 
 
+class IndexView(PermissionRequiredMixin, ListView):
+    model = Order
+    template_name = 'index.html'
+    context_object_name = 'orders'
+    permission_required = "crmapp.view_order"
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = Order.objects.order_by('work_start').exclude(is_deleted=True)
+        return queryset
+
+
 class OrderListView(PermissionRequiredMixin, ListView):
     model = Order
     template_name = 'order/order_list.html'

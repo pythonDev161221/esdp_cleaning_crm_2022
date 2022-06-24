@@ -3,11 +3,11 @@ from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
 
-from crmapp.views.order import OrderListView
+from crmapp.views.order import OrderListView, IndexView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', OrderListView.as_view(), name='index'),
+    path('', IndexView.as_view(), name='index'),
     path('', include('crmapp.urls')),
     path('accounts/', include('accounts.urls')),
     path('api/', include('api.urls')),
