@@ -90,13 +90,13 @@
                                 <td>{{ service.total }}</td>
                                 <td>
                                     {% if perms.crmapp.change_serviceorder and order.manager == request.user or request.user.is_staff %}
-                                        <button class="btn" data-pk="{{ service.id }}"
+                                        <button class="btn btn-outline" data-pk="{{ service.id }}"
                                                 onclick='modalServiceOrderUpdateOpen(event)'><i title="Редактировать"
                                                                                                 class="fa fa-pencil text-dark hover-blue fs-5"></i>
                                         </button>
                                     {% endif %}
                                     {% if perms.crmapp.delete_stafforder and order.manager == request.user or request.user.is_staff %}
-                                        <button class="btn" data-name-text="{{ service.service.name  }}"
+                                        <button class="btn" data-name-text="{{ service.service.name }}"
                                                 data-pk="{{ service.id }}"
                                                 onclick='modalServiceOrderDeleteOpen(event)'><i
                                                 title="Удалить из заказа"
@@ -187,9 +187,13 @@
                                         <td>{{ inventory.amount }}</td>
                                         <td>
                                             {% if perms.crmapp.delete_inventoryorder and order.manager == request.user or request.user.is_staff %}
-                                                <a class="text-danger"
-                                                   href="{% url 'crmapp:inventory_order_remove' inventory.pk %}"><i
-                                                        class="fa fa-trash text-dark hover-blue fs-5"></i></a>
+
+                                                <button class="btn" data-name-text="{{ inventory.inventory.name }}"
+                                                        data-pk="{{ inventory.id }}"
+                                                        onclick='modalInventoryOrderDeleteOpen(event)'><i
+                                                        title="Удалить из заказа"
+                                                        class="fa fa-trash text-dark hover-blue fs-5"></i>
+                                                </button>
                                             {% endif %}</td>
                                     </tr>
                                 {% endfor %}
@@ -197,9 +201,11 @@
                             </table>
                             {% if perms.crmapp.add_inventoryorder and order.manager == request.user or request.user.is_staff %}
                                 {% if order.status == 'new' %}
-                                    <div class="mx-4 text-center"><a class="btn btn-secondary btn-sm"
-                                                                     href="{% url 'crmapp:inventory_order_add' order.id %}">Добавить/Изменить
-                                        инвентарь</a></div>
+                                    <div class="mx-4 text-center">
+                                        <button type="button" class="btn mb-1 btn-secondary btn-sm"
+                                                data-bs-toggle="modal" data-bs-target="#InventoryModal">Добавить инвентарь
+                                        </button>
+                                    </div>
                                 {% endif %}
                             {% endif %}
                         </div>
@@ -301,7 +307,8 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <input placeholder="Колличество" class="form-control" maxlength="2000" type="number" required min="1"
+                            <input placeholder="Колличество" class="form-control" maxlength="2000" type="number"
+                                   required min="1"
                                    id="amount">
                         </div>
                         <div class="mb-3">
@@ -329,7 +336,8 @@
                     <button onclick="modalServiceOrderDeleteClose()"
                             class="btn btn-close"
                             data-bs-dismiss="modal"
-                            aria-label="Close">x</button>
+                            aria-label="Close">x
+                    </button>
                 </div>
                 <form>
                     <div class="modal-body">
@@ -339,6 +347,56 @@
                             <button class="btn btn-success w-100"
                                     id='unique-delete'
                                     onclick="deleteServiceOrder(event)"
+                                    type="submit">Удалить
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- inventory Modal -->
+    <div class="modal fade" id="InventoryModal" tabindex="-1" aria-labelledby="inventoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="inventoryModalLabel">Добавление инвентаря</h5>
+                    <button class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <form id="inventory-form" action="{% url 'crmapp:order_add_inventory' order.id %}" method="post">
+                        {% csrf_token %}
+                        {{ inventory_form|crispy }}
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button form="inventory-form" type="submit" class="btn btn-primary">Добавить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Inventory Delete-->
+    <div id="InventoryOrderDelete" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Подтвердите удаление</h2>
+                    <button onclick="modalInventoryOrderDeleteClose()"
+                            class="btn btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">x
+                    </button>
+                </div>
+                <form>
+                    <div class="modal-body">
+                        <div id="inventory-info">
+                        </div>
+                        <div class="mb-3">
+                            <button class="btn btn-success w-100"
+                                    id='inventory-delete'
+                                    onclick="deleteInventoryOrder(event)"
                                     type="submit">Удалить
                             </button>
                         </div>

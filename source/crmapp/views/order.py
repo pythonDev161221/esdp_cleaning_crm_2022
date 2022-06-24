@@ -8,10 +8,10 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import DetailView, UpdateView, DeleteView, ListView, FormView
 
 from crmapp.helpers.crispy_form_helpers import OrderFormHelper, ServiceFormHelper, CleanersPartHelper, StaffFormHelper
-from crmapp.forms import CleanersPartForm, OrderForm, OrderCommentForm, ServiceOrderForm
+from crmapp.forms import CleanersPartForm, OrderForm, OrderCommentForm, ServiceOrderForm, InventoryOrderForm
 from crmapp.helpers.order_helpers import BaseOrderCreateView, ServiceFormset, StaffFormset, ModalFormView
 
-from crmapp.models import Order, ForemanOrderUpdate, ServiceOrder
+from crmapp.models import Order, ForemanOrderUpdate, ServiceOrder, InventoryOrder
 
 from tgbot.handlers.orders.tg_order_staff import staff_accept_order, order_finished, manager_alert, order_canceled
 
@@ -64,6 +64,7 @@ class OrderDetailView(PermissionRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['brigadir'] = self.get_brigadier()
         context['service_form'] = ServiceOrderForm
+        context['inventory_form'] = InventoryOrderForm
         return context
 
     def get_brigadier(self):
@@ -213,6 +214,14 @@ class OrderDeletedListView(PermissionRequiredMixin, ListView):
 
 class ServiceAddModalView(ModalFormView):
     form_class = ServiceOrderForm
+
+    def get_success_url(self):
+        return reverse('crmapp:order_detail', kwargs={'pk': self.kwargs.get('pk')})
+
+
+class InventoryAddModalView(ModalFormView):
+    model = InventoryOrder
+    form_class = InventoryOrderForm
 
     def get_success_url(self):
         return reverse('crmapp:order_detail', kwargs={'pk': self.kwargs.get('pk')})
