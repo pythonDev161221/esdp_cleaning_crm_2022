@@ -1,6 +1,12 @@
 from rest_framework import serializers
 
-from crmapp.models import Client, Fine, Bonus, Inventory, ObjectType, ServiceOrder, Service, InventoryOrder
+from crmapp.models import Client, Fine, Bonus, Inventory, ObjectType, ServiceOrder, Service, InventoryOrder, Order
+
+
+class OrderListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = ('work_start', "id", "address", "status",)
 
 
 class ClientSerializer(serializers.ModelSerializer):
