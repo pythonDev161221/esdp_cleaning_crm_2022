@@ -212,4 +212,5 @@ class BonusForm(forms.ModelForm):
 class OrderWorkTimeForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ('cleaning_time', )
+        fields = ('cleaning_time',)
+        widgets = {'cleaning_time': forms.TimeInput(attrs={'type': 'time'})}
