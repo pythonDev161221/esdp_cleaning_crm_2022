@@ -1,6 +1,7 @@
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
 
+from accounts.forms import LoginForm
 from accounts.views.accounts import (StaffProfileView,
                                      StaffRegisterView,
                                      StaffListView,
@@ -16,7 +17,8 @@ from accounts.views.accounts import (StaffProfileView,
                                      StaffPassportPhotoView,
                                      GetAuthTokenTelegram,
                                      StaffPayoutDetailView,
-                                     StaffOrderDetailView,)
+                                     StaffOrderDetailView,
+                                     )
 from accounts.views.payout import PayoutListView, PayoutCreateView, CashManagerCreateView
 
 from accounts.views.accounts import StaffManagerListView
@@ -24,7 +26,10 @@ from accounts.views.accounts import StaffManagerListView
 app_name = 'accounts'
 
 urlpatterns = [
-    path('login/', LoginView.as_view(template_name="../templates/account/login.html"), name='login'),
+    path('login/',
+         LoginView.as_view(template_name="../templates/account/login.html", form_class=LoginForm,),
+         name='login',
+         ),
     path('logout/', LogoutView.as_view(), name="logout"),
     path('register/', StaffRegisterView.as_view(), name='register'),
     path("password_change/", PasswordChangeView.as_view(), name="change_password"),

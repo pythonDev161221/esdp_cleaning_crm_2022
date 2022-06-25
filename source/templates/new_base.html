@@ -35,8 +35,8 @@
     <div class="nav-header">
         <div class="brand-logo">
             <a href="{% url 'index' %}">
-                {#                <b class="logo-abbr"><img src="img/logo.png" alt=""></b>#}
-                {#                <span class="logo-compact"><img src="./images/logo-compact.png" alt=""></span>#}
+                <b class="logo-abbr"><img src="{% static 'img/logo_q.png' %}" alt=""></b>
+                <span class="logo-compact"><img src="{% static 'img/logo.png' %}" alt=""></span>
                 <span class="brand-title">
                     <img src="{% static 'img/logo.png' %}" alt="">
                 </span>
@@ -193,27 +193,37 @@
             <form>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <input placeholder="Категория" class="form-control" maxlength="255" type="text"
-                               id="category">
+                        <label for="category">
+                            <input placeholder="Категория" class="form-control" maxlength="255" type="text"
+                                   id="category">
+                        </label>
                     </div>
                     <div class="mb-3">
-                        <input placeholder="Название штрафа" class="form-control" maxlength="300" type="text"
-                               id="fine" required>
+                        <label for="fine">
+                            <input placeholder="Название штрафа" class="form-control" maxlength="300" type="text"
+                                   id="fine" required>
+                        </label>
                     </div>
                     <div class="mb-3">
-                        <input placeholder="Критерий" class="form-control"
-                               maxlength="255" type="tel"
-                               id="criteria">
+                        <label for="criteria">
+                            <input placeholder="Критерий" class="form-control"
+                                   maxlength="255" type="tel"
+                                   id="criteria">
+                        </label>
                     </div>
                     <div class="mb-3">
-                        <input placeholder="Сумма штрафа" class="form-control" maxlength="10"
-                               type="number"
-                               id="fine_value">
+                        <label for="fine_value">
+                            <input placeholder="Сумма штрафа" class="form-control" maxlength="10"
+                                   type="number"
+                                   id="fine_value">
+                        </label>
                     </div>
                     <div class="mb-3">
-                        <input placeholder="Пояснение" class="form-control" maxlength="500"
-                               type="text"
-                               id="description">
+                        <label for="description">
+                            <input placeholder="Пояснение" class="form-control" maxlength="500"
+                                   type="text"
+                                   id="description">
+                        </label>
                     </div>
                     <div class="mb-3">
                         <button class="btn btn-success w-100" onclick="createFine()" type="submit"
@@ -238,12 +248,16 @@
             <form>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <input placeholder="Бонус" class="form-control" maxlength="300" type="text"
-                               id="bonus" required>
+                        <label for="bonus">
+                            <input placeholder="Бонус" class="form-control" maxlength="300" type="text"
+                                   id="bonus" required>
+                        </label>
                     </div>
                     <div class="mb-3">
-                        <input placeholder="Сумма бонуса" class="form-control" maxlength="10"
-                               type="number" id="bonus_value">
+                        <label for="bonus_value">
+                            <input placeholder="Сумма бонуса" class="form-control" maxlength="10"
+                                   type="number" id="bonus_value">
+                        </label>
                     </div>
                     <div class="mb-3">
                         <button class="btn btn-success w-100" onclick="createBonus()" type="submit"
@@ -268,12 +282,16 @@
             <form>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <input placeholder="Инвентарь" class="form-control" maxlength="255" type="text"
-                               id="inventory_name" required>
+                        <label for="inventory_name">
+                            <input placeholder="Инвентарь" class="form-control" maxlength="255" type="text"
+                                   id="inventory_name" required>
+                        </label>
                     </div>
                     <div class="mb-3">
-                        <input placeholder="Описание" class="form-control" maxlength="1000" type="text"
-                               id="inventory_description">
+                        <label for="inventory_description">
+                            <input placeholder="Описание" class="form-control" maxlength="1000" type="text"
+                                   id="inventory_description">
+                        </label>
                     </div>
                     <div class="mb-3">
                         <button class="btn btn-success w-100" onclick="createInventory()" type="submit"
@@ -298,8 +316,10 @@
             <form>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <input placeholder="Тип объекта" class="form-control" maxlength="255" type="text"
-                               id="object_type_name" required>
+                        <label for="object_type_name">
+                            <input placeholder="Тип объекта" class="form-control" maxlength="255" type="text"
+                                   id="object_type_name" required>
+                        </label>
                     </div>
                     <div class="mb-3">
                         <button class="btn btn-success w-100" onclick="createObjectType()" type="submit"
