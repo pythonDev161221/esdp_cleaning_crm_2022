@@ -7,7 +7,7 @@ from api.views import (get_token_view,
                        ApiInventoryCreateView,
                        ApiObjectTypeCreateView,
                        ApiServiceOrderUpdateView,
-                       ApiServiceOrderDeleteView, ApiInventoryOrderDeleteView)
+                       ApiServiceOrderDeleteView, ApiInventoryOrderDeleteView, Calendar)
 
 
 app_name = 'api'
@@ -21,6 +21,7 @@ urlpatterns = [
     path('object_type/create/', ApiObjectTypeCreateView.as_view()),
     path('update/service/<int:pk>', ApiServiceOrderUpdateView.as_view()),
     path('delete/service/<int:pk>', ApiServiceOrderDeleteView.as_view()),
-    path('delete/inventory/<int:pk>', ApiInventoryOrderDeleteView.as_view())
+    path('delete/inventory/<int:pk>', ApiInventoryOrderDeleteView.as_view()),
+    path('order/list/', Calendar.as_view())
 ]
 

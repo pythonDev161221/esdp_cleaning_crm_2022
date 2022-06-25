@@ -1,10 +1,11 @@
 from django.http import HttpResponseNotAllowed, HttpResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateAPIView, DestroyAPIView
-
+from api.filters import OrderFilter
 from api.serializers import ClientSerializer, FineSerializer, BonusSerializer, InventorySerializer, \
-    ObjectTypeSerializer, OrderServiceSerializer, InventoryOrderSerializer
-from crmapp.models import Client, Fine, Bonus, Inventory, ObjectType, ServiceOrder, Service, InventoryOrder
+    ObjectTypeSerializer, OrderServiceSerializer, InventoryOrderSerializer, OrderListSerializer
+from crmapp.models import Client, Fine, Bonus, Inventory, ObjectType, ServiceOrder, InventoryOrder, Order
+from django_filters import rest_framework as filters
 
 
 @ensure_csrf_cookie
@@ -12,6 +13,14 @@ def get_token_view(request, *args, **kwargs):
     if request.method == 'GET':
         return HttpResponse()
     return HttpResponseNotAllowed('Only GET request are allowed')
+
+
+class Calendar(ListAPIView):
+    serializer_class = OrderListSerializer
+    queryset = Order.objects.filter(is_deleted=False)
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = OrderFilter
+    filterset_fields = ["work_start", ]
 
 
 class ApiClientCreateView(CreateAPIView):
