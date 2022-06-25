@@ -234,19 +234,40 @@ class Order(models.Model):
         else:
             return 0
 
-    #
-    # def save(self, *args, **kwargs):
-    #     self.work_end = self.work_start + self.cleaning_time
-    #     super(Order, self).save(*args, **kwargs)
+    def get_progres(self):
+        data = 5
+        fields = {
+            'is_accept': 15,
+            'in_place': 25,
+            'work_start': 40,
+            'work_end': 60,
+        }
+        try:
+            for key, value in fields:
+                if getattr(self.get_brigadier(), key):
+                    data = value
+            if self.status == 'canceled':
+                data = 80
+            elif self.status == 'finished':
+                data = 100
+            return data
+        except ValueError:
+            return data
 
-    class Meta:
-        db_table = 'order'
-        verbose_name = _('Заказ')
-        verbose_name_plural = _('Заказы')
-        permissions = [
-            ('сan_view_income_outcome_report', 'Может просмотреть отчет о расходах и доходах'),
-            ('can_view_order_deleted_list', 'Может просмотреть список удаленных заказов')
-        ]
+
+#
+# def save(self, *args, **kwargs):
+#     self.work_end = self.work_start + self.cleaning_time
+#     super(Order, self).save(*args, **kwargs)
+
+class Meta:
+    db_table = 'order'
+    verbose_name = _('Заказ')
+    verbose_name_plural = _('Заказы')
+    permissions = [
+        ('сan_view_income_outcome_report', 'Может просмотреть отчет о расходах и доходах'),
+        ('can_view_order_deleted_list', 'Может просмотреть список удаленных заказов')
+    ]
 
 
 class Fine(models.Model):
