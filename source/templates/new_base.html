@@ -117,18 +117,50 @@
                             </li>
                             <li>
                                 <a class="has-arrow" href="javascript:void()" aria-expanded="false">
-                                    <i class="icon-notebook menu-icon"></i>
-                                    <span class="nav-text">Справочники</span>
+                                    <i class="icon-notebook menu-icon"></i><span class="nav-text">Справочники</span>
                                 </a>
-                                <ul aria-expanded="false" class="collapse">
-                                    <li><a href="{% url 'crmapp:service_list' %}" aria-expanded="false">Услуги</a></li>
-                                    <li><a href="{% url 'crmapp:inventory_index' %}" aria-expanded="false">Инвентарь</a>
+                                <ul>
+                                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Услуги</a>
+                                        <ul aria-expanded="false" class="collapse">
+                                            <li><a href="{% url 'crmapp:service_create' %}">Добавить услугу</a></li>
+                                            <li><a href="{% url 'crmapp:service_list' %}">Список услуг</a></li>
+                                        </ul>
                                     </li>
-                                    <li><a href="{% url 'crmapp:object_type_list' %}" aria-expanded="false">Объкеты</a>
+                                    <li><a class="has-arrow" href="javascript:void()"
+                                           aria-expanded="false">Инвентарь</a>
+                                        <ul aria-expanded="false" class="collapse">
+                                            <li><a href="{% url 'crmapp:inventory_create' %}">Добавить инвентарь</a>
+                                            </li>
+                                            <li><a href="{% url 'crmapp:inventory_index' %}">Список инвентаря</a></li>
+                                        </ul>
                                     </li>
-                                    <li><a href="{% url 'crmapp:fine_list' %}" aria-expanded="false">Штрафы</a></li>
-                                    <li><a href="{% url 'crmapp:bonus_list' %}" aria-expanded="false">Бонусы</a></li>
-                                    <li><a href="{% url 'crmapp:client_index' %}" aria-expanded="false">Клиенты</a></li>
+                                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Объекты</a>
+                                        <ul aria-expanded="false" class="collapse">
+                                            <li><a href="{% url 'crmapp:object_type_create' %}">Добавить тип объекта</a>
+                                            </li>
+                                            <li><a href="{% url 'crmapp:object_type_list' %}">Список объектов</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Штрафы</a>
+                                        <ul aria-expanded="false" class="collapse">
+                                            {% if perms.crmapp.add_fine %}
+                                                <li><a href="{% url 'crmapp:fine_create' %}">Добавить штраф</a></li>
+                                            {% endif %}
+                                            <li><a href="{% url 'crmapp:fine_list' %}">Список штрафов</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Бонусы</a>
+                                        <ul aria-expanded="false" class="collapse">
+                                            <li><a href="{% url 'crmapp:bonus_create' %}">Добавить бонус</a></li>
+                                            <li><a href="{% url 'crmapp:bonus_list' %}">Список бонусов</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a class="has-arrow" href="javascript:void()" aria-expanded="false">Клиенты</a>
+                                        <ul aria-expanded="false" class="collapse">
+                                            <li><a href="{% url 'crmapp:client_create' %}">Добавить клиента</a></li>
+                                            <li><a href="{% url 'crmapp:client_index' %}">Список клиентов</a></li>
+                                        </ul>
+                                    </li>
                                 </ul>
                             </li>
                             <li>
