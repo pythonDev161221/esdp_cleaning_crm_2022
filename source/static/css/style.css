@@ -12,18 +12,8 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,500,700");
 @import url(../icons/font-awesome/css/font-awesome.min.css);
 @import url(../icons/simple-line-icons/css/simple-line-icons.css);
-@import url(../icons/weather-icons/css/weather-icons.min.css);
-@import url(../icons/cryptocoins/css/cryptocoins.css);
-@import url(../icons/cryptocoins/css/cryptocoins-colors.css);
-@import url(../icons/linea-icons/linea.css);
-@import url(../icons/ionicons/css/ionicons.css);
-@import url(../icons/themify-icons/themify-icons.css);
-@import url(../icons/flag-icon-css/flag-icon.min.css);
-@import url(../icons/material-design-iconic-font/materialdesignicons.min.css);
-@import url(../icons/pe-icon-set-weather/css/pe-icon-set-weather.min.css);
-@import url(../plugins/animate/animate.min.css);
 @import url(../plugins/metismenu/css/metisMenu.min.css);
-@import url(../plugins/bootstrap-select/dist/css/bootstrap-select.min.css);
+
 
 .gradient-1, .dropdown-mega-menu .ext-link.link-1 a, .morris-hover, .datamaps-hoverover {
     background-image: linear-gradient(230deg, #759bff, #843cf6);
@@ -108,7 +98,7 @@ Fixing Order => Base + Typography >> General Layout + Grid >> Page Layout + Comp
     display: none !important;
 }
 
-td > .btn{
+td > .btn {
     border: none !important;
 }
 
@@ -580,7 +570,7 @@ mark,
     margin-right: 0.5rem;
 }
 
-.select2-selection{
+.select2-selection {
     padding-bottom: 40px;
 }
 
@@ -21403,3 +21393,90 @@ html[dir="rtl"] [direction="rtl"][data-sidebar-style="compact"]:not([data-layout
 }
 
 /*# sourceMappingURL=style.css.map */
+
+
+.table {
+    max-width: 1200px;
+    max-height: 900px;
+    margin-bottom: 1px;
+    background-color: #FDF8FF;
+    border-collapse: collapse;
+}
+
+
+.table-days-row {
+    position: relative;
+    text-overflow: ellipsis;
+    width: 120px;
+    height: 120px;
+    border: 2px solid rgba(179, 179, 179, 0.3);
+}
+
+.table-row {
+    border: 2px solid rgba(179, 179, 179, 0.3);
+}
+
+.thead-dark {
+    background-color: rgba(189, 195, 199, 0.3);
+    border: 2px solid rgba(179, 179, 179, 0.3);
+}
+
+.weekdays-row {
+    height: 30px;
+    text-align: center;
+    font-weight: bold;
+    border: 2px solid rgba(179, 179, 179, 0.3);
+}
+
+.outside-div {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.inside-div {
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+}
+
+.inside-div a {
+    padding: 5px;
+    margin: 2px;
+    font-size: 15px;
+    text-decoration: none;
+    border-radius: 6px;
+    color: white;
+}
+
+.inside-div a span {
+    font-weight: bold;
+    padding: 0;
+}
+
+.post-today {
+    background-color: rgba(89, 199, 111, 0.2)
+}
+
+.information {
+    height: 15%;
+}
+
+.day-information {
+    text-align: right;
+    color: #3C3C3D;
+    font-weight: bold;
+}
+
+
+.id_client_info {
+    width: 500px;
+    padding: 0;
+    margin: 0;
+}
+
+.select {
+    padding: 0;
+    margin: 0;
+}

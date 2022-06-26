@@ -29,7 +29,8 @@ from crmapp.views.manager_report import ManagerReportCreateView, ManagerReportLi
 from crmapp.views.order_staff import OrderStaffCreateView, OrderStaffDeleteView
 
 from crmapp.views.order import OrderListView, OrderDetailView, OrderFinishView, OrderDeleteView, OrderDeletedListView, \
-    OrderUpdateView, ServiceAddModalView, OrderCreateView
+    OrderUpdateView, ServiceAddModalView, OrderCreateView, InventoryAddModalView, WorkTimeModalView, \
+    UpdateWorkTimeModalView
 
 from crmapp.views.income_outcome_report import IncomeOutcomeReportView
 
@@ -69,7 +70,10 @@ order_urlpatterns = [
     path("<int:pk>/inventory/add/", InventoryOrderCreateView.as_view(), name="inventory_order_add"),
     path("inventory/<int:pk>/remove/", InventoryOrderRemoveView.as_view(), name="inventory_order_remove"),
     path('<int:pk>/finish/', OrderFinishView.as_view(), name='order_finish'),
-    path('<int:pk>/order/add_service', ServiceAddModalView.as_view(), name='order_add_service')
+    path('<int:pk>/order/add_service', ServiceAddModalView.as_view(), name='order_add_service'),
+    path('<int:pk>/order/add_inventory', InventoryAddModalView.as_view(), name='order_add_inventory'),
+    path('<int:pk>/order/add_work_time', WorkTimeModalView.as_view(), name='order_add_work_time'),
+    path('<int:pk>/order/update_work_time', UpdateWorkTimeModalView.as_view(), name='order_update_work_time')
 ]
 
 service_urlpatterns = [

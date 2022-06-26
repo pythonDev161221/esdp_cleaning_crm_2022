@@ -19,6 +19,7 @@ behave = "*"
 behave-django = "*"
 djangorestframework = "*"
 uwsgi = "*"
+django-filter = "*"
 
 [dev-packages]
 

@@ -5,6 +5,12 @@
 {% block table_title %}
     Список менеджерских отчетов
 {% endblock table_title %}
+{% block button %}
+    <div class="text-right">
+            <a class="mb-2 btn btn-secondary btn-sm"
+               href="{% url 'crmapp:manager-excel' %}">Экспорт в Excel</a>
+        </div>
+{% endblock button %}
 {% block thead %}
     <th>№ Заказа</th>
     <th>Клинер</th>

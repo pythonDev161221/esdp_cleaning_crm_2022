@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'new_base.html' %}
 {% block title %}Удаление из черного листа{% endblock title %}
 
 {% block content %}
@@ -7,6 +7,7 @@
             <h3 class="mt-4 mb-4">Вы хотите
                 удалить {{ user_object.last_name | capfirst }} {{ user_object.first_name | capfirst }} из черного
                 списока?</h3>
+            <p>Примечание: {{ user_object.description }}</p>
             {% csrf_token %}
             <a href="{% url 'accounts:staff-list' %}" class="btn btn-dark">Нет</a>
             <input type="submit" name="action" value="Да" class="btn btn-primary"/>
