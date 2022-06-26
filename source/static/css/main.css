@@ -68,3 +68,7 @@ input#fotos:checked ~ ul label[for="fotos"] {
     top: 50%;
     transform: translate(-50%, -50%);
 }
+
+.table {
+    max-width: none;
+}

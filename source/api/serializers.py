@@ -22,6 +22,12 @@ class OrderServiceSerializer(serializers.ModelSerializer):
         fields = ['service', 'amount', 'rate']
 
 
+class ServiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Service
+        fields = ('id', 'name', 'unit', 'price', 'is_extra')
+
+
 class FineSerializer(serializers.ModelSerializer):
     class Meta:
         model = Fine

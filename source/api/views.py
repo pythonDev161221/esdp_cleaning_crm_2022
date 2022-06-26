@@ -4,8 +4,8 @@ from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateAP
 
 from api.filters import OrderFilter
 from api.serializers import ClientSerializer, FineSerializer, BonusSerializer, InventorySerializer, \
-    ObjectTypeSerializer, OrderServiceSerializer, InventoryOrderSerializer, OrderListSerializer
-from crmapp.models import Client, Fine, Bonus, Inventory, ObjectType, ServiceOrder, InventoryOrder, Order
+    ObjectTypeSerializer, OrderServiceSerializer, InventoryOrderSerializer, OrderListSerializer, ServiceSerializer
+from crmapp.models import Client, Fine, Bonus, Inventory, ObjectType, ServiceOrder, InventoryOrder, Order, Service
 from django_filters import rest_framework as filters
 
 
@@ -57,6 +57,11 @@ class ApiInventoryCreateView(CreateAPIView):
 class ApiObjectTypeCreateView(CreateAPIView):
     serializer_class = ObjectTypeSerializer
     queryset = ObjectType.objects.all()
+
+
+class ApiServiceCreateView(CreateAPIView):
+    serializer_class = ServiceSerializer
+    queryset = Service.objects.all()
 
 
 class ApiInventoryOrderDeleteView(DestroyAPIView):
