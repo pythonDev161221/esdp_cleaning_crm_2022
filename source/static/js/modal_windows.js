@@ -58,7 +58,7 @@ async function createClient() {
 }
 
 async function modalServiceOrderUpdateOpen(event) {
-    let pk = event.target.dataset.pk
+    let pk = event.currentTarget.dataset.pk
     let pathname = window.location.pathname
     let btn = document.getElementById('unique')
     btn.setAttribute('data-pk', pk)
@@ -94,7 +94,7 @@ async function modalServiceOrderUpdateClose() {
 }
 
 async function updateServiceOrder(event) {
-    let new_pk = event.target.dataset.pk
+    let new_pk = event.currentTarget.dataset.pk
     let pathname = window.location.pathname
     let amount = document.getElementById("amount").value
     let rate = document.getElementById("rate").value
@@ -117,9 +117,9 @@ async function updateServiceOrder(event) {
 
 async function modalServiceOrderDeleteOpen(event) {
     let modal = document.getElementById('ServiceOrderDelete');
-    let pk = event.target.dataset.pk
+    let pk = event.currentTarget.dataset.pk
     let info_div = document.getElementById('service-info')
-    let text = event.target.dataset.nameText
+    let text = event.currentTarget.dataset.nameText
     let p = document.createElement('p')
     p.innerText = text
     p.classList = ['text-center m-3']
@@ -281,3 +281,43 @@ async function createObjectType() {
         modalObjectTypeClose()}
 }
 
+
+async function modalInventoryOrderDeleteOpen(event) {
+    let modal = document.getElementById('InventoryOrderDelete');
+    let pk = event.currentTarget.dataset.pk
+    let info_div = document.getElementById('inventory-info')
+    let text = event.currentTarget.dataset.nameText
+    let p = document.createElement('p')
+    p.innerText = text
+    p.classList = ['text-center m-3']
+    info_div.appendChild(p)
+    let btn = document.getElementById('inventory-delete')
+    btn.setAttribute('data-pk', pk)
+    modal.style.display = "block"
+    modal.style.background = 'rgba(0, 0 , 0, 0.2)'
+    modal.focus()
+}
+
+async function modalInventoryOrderDeleteClose() {
+    let modal = document.getElementById('InventoryOrderDelete');
+    let info_div = document.getElementById('inventory-info')
+    info_div.removeChild(info_div.children[0])
+    modal.style.display = "none"
+}
+
+async function deleteInventoryOrder(event) {
+    let pk = event.currentTarget.dataset.pk
+    let pathname = window.location.pathname
+    let csrftokens = getCookie('csrftoken');
+    let url = `/api/delete/inventory/${pk}`.replace(pathname, '')
+    let response = await fetch(url, {
+        method: "DELETE",
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftokens
+        }
+    })
+    if (response.ok) {
+        modalInventoryOrderDeleteClose();
+    }
+}

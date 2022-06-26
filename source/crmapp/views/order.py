@@ -8,10 +8,11 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import DetailView, UpdateView, DeleteView, ListView, FormView
 
 from crmapp.helpers.crispy_form_helpers import OrderFormHelper, CleanersPartHelper, StaffFormHelper
-from crmapp.forms import CleanersPartForm, OrderForm, OrderCommentForm, ServiceOrderForm
+from crmapp.forms import CleanersPartForm, OrderForm, OrderCommentForm, ServiceOrderForm, InventoryOrderForm, \
+    OrderWorkTimeForm
 from crmapp.helpers.order_helpers import BaseOrderCreateView, StaffFormset, ModalFormView
 
-from crmapp.models import Order
+from crmapp.models import Order, InventoryOrder
 
 from tgbot.handlers.orders.tg_order_staff import staff_accept_order, order_canceled
 
@@ -75,6 +76,8 @@ class OrderDetailView(PermissionRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['service_form'] = ServiceOrderForm
+        context['inventory_form'] = InventoryOrderForm
+        context['work_time_form'] = OrderWorkTimeForm
         return context
 
     def has_permission(self):
@@ -219,6 +222,42 @@ class OrderDeletedListView(PermissionRequiredMixin, ListView):
 
 class ServiceAddModalView(ModalFormView):
     form_class = ServiceOrderForm
+
+    def get_success_url(self):
+        return reverse('crmapp:order_detail', kwargs={'pk': self.kwargs.get('pk')})
+
+
+class InventoryAddModalView(ModalFormView):
+    model = InventoryOrder
+    form_class = InventoryOrderForm
+
+    def get_success_url(self):
+        return reverse('crmapp:order_detail', kwargs={'pk': self.kwargs.get('pk')})
+
+
+class WorkTimeModalView(UpdateView):
+    model = Order
+    form_class = OrderWorkTimeForm
+
+    def form_valid(self, form, formset=None):
+        form.save()
+        order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
+        order.save_time()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('crmapp:order_detail', kwargs={'pk': self.kwargs.get('pk')})
+
+
+class UpdateWorkTimeModalView(UpdateView):
+    model = Order
+    form_class = OrderWorkTimeForm
+
+    def form_valid(self, form, formset=None):
+        form.save()
+        order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
+        order.save_time()
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse('crmapp:order_detail', kwargs={'pk': self.kwargs.get('pk')})
