@@ -169,13 +169,15 @@ async function modalFineClose() {
 
 async function createFine() {
     let pathname = window.location.pathname
+    console.log(pathname)
     let category = document.getElementById("category").value;
+    console.log(category)
     let fine = document.getElementById("fine").value;
     let criteria = document.getElementById("criteria").value;
     let value = document.getElementById("fine_value").value;
     let description = document.getElementById("description").value;
     let csrftoken = getCookie('csrftoken');
-    let url =  "/api/fine/create/".replace(pathname, '')
+    let url = "/api/fine/create/".replace(pathname, '')
     let data = {"category": category, "fine": fine, "criteria": criteria, "value": value, "description": description};
     let response = await fetch(url, {
         method: "POST",
@@ -186,7 +188,9 @@ async function createFine() {
         }
     })
     if (response.ok) {
-        modalFineClose()}
+        console.log('kdfhdkjfjksdjfk')
+        modalFineClose()
+    }
 }
 
 async function modalBonusOpen() {
@@ -206,7 +210,7 @@ async function createBonus() {
     let bonus = document.getElementById("bonus").value;
     let bonus_value = document.getElementById("bonus_value").value;
     let csrftoken = getCookie('csrftoken');
-    let url =  "/api/bonus/create/".replace(pathname, '')
+    let url = "/api/bonus/create/".replace(pathname, '')
     let data = {"bonus": bonus, "value": bonus_value};
     let response = await fetch(url, {
         method: "POST",
@@ -217,7 +221,8 @@ async function createBonus() {
         }
     })
     if (response.ok) {
-        modalBonusClose()}
+        modalBonusClose()
+    }
 }
 
 async function modalInventoryOpen() {
@@ -237,7 +242,7 @@ async function createInventory() {
     let inventory = document.getElementById("inventory_name").value;
     let inventory_description = document.getElementById("inventory_description").value;
     let csrftoken = getCookie('csrftoken');
-    let url =  "/api/inventory/create/".replace(pathname, '')
+    let url = "/api/inventory/create/".replace(pathname, '')
     let data = {"name": inventory, "description": inventory_description};
     let response = await fetch(url, {
         method: "POST",
@@ -248,7 +253,8 @@ async function createInventory() {
         }
     })
     if (response.ok) {
-        modalInventoryClose()}
+        modalInventoryClose()
+    }
 }
 
 async function modalObjectTypeOpen() {
@@ -278,6 +284,7 @@ async function createObjectType() {
         }
     })
     if (response.ok) {
-        modalObjectTypeClose()}
+        modalObjectTypeClose()
+    }
 }
 
