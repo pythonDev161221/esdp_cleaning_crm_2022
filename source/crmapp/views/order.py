@@ -239,6 +239,12 @@ class WorkTimeModalView(UpdateView):
     model = Order
     form_class = OrderWorkTimeForm
 
+    def form_valid(self, form, formset=None):
+        form.save()
+        order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
+        order.save_time()
+        return HttpResponseRedirect(self.get_success_url())
+
     def get_success_url(self):
         return reverse('crmapp:order_detail', kwargs={'pk': self.kwargs.get('pk')})
 
@@ -246,6 +252,12 @@ class WorkTimeModalView(UpdateView):
 class UpdateWorkTimeModalView(UpdateView):
     model = Order
     form_class = OrderWorkTimeForm
+
+    def form_valid(self, form, formset=None):
+        form.save()
+        order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
+        order.save_time()
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
         return reverse('crmapp:order_detail', kwargs={'pk': self.kwargs.get('pk')})

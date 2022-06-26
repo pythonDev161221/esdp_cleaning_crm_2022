@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
@@ -235,10 +237,9 @@ class Order(models.Model):
         else:
             return 0
 
-    #
-    # def save(self, *args, **kwargs):
-    #     self.work_end = self.work_start + self.cleaning_time
-    #     super(Order, self).save(*args, **kwargs)
+    def save_time(self, *args, **kwargs):
+        self.work_end = self.work_start + timedelta(self.cleaning_time.hour, self.cleaning_time.minute)
+        super(Order, self).save(*args, **kwargs)
 
     class Meta:
         db_table = 'order'
