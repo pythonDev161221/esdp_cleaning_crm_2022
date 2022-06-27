@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'accounts',
     'tgbot',
     'api',
-    'crmapp.templatetags.auth_extras',
+    'crmapp.templatetags.filters',
 
     # lib app
     'phonenumber_field',

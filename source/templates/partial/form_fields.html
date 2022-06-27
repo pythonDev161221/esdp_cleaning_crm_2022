@@ -1,0 +1,18 @@
+{% for error in form.non_field_errors %}
+    <div id="val-username-error" class="invalid-feedback animated fadeInDown"
+         style="display: block;">{{ error }}</div>
+{% endfor %}
+{% for field in form %}
+    <div class="form-group">
+    {% if label %}
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+    {% endif %}
+        {{ field }}
+        {% for error in field.errors %}
+            <div id="val-username-error" class="invalid-feedback animated fadeInDown"
+                 style="display: block;">{{ error }}
+            </div>
+        {% endfor %}
+    </div>
+{% endfor %}
+<button type="submit" class="btn btn-secondary {% if btn_bold %}py-3{% endif %} submit w-100">{{ button_text|default:"Сохранить" }}</button>

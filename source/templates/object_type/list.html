@@ -10,11 +10,6 @@
     <th>Наименование</th>
     <th>Действия</th>
 {% endblock thead %}
-{% block button %}
-    <div class="text-right">
-        <a class="mb-2 btn btn-secondary btn-sm" href="{% url 'crmapp:object_type_create' %}">Добавить объект</a>
-    </div>
-{% endblock button %}
 {% block tbody %}
     {% for object_type in object_types %}
         <tr>

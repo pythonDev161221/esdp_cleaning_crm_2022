@@ -61,3 +61,14 @@ input#fotos:checked ~ ul label[for="fotos"] {
 .avatar-conteiner img {
  object-fit: cover;
 }
+
+.modal-title {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.table {
+    max-width: none;
+}

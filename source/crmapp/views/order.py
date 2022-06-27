@@ -110,6 +110,8 @@ class OrderCreateView(PermissionRequiredMixin, FormView):
     def form_valid(self, form, formset=None):
         form.instance.manager = self.request.user
         self.kwargs['pk'] = form.save().pk
+        messages.success(self.request, f'Заказ успешно создан!')
+        print(self.request)
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):

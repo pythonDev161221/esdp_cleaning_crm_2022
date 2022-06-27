@@ -43,6 +43,7 @@ class Client(models.Model):
     phone = PhoneNumberField(unique=True, region="KG", max_length=15, verbose_name=_('Номер телефона'))
     organization = models.CharField(verbose_name=_('Организация'), max_length=120, null=True, blank=True)
 
+    @property
     def get_absolute_url(self):
         return reverse('crmapp:client_index')
 
@@ -237,18 +238,39 @@ class Order(models.Model):
         else:
             return 0
 
+    def get_progres(self):
+        data = 5
+        fields = {
+            'is_accept': 15,
+            'in_place': 25,
+            'work_start': 40,
+            'work_end': 60,
+        }
+        try:
+            for key, value in fields:
+                if getattr(self.get_brigadier(), key):
+                    data = value
+            if self.status == 'canceled':
+                data = 80
+            elif self.status == 'finished':
+                data = 100
+            return data
+        except ValueError:
+            return data
+
     def save_time(self, *args, **kwargs):
         self.work_end = self.work_start + timedelta(self.cleaning_time.hour, self.cleaning_time.minute)
         super(Order, self).save(*args, **kwargs)
 
-    class Meta:
-        db_table = 'order'
-        verbose_name = _('Заказ')
-        verbose_name_plural = _('Заказы')
-        permissions = [
-            ('сan_view_income_outcome_report', 'Может просмотреть отчет о расходах и доходах'),
-            ('can_view_order_deleted_list', 'Может просмотреть список удаленных заказов')
-        ]
+
+class Meta:
+    db_table = 'order'
+    verbose_name = _('Заказ')
+    verbose_name_plural = _('Заказы')
+    permissions = [
+        ('сan_view_income_outcome_report', 'Может просмотреть отчет о расходах и доходах'),
+        ('can_view_order_deleted_list', 'Может просмотреть список удаленных заказов')
+    ]
 
 
 class Fine(models.Model):
@@ -261,6 +283,7 @@ class Fine(models.Model):
     def __str__(self):
         return f"{self.fine}"
 
+    @property
     def get_absolute_url(self):
         return reverse('crmapp:fine_list')
 
@@ -277,6 +300,7 @@ class Bonus(models.Model):
     def __str__(self):
         return f"{self.bonus}"
 
+    @property
     def get_absolute_url(self):
         return reverse('crmapp:bonus_list')
 
@@ -290,6 +314,7 @@ class Inventory(models.Model):
     name = models.CharField(max_length=255, verbose_name=_('Инвентарь'), null=False, blank=False)
     description = models.TextField(max_length=1000, verbose_name=_('Описание'), null=True, blank=True)
 
+    @property
     def get_absolute_url(self):
         return reverse('crmapp:inventory_index')
 
@@ -321,10 +346,7 @@ class ServiceOrder(models.Model):
         return self.service.price * self.amount * self.rate
 
     def get_total(self):
-        total = 0
-        for i in self.service_total():
-            total += i
-        return total
+        return self.service_total()
 
     class Meta:
         db_table = "service_order"
@@ -341,7 +363,7 @@ class InventoryOrder(models.Model):
                                          validators=[MinValueValidator(1)])
 
     def get_absolute_url(self):
-        return reverse('crmapp:inventory_index', pk=self.order.pk)
+        return reverse('crmapp:inventory_index', kwargs={'pk': self.order.pk})
 
     def __str__(self):
         return f'{self.inventory}:{self.amount}'
@@ -380,11 +402,12 @@ class ManagerReport(models.Model):
 class ObjectType(models.Model):
     name = models.CharField(max_length=255, verbose_name=_('Наименование'), null=False, blank=False)
 
-    def __str__(self):
-        return f'{self.name}'
-
+    @property
     def get_absolute_url(self):
         return reverse('crmapp:object_type_list')
+
+    def __str__(self):
+        return f'{self.name}'
 
     class Meta:
         db_table = 'object_types'

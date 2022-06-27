@@ -6,8 +6,9 @@
     Отчеты по кассе
 {% endblock table_title %}
 {% block button %}
-    <div class="text-left">
-        <a class="mb-2 btn btn-sm text-white" style="background-color: #00b368;" href="{% url 'crmapp:cash_excel' %}">Экспорт в Excel</a>
+    <div class="text-right">
+        <a class="mb-2 btn btn-secondary btn-sm"
+           href="{% url 'crmapp:cash_excel' %}">Экспорт в Excel</a>
     </div>
 {% endblock button %}
 {% block thead %}

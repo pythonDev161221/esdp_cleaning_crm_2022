@@ -8,6 +8,9 @@
             <div class="card-body">
                 <div class="text-center mb-0">
                     <h3 class="mb-0">Заказ №{{ order.id }}</h3>
+                    {% for massage in massages %}
+                        {{ message }}
+                    {% endfor %}
                 </div>
                 <hr>
                 <div class="row px-5 mb-5">

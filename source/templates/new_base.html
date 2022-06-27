@@ -1,5 +1,5 @@
 {% load static %}
-{% load auth_extras %}
+{% load filters %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -14,10 +14,11 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon.png' %}">
     <!-- Custom Stylesheet -->
     {% block style %}{% endblock style %}
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'plugins/metismenu/css/metisMenu.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/main.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'plugins/metismenu/css/metisMenu.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/toastr/css/toastr.min.css' %}">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
 </head>
 <body>
 <!--******************* Анимация загрузки ********************-->
@@ -34,8 +35,8 @@
     <div class="nav-header">
         <div class="brand-logo">
             <a href="{% url 'index' %}">
-                {#                <b class="logo-abbr"><img src="img/logo.png" alt=""></b>#}
-                {#                <span class="logo-compact"><img src="./images/logo-compact.png" alt=""></span>#}
+                <b class="logo-abbr"><img src="{% static 'img/logo_q.png' %}" alt=""></b>
+                <span class="logo-compact"><img src="{% static 'img/logo.png' %}" alt=""></span>
                 <span class="brand-title">
                     <img src="{% static 'img/logo.png' %}" alt="">
                 </span>
@@ -101,7 +102,7 @@
                     {% block links %}
                         {% if request.user|has_group:'Manager' or request.user.is_staff %}
                             <li>
-                                <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                                <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
                                     <i class="icon-people menu-icon"></i>
                                     <span class="nav-text">Сотрудники</span>
                                 </a>
@@ -115,33 +116,111 @@
                                 </ul>
                             </li>
                             <li>
-                                <a class="has-arrow" href="javascript:void()" aria-expanded="false">
-                                    <i class="icon-notebook menu-icon"></i>
-                                    <span class="nav-text">Справочники</span>
+                                <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
+                                    <i class="icon-notebook menu-icon"></i><span class="nav-text">Справочники</span>
                                 </a>
-                                <ul aria-expanded="false" class="collapse">
-                                    <li><a href="{% url 'crmapp:service_list' %}" aria-expanded="false">Услуги</a></li>
-                                    <li><a href="{% url 'crmapp:inventory_index' %}" aria-expanded="false">Инвентарь</a>
+                                <ul>
+                                    <li>
+                                        <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Услуги</a>
+                                        <ul aria-expanded="false" class="collapse">
+                                            <li>
+                                                <a href="javascript:void(0)" data-toggle="modal"
+                                                   data-target="#serviceModal">Добавить услугу</a>
+                                            </li>
+                                            <li>
+                                                <a href="{% url 'crmapp:service_list' %}">Список услуг</a>
+                                            </li>
+                                        </ul>
                                     </li>
-                                    <li><a href="{% url 'crmapp:object_type_list' %}" aria-expanded="false">Объкеты</a>
+                                    <li>
+                                        <a class="has-arrow" href="javascript:void(0)"
+                                           aria-expanded="false">Инвентарь</a>
+                                        <ul aria-expanded="false" class="collapse">
+                                            <li>
+
+                                                <a href="javascript:void(0)" data-toggle="modal"
+                                                   data-target="#inventoryModal">Добавить инвентарь</a>
+                                            </li>
+                                            <li>
+
+                                                <a href="{% url 'crmapp:inventory_index' %}">Список инвентаря</a>
+
+                                            </li>
+                                        </ul>
                                     </li>
-                                    <li><a href="{% url 'crmapp:fine_list' %}" aria-expanded="false">Штрафы</a></li>
-                                    <li><a href="{% url 'crmapp:bonus_list' %}" aria-expanded="false">Бонусы</a></li>
-                                    <li><a href="{% url 'crmapp:client_index' %}" aria-expanded="false">Клиенты</a></li>
+                                    <li>
+                                        <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Объекты</a>
+                                        <ul aria-expanded="false" class="collapse">
+                                            <li>
+                                                <a href="javascript:void(0)" data-toggle="modal"
+                                                   data-target="#objectTypeModal">Добавить тип объекта</a>
+                                            </li>
+                                            <li>
+                                                <a href="{% url 'crmapp:object_type_list' %}">Список объектов</a>
+
+
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Штрафы</a>
+                                        <ul aria-expanded="false" class="collapse">
+                                            {% if perms.crmapp.add_fine %}
+                                                <li>
+                                                    <a href="javascript:void(0)" data-toggle="modal"
+                                                       data-target="#fineModal">Добавить штраф</a>
+                                                </li>
+                                            {% endif %}
+                                            <li>
+                                                <a href="{% url 'crmapp:fine_list' %}">Список штрафов</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Бонусы</a>
+                                        <ul aria-expanded="false" class="collapse">
+                                            <li>
+                                                <a href="javascript:void(0)" data-toggle="modal"
+                                                   data-target="#bonusModal">Добавить бонус</a>
+                                            </li>
+                                            <li>
+                                                <a href="{% url 'crmapp:bonus_list' %}">Список бонусов</a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Клиенты</a>
+                                        <ul aria-expanded="false" class="collapse">
+                                            <li>
+                                                <a href="javascript:void(0)" data-toggle="modal"
+                                                   data-target="#clientModal">Добавить клиента</a>
+                                            </li>
+                                            <li>
+                                                <a href="{% url 'crmapp:client_index' %}">Список клиентов</a>
+                                            </li>
+                                        </ul>
+                                    </li>
                                 </ul>
                             </li>
                             <li>
-                                <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                                <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
                                     <i class="icon-docs menu-icon"></i>
                                     <span class="nav-text">Отчеты</span>
                                 </a>
                                 <ul aria-expanded="false" class="collapse">
-                                    <li><a href="{% url 'crmapp:manager_cash_list' %}">Отчет по кассе</a></li>
-                                    <li><a href="{% url 'crmapp:income_outcome_report' %}">Отчет о расходах и
-                                        доходах</a>
+                                    <li>
+                                        <a href="{% url 'crmapp:manager_cash_list' %}">Отчет по кассе</a>
                                     </li>
-                                    <li><a href="{% url 'crmapp:manager_report_list' %}">Отчет менеджера</a></li>
-                                    <li><a href="{% url 'accounts:payout_list' %}">Отчет по выплатам</a></li>
+                                    <li>
+                                        <a href="{% url 'crmapp:income_outcome_report' %}">Отчет о расходах и
+                                            доходах</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'crmapp:manager_report_list' %}">Отчет менеджера</a>
+                                    </li>
+                                    <li>
+                                        <a href="{% url 'accounts:payout_list' %}">Отчет по выплатам</a>
+                                    </li>
                                 </ul>
                             </li>
                             <li>
@@ -150,11 +229,11 @@
                                 </a>
                             </li>
                             <li class="hidden">
-                                <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                                <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
                                 </a>
                             </li>
                             <li class="hidden">
-                                <a class="has-arrow" href="javascript:void()" aria-expanded="false">
+                                <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
                                 </a>
                             </li>
                         {% endif %}
@@ -168,7 +247,6 @@
     <!--********************************** Контент ***********************************-->
     <div class="content-body">
         <div class="container-fluid">
-
             {% block content %}{% endblock content %}
         </div>
     </div>
@@ -179,138 +257,200 @@
         </div>
     </div>
 </div>
-<!--********************************** Modal ***********************************-->
-<!--********************************** Modal Fine ***********************************-->
-<div id="FineModal" class="modal">
-    <div class="modal-dialog">
+<!--********************************** Modal Bonus ***********************************-->
+<div class="modal fade" id="bonusModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Добавить Штраф</h2>
-                <button onclick="modalFineClose()" class="btn btn-close" data-bs-dismiss="modal"
-                        aria-label="Close">x
+                <b class="modal-title fs-5">Добавить бонус</b>
+                <button type="button" class="close" data-dismiss="modal"><span>×</span>
                 </button>
             </div>
-            <form>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <input placeholder="Категория" class="form-control" maxlength="255" type="text"
-                               id="category">
+            <div class="modal-body">
+                <form id="bonusForm">
+                    <div class="form-group">
+                        <input placeholder="Бонус" class="form-control input-default" maxlength="300" type="text"
+                               name="bonus" required>
                     </div>
-                    <div class="mb-3">
-                        <input placeholder="Название штрафа" class="form-control" maxlength="300" type="text"
-                               id="fine" required>
+                    <div class="form-group">
+                        <input placeholder="Сумма бонуса" class="form-control input-default" maxlength="10"
+                               type="number" name="value">
                     </div>
-                    <div class="mb-3">
-                        <input placeholder="Критерий" class="form-control"
-                               maxlength="255" type="tel"
-                               id="criteria">
-                    </div>
-                    <div class="mb-3">
-                        <input placeholder="Сумма штрафа" class="form-control" maxlength="10"
-                               type="number"
-                               id="fine_value">
-                    </div>
-                    <div class="mb-3">
-                        <input placeholder="Пояснение" class="form-control" maxlength="500"
-                               type="text"
-                               id="description">
-                    </div>
-                    <div class="mb-3">
-                        <button class="btn btn-success w-100" onclick="createFine()" type="submit"
-                                id="create-button">Сохранить
-                        </button>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
+            <div class="text-center mb-3">
+                <button type="button" class="btn btn-secondary" onclick="createBonus()">Сохранить</button>
+            </div>
         </div>
     </div>
 </div>
-<!--********************************** Modal Bonus ***********************************-->
-<div id="BonusModal" class="modal">
-    <div class="modal-dialog">
+<!--********************************** Modal Fine ***********************************-->
+<div class="modal fade" id="fineModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Добавить бонус</h2>
-                <button onclick="modalBonusClose()" class="btn btn-close" data-bs-dismiss="modal"
-                        aria-label="Close">x
+                <b class="modal-title fs-5">Добавить штраф</b>
+                <button type="button" class="close" data-dismiss="modal"><span>×</span>
                 </button>
             </div>
-            <form>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <input placeholder="Бонус" class="form-control" maxlength="300" type="text"
-                               id="bonus" required>
+            <div class="modal-body">
+                <form id="fineForm">
+                    <div class="form-group">
+                        <input placeholder="Категория" class="form-control input-default" maxlength="255"
+                               type="text" name="category">
                     </div>
-                    <div class="mb-3">
-                        <input placeholder="Сумма бонуса" class="form-control" maxlength="10"
-                               type="number" id="bonus_value">
+                    <div class="form-group">
+                        <input placeholder="Название штрафа" class="form-control input-default" maxlength="300"
+                               type="text" name="fine" required>
                     </div>
-                    <div class="mb-3">
-                        <button class="btn btn-success w-100" onclick="createBonus()" type="submit"
-                                id="create-button">Сохранить
-                        </button>
+                    <div class="form-group">
+                        <input placeholder="Критерий" class="form-control input-default"
+                               maxlength="255" type="tel"
+                               name="criteria">
                     </div>
-                </div>
-            </form>
+                    <div class="form-group">
+                        <input placeholder="Сумма штрафа" class="form-control input-default" maxlength="10"
+                               type="number" name="value">
+                    </div>
+                    <div class="form-group">
+                                <textarea placeholder="Пояснение" class="form-control input-default" maxlength="500"
+                                          type="text" name="description"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="text-center mb-3">
+                <button type="button" class="btn btn-secondary" onclick="createFine()">Сохранить</button>
+            </div>
         </div>
     </div>
 </div>
 <!--********************************** Modal Inventory ***********************************-->
-<div id="InventoryModal" class="modal">
-    <div class="modal-dialog">
+<div class="modal fade" id="inventoryModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Добавить инвентарь</h2>
-                <button onclick="modalInventoryClose()" class="btn btn-close" data-bs-dismiss="modal"
-                        aria-label="Close">x
+                <b class="modal-title fs-5">Добавить инвентарь</b>
+                <button type="button" class="close" data-dismiss="modal"><span>×</span>
                 </button>
             </div>
-            <form>
-                <div class="modal-body">
-                    <div class="mb-3">
+            <div class="modal-body">
+                <form id="inventoryForm">
+                    <div class="form-group">
                         <input placeholder="Инвентарь" class="form-control" maxlength="255" type="text"
-                               id="inventory_name" required>
+                               name="name" required>
                     </div>
-                    <div class="mb-3">
-                        <input placeholder="Описание" class="form-control" maxlength="1000" type="text"
-                               id="inventory_description">
+                    <div class="form-group">
+                            <textarea placeholder="Описание" class="form-control" maxlength="1000" type="text"
+                                      name="description"></textarea>
                     </div>
-                    <div class="mb-3">
-                        <button class="btn btn-success w-100" onclick="createInventory()" type="submit"
-                                id="create-button">Сохранить
-                        </button>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
+            <div class="text-center mb-3">
+                <button type="button" class="btn btn-secondary" onclick="createInventory()">Сохранить</button>
+            </div>
         </div>
     </div>
 </div>
 <!--********************************** Modal ObjectType ***********************************-->
-<div id="ObjectTypeModal" class="modal">
-    <div class="modal-dialog">
+<div class="modal fade" id="objectTypeModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Добавить тип объекта</h2>
-                <button onclick="modalObjectTypeClose()" class="btn btn-close" data-bs-dismiss="modal"
-                        aria-label="Close">x
+                <b class="modal-title fs-5">Добавить тип объекта</b>
+                <button type="button" class="close" data-dismiss="modal"><span>×</span>
                 </button>
             </div>
-            <form>
-                <div class="modal-body">
-                    <div class="mb-3">
+            <div class="modal-body">
+                <form id="objectTypeForm">
+                    <div class="form-group">
                         <input placeholder="Тип объекта" class="form-control" maxlength="255" type="text"
-                               id="object_type_name" required>
+                               name="name" required>
                     </div>
-                    <div class="mb-3">
-                        <button class="btn btn-success w-100" onclick="createObjectType()" type="submit"
-                                id="create-button">Сохранить
-                        </button>
-                    </div>
-                </div>
-            </form>
+                </form>
+            </div>
+            <div class="text-center mb-3">
+                <button type="button" class="btn btn-secondary" onclick="createObjectType()">Сохранить</button>
+            </div>
         </div>
     </div>
 </div>
+<!--********************************** Service Modal ***********************************-->
+<div class="modal fade" id="serviceModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <b class="modal-title fs-5">Добавить сервис</b>
+                <button type="button" class="close" data-dismiss="modal"><span>×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="serviceForm">
+                    <div class="form-group">
+                        <input placeholder="Услуга" class="form-control input-default" maxlength="255" type="text"
+                               name="name" required>
+                    </div>
+                    <div class="form-group">
+                            <select class="form-control input-default" name="unit" required>
+                                <option selected><---------></option>
+                                <option value="square_meter">м²</option>
+                                <option value="piece">шт.</option>
+                                <option value="seat_place">посад/место</option>
+                                <option value="sash">створка</option>
+                            </select>
+                    </div>
+                    <div class="form-group">
+                        <input placeholder="Цена" class="form-control input-default" type="number"
+                               name="price" required>
+                    </div>
+                    <div class="form-check">
+                        <label class="form-check-label m-0" for="service-is_extra">Доп. услуга</label>
+                        <input placeholder="Инвентарь" class="form-check-input ml-3" type="checkbox"
+                               id="service-is_extra" name="is_extra">
+                    </div>
+                </form>
+            </div>
+            <div class="text-center mb-3">
+                <button type="button" class="btn btn-secondary" onclick="createService()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--********************************** Clien Modal ***********************************-->
+<div class="modal fade" id="clientModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <b class="modal-title fs-5">Добавить клиента</b>
+                <button type="button" class="close" data-dismiss="modal"><span>×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="clientForm">
+                    <div class="form-group">
+                        <input placeholder="Имя" class="form-control input-default" maxlength="20" type="text"
+                               name="first_name" required>
+                    </div>
+                    <div class="form-group">
+                        <input placeholder="Фамилия" class="form-control input-default" maxlength="20"
+                               type="text" name="last_name" required>
+                    </div>
+                    <div class="form-group">
+                        <input placeholder="Телафон" class="form-control input-default"
+                               type="tel" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <input placeholder="Организация" class="form-control input-default" maxlength="50"
+                               type="text" name="organization">
+                    </div>
+                </form>
+            </div>
+            <div class="text-center mb-3">
+                <button type="button" class="btn btn-secondary" onclick="createClient()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!--********************************** Скрипты ***********************************-->
 <script src="{% static 'plugins/common/common.min.js' %}"></script>
 <script src="{% static 'js/custom.min.js' %}"></script>
@@ -318,12 +458,14 @@
 <script src="{% static 'js/gleek.js' %}"></script>
 <script src="{% static 'js/styleSwitcher.js' %}"></script>
 <script src="{% static 'plugins/metismenu/js/metisMenu.min.js' %}"></script>
+<script src="{% static 'plugins/toastr/js/toastr.min.js' %}"></script>
+<script src="{% static 'plugins/toastr/js/toastr.init.js' %}"></script>
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'js/modal_windows.js' %}"></script>
-<script src="{% static 'js/calendar.js' %}"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+{% include 'partial/messages.html' %}
 
 {% block scripts %}{% endblock scripts %}
 </body>

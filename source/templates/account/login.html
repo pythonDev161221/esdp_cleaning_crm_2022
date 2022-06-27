@@ -1,22 +1,50 @@
-{% extends 'base.html' %}
-{% block title %}Вход{% endblock %}
-{% block content %}
-    <form method="post" class="text-center ms-auto me-auto w-50">
-        <h1>Вход</h1>
-        {% csrf_token %}
-        {% if form.errors %}
-            <p class="text-danger">Неверный email или пароль.</p>
-        {% endif %}
-        <div class="container w-50">
-            <div class="form-group">
-                <label for="username" class="form-label">Email:</label>
-                <input type="text" name="username" id="username" class="form-control">
-            </div>
-            <div class="form-group">
-                <label for="password" class="form-label">Пароль:</label>
-                <input type="password" name="password" id="password" class="form-control">
+{% load static %}
+<!DOCTYPE html>
+<html class="h-100" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Авторизация</title>
+    <!-- Fonts -->
+    <link rel="stylesheet" href="{% static 'icons/font-awesome/css/font-awesome.min.css' %}">
+    <!-- Favicon icon -->
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon.png' %}">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+<body class="h-100">
+<div id="preloader">
+    <div class="loader">
+        <svg class="circular" viewBox="25 25 50 50">
+            <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="3" stroke-miterlimit="10"></circle>
+        </svg>
+    </div>
+</div>
+<div class="login-form-bg h-100">
+    <div class="container h-100">
+        <div class="row justify-content-center h-100">
+            <div class="col-lg-6 col-md-8">
+                <div class="form-input-content">
+                    <div class="card login-form mb-0">
+                        <div class="card-body">
+                            <div class="text-center pb-3">
+                                <img src="{% static 'img/login.png' %}" alt="authentication logo" height="120">
+                            </div>
+                            <form method="post" class="mt-5 mb-5 login-input">
+                                {% csrf_token %}
+                                {% include 'partial/form_fields.html' with button_text='Войти' label=False btn_bold=True %}
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <button class="mt-3 btn btn-dark" type="submit">Войти</button>
-    </form>
-{% endblock %}
+    </div>
+</div>
+<script src="{% static 'plugins/common/common.min.js' %}"></script>
+<script src="{% static 'js/custom.min.js' %}"></script>
+<script src="{% static 'js/settings.js' %}"></script>
+<script src="{% static 'js/gleek.js' %}"></script>
+<script src="{% static 'js/styleSwitcher.js' %}"></script>
+</body>
+</html>
