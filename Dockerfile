@@ -13,7 +13,7 @@ COPY Pipfile.lock /crm_cleaning
 COPY Pipfile /crm_cleaning
 
 RUN pip install pipenv
-RUN pipenv install --system --deploy
+RUN pipenv install --deploy
 
 COPY source /crm_cleaning/source
 COPY project_uwsgi/uwsgi.ini /etc/uwsgi/uwsgi.ini
