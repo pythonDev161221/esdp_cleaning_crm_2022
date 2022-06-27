@@ -41,3 +41,34 @@ input#fotos:checked ~ ul label[for="fotos"] {
     background-color: #F3F3F9;
     border-color: #dee2e6 #dee2e6 #F3F3F9;
 }
+
+.circle-img {
+    border: 1px solid transparent;
+    border-radius: 50%;
+}
+
+.avatar-conteiner {
+    position: relative;
+}
+
+.foto-add {
+    position: absolute;
+    bottom: 2px;
+    right: 14px;
+    font-size: 19px;
+}
+
+.avatar-conteiner img {
+ object-fit: cover;
+}
+
+.modal-title {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.table {
+    max-width: none;
+}

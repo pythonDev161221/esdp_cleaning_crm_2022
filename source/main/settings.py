@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'accounts',
     'tgbot',
     'api',
+    'crmapp.templatetags.filters',
 
     # lib app
     'phonenumber_field',
@@ -52,7 +53,12 @@ INSTALLED_APPS = [
     'behave_django',
     'crispy_bootstrap5',
     'rest_framework',
+    'django_filters'
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
 

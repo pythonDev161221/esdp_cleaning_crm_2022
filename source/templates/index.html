@@ -1,5 +1,17 @@
 {% extends 'new_base.html' %}
 
 {% block content %}
-
+    <div id="calendar">
+        <div style="margin-top: 20px; margin-bottom: 20px">
+            <select id="month" class="dropdown-toggle"></select>
+            <span><select id="year" class="dropdown-toggle"></select></span>
+            <span id="month-and-year"></span>
+        </div>
+        <div class="card m-0 p-0">
+            <div id="table-div"></div>
+        </div>
+    </div>
 {% endblock content %}
+{% block scripts %}
+    <script>calender()</script>
+{% endblock scripts %}

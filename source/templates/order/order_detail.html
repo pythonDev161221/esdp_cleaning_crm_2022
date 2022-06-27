@@ -8,6 +8,9 @@
             <div class="card-body">
                 <div class="text-center mb-0">
                     <h3 class="mb-0">Заказ №{{ order.id }}</h3>
+                    {% for massage in massages %}
+                        {{ message }}
+                    {% endfor %}
                 </div>
                 <hr>
                 <div class="row px-5 mb-5">
@@ -35,8 +38,13 @@
                             <strong class="mr-3">Время выполнения:</strong>
                             {% if order.cleaning_time %}
                                 <span>{{ order.cleaning_time }} ч.</span>
+                                <a title="Дoбавить время на выполнение заказа" href="#" data-bs-toggle="modal"
+                                   data-bs-target="#updateWorktimeModal">
+                                    <i class="fa fa-pencil text-dark hover-blue fs-6"></i>
+                                </a>
                             {% else %}
-                                <a title="Дубавить время на выполнение заказа" href="#">
+                                <a title="Дoбавить время на выполнение заказа" href="#" data-bs-toggle="modal"
+                                   data-bs-target="#worktimeModal">
                                     <i class="fa fa-plus-circle fs-6"></i>
                                 </a>
                             {% endif %}
@@ -102,8 +110,8 @@
                     {% if order.status == 'new' and perms.crmapp.add_inventoryorder and order.manager == request.user or request.user.is_staff %}
                         <li id="inventory-add" class="action-button">
                             <div class="text-right">
-                                <a class="btn btn-secondary btn-sm"
-                                   href="{% url 'crmapp:inventory_order_add' order.id %}">Добавить/Изменить инвентарь
+                                <a href="#" class="btn mb-1 btn-secondary btn-sm"
+                                   data-bs-toggle="modal" data-bs-target="#InventoryModal">Добавить инвентарь
                                 </a>
                             </div>
                         </li>
@@ -125,7 +133,8 @@
                         {% endif %}
                         {% if perms.crmapp.add_inventoryorder and order.manager == request.user or request.user.is_staff %}
                             <li id="service-add" class="action-button">
-                                <a href="#" class="btn mb-1 btn-secondary btn-sm">Добавить услугу</a>
+                                <a href="#" class="btn mb-1 btn-secondary btn-sm" data-bs-toggle="modal"
+                                   data-bs-target="#exampleModal">Добавить услугу</a>
                             </li>
                         {% endif %}
                     {% endif %}
@@ -231,12 +240,25 @@
                                     <td>{{ inventory.amount }}</td>
                                     <td>
                                         {% if perms.crmapp.delete_inventoryorder and order.manager == request.user or request.user.is_staff %}
-                                            <a class="text-danger"
-                                               href="{% url 'crmapp:inventory_order_remove' inventory.pk %}"><i
-                                                    class="fa fa-trash text-dark hover-blue fs-5"></i></a>
+                                            <a href="javascript:void()" data-name-text="{{ inventory.inventory.name }}"
+                                               data-pk="{{ inventory.id }}"
+                                               onclick='modalInventoryOrderDeleteOpen(event)'><i
+                                                    title="Удалить из заказа"
+                                                    class="fa fa-trash text-dark hover-blue fs-5"></i>
+                                            </a>
                                         {% endif %}
                                     </td>
                                 </tr>
+                                {% if perms.crmapp.add_inventoryorder and order.manager == request.user or request.user.is_staff %}
+                                    {% if order.status == 'new' %}
+                                        <div class="mx-4 text-center">
+                                            <button type="button" class="btn mb-1 btn-secondary btn-sm"
+                                                    data-bs-toggle="modal" data-bs-target="#InventoryModal">Добавить
+                                                инвентарь
+                                            </button>
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
                             {% endfor %}
                             {% if not inventories %}
                                 <tr>
@@ -368,6 +390,7 @@
             </div>
         </div>
     </div>
+
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -383,12 +406,55 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
                     <button form="service-form" type="submit" class="btn btn-primary">Сохранить</button>
                 </div>
             </div>
         </div>
     </div>
+    <!-- WORK TIME Modal -->
+    <div class="modal fade" id="worktimeModal" tabindex="-1" aria-labelledby="worktimeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="worktimeModalLabel">Укажите время работы</h2>
+                    <button class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <form id="worktime-form" action="{% url 'crmapp:order_add_work_time' order.id %}" method="post">
+                        {% csrf_token %}
+                        {{ work_time_form|crispy }}
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button form="worktime-form" type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- update WORK TIME Modal -->
+    <div class="modal fade" id="updateWorktimeModal" tabindex="-1" aria-labelledby="updateWorktimeModallLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="worktimeModalLabel">Укажите время работы</h2>
+                    <button class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <form id="update-worktime-form" action="{% url 'crmapp:order_update_work_time' order.id %}"
+                          method="post">
+                        {% csrf_token %}
+                        {{ work_time_form|crispy }}
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button form="update-worktime-form" type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Modal Service Update-->
     <div id="ServiceOrderUpdate" class="modal">
@@ -456,6 +522,57 @@
             </div>
         </div>
     </div>
+
+    {#    <!-- inventory Modal -->#}
+    <div class="modal fade" id="InventoryModal" tabindex="-1" aria-labelledby="inventoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="inventoryModalLabel">Добавление инвентаря</h5>
+                    <button class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <form id="inventory-form" action="{% url 'crmapp:order_add_inventory' order.id %}" method="post">
+                        {% csrf_token %}
+                        {{ inventory_form|crispy }}
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button form="inventory-form" type="submit" class="btn btn-primary">Добавить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Inventory Delete-->
+    <div id="InventoryOrderDelete" class="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Подтвердите удаление</h2>
+                    <button onclick="modalInventoryOrderDeleteClose()"
+                            class="btn btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close">x
+                    </button>
+                </div>
+                <form>
+                    <div class="modal-body">
+                        <div id="inventory-info">
+                        </div>
+                        <div class="mb-3">
+                            <button class="btn btn-success w-100"
+                                    id='inventory-delete'
+                                    onclick="deleteInventoryOrder(event)"
+                                    type="submit">Удалить
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
 
 {% endblock content %}

@@ -23,7 +23,12 @@
             <td>
                 <span class="badge badge-primary px-2">{{ order.get_status_display }}</span>
             </td>
-            <td>Прогресс бар</td>
+            <td>
+                <div class="progress mt-2" style="height: 10px; ">
+                    <div class="progress-bar gradient-1" role="progressbar" style="width: {{ order.get_progres }}%;"
+                         aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </td>
             <td>{{ order.get_total }}</td>
             <td>
                 <a title="Перейти к заказу" href="{% url 'crmapp:order_detail' order.pk %}">

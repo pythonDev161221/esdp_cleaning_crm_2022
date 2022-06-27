@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.contrib.auth.models import Group
 from django.db.models import Q
 from django.http import HttpResponseRedirect
-from django.shortcuts import redirect, get_object_or_404, render
+from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 
 from django.views.generic import DetailView, CreateView, ListView, UpdateView, DeleteView
@@ -18,7 +18,6 @@ from accounts.forms import (LoginForm,
                             StaffDescriptionForm,
                             StaffPassportForm)
 from accounts.models import Staff
-from tgbot.dispatcher import TELEGRAM_BOT_USERNAME
 
 from crmapp.forms import SearchForm
 
@@ -35,6 +34,7 @@ class StaffProfileView(PermissionRequiredMixin, DetailView):
         if self.object.groups.filter(name=group):
             context["is_manager"] = True
             context["cash_order_count"] = self.object.manager_cash.filter(is_nullify=False).count()
+        context['form_description'] = StaffDescriptionForm
         return context
 
     def has_permission(self):
@@ -93,7 +93,7 @@ class StaffListView(PermissionRequiredMixin, ListView):
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
-        queryset = Staff.objects.filter(black_list=False).\
+        queryset = Staff.objects.filter(black_list=False). \
             exclude(is_active=False).exclude(groups__name="Manager")
         if self.search_value:
             query = Q(last_name__icontains=self.search_value) | \
@@ -107,6 +107,7 @@ class StaffListView(PermissionRequiredMixin, ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(object_list=object_list, **kwargs)
+        context['staff_form'] = StaffRegistrationForm
         context['form'] = self.search_form_class()
         return context
 
@@ -128,7 +129,7 @@ class StaffManagerListView(PermissionRequiredMixin, ListView):
     permission_required = "accounts.view_staff"
 
     def get_queryset(self):
-        queryset = Staff.objects.filter(black_list=False, groups__name="Manager").\
+        queryset = Staff.objects.filter(black_list=False, groups__name="Manager"). \
             exclude(is_active=False)
         return queryset
 
@@ -301,4 +302,3 @@ class StaffOrderDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
-

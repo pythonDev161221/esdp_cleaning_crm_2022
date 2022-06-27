@@ -1,0 +1,23 @@
+image: docker:stable
+
+services:
+  - docker:dind
+
+stages:
+  - build
+
+
+build_docker_image:
+  stage: build
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - echo $CI_PIPELINE_ID
+    - docker build --rm -t crm_cleaning:$(echo $CI_PIPELINE_ID) --build-arg GIT_COMMIT=$(git rev-parse HEAD) .
+    - docker tag crm_cleaning:$(echo $CI_PIPELINE_ID) registry.gitlab.com/python317/crm_cleaning:$(echo $CI_PIPELINE_ID)
+    - docker push registry.gitlab.com/python317/crm_cleaning:$(echo $CI_PIPELINE_ID)
+    - docker image prune -a -f
+    - docker images
+    - df -h
+  only:
+    - developer

@@ -1,116 +1,155 @@
-{% extends 'base.html' %}
+{% extends 'new_base.html' %}
 {% load static %}
+{% load filters %}
 {% block title %}Профиль{% endblock title %}
-
-{% block links %} {% endblock links %}
-
 {% block content %}
-    <div class="container mb-5 text-start">
-        <br>
-        <div class="row display-flex">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header fs-5">
-                        <strong>{{ user_object.first_name | capfirst }} {{ user_object.last_name | capfirst }}</strong>
+    <div class="row">
+        <div class="col-lg-5 col-xl-4">
+            <div class="card">
+                <div class="col" style="position: absolute; top: 0; right: 0;">
+                    <div class="dropdown custom-dropdown" style="position: absolute; top: 1rem; right: 1rem;">
+                        <div data-toggle="dropdown" aria-expanded="false" class="px-2 c-pointer">
+                            <i class="fa fa-ellipsis-v fs-6"></i>
+                        </div>
+                        <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end"
+                             style="position: absolute; will-change: transform; top: 0; left: 0; transform: translate3d(3px, 21px, 0px);">
+                            {% if user_object|has_group:'Manager' %}
+                                {% if request.user.is_staff %}
+                                    <a class="dropdown-item"
+                                       href="{% url 'accounts:cash_manager_create' user_object.pk %}">
+                                        <i class="fa fa-money mr-2"></i>
+                                        Обнулить кассу</a>
+                                {% endif %}
+                            {% else %}
+                                {% if perms.accounts.add_payout %}
+                                    <a class="dropdown-item"
+                                       href="{% url 'accounts:payout_create' user_object.pk %}">
+                                        <i class="fa fa-money mr-2"></i>
+                                        Расчитать ЗП</a>
+                                {% endif %}
+                            {% endif %}
+                            <a class="dropdown-item" href="{% url 'accounts:change_password' %}">
+                                <i class="fa fa-lock mr-2"></i>
+                                Изменить пароль</a>
+
+                            <a class="dropdown-item" href="{% url 'accounts:staff-passport' user_object.id %}">
+                                <i class="fa fa-user mr-2"></i>
+                                Паспорт</a>
+
+                            {% if perms.accounts.add_staff %}
+                                <a class="dropdown-item" href="{% url "accounts:auth_tg_token" user_object.pk %}">
+                                    <i class="fa fa-paper-plane mr-2"></i>
+                                    Telegram TOKEN</a>
+                            {% endif %}
+
+                            {% if not user_object|has_group:'Manager' %}
+                                <a class="dropdown-item" href="{% url 'accounts:staff_orders' user_object.pk %}">
+                                    <i class="fa fa-file mr-2"></i>
+                                    История заказов</a>
+                                <a class="dropdown-item" href="{% url 'accounts:staff_payout' user_object.pk %}">
+                                    <i class="fa fa-dollar mr-2"></i>
+                                    История зарплаты</a>
+                            {% endif %}
+
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <p><strong>Email: </strong>{{ user_object.email }}</p>
-                        <p><strong>Телефон: </strong>{{ user_object.phone }}</p>
-                        <p><strong>Адрес: </strong>{% if user_object.address %}{{ user_object.address }}{% else %}
-                            Не указан{% endif %}</p>
-                        <p><strong>ИНН: </strong>{{ user_object.inn_passport }}</p>
-                        <p><strong>Электронные кошельки: </strong></p>
-                        {% for wallet in user_object.online_wallet %}
-                            <p>{{ wallet }}</p>
-                        {% endfor %}
-                        <p><strong>Квалификация: </strong>
-                            {{ user_object.get_experience_display }}</p>
-                        <span><strong>График работы: </strong></span>
-                        {% for day in user_object.schedule.all %}
+                </div>
+                <div class="card-body">
+                    <div class="media align-items-center mb-4">
+                        {% if user_object.avatar %}
+                            <div class="avatar-conteiner">
+                                <img class="mr-3 circle-img" src="{{ user_object.avatar.url }}" alt="user_avatar"
+                                     width="120"
+                                     height="120">
+                                <a title="Обновить фото" href="{% url 'accounts:staff-photo' user_object.pk %}"
+                                   class="foto-add text-dark"><i class="fa fa-camera"></i></a>
+                            </div>
+                        {% else %}
+                            <div class="avatar-conteiner">
+                                <img class="mr-3 circle-img" src="{% static 'img/no_pic.jpg' %}" alt="user_avatar"
+                                     width="80"
+                                     height="80">
+                                <a title="Добавить фото" href="{% url 'accounts:staff-photo' user_object.pk %}"
+                                   class="foto-add text-dark"><i class="fa fa-camera"></i></a>
+                            </div>
+                        {% endif %}
+                        <div class="media-body">
+                            <h3 class="mb-0">{{ user_object.first_name | capfirst }} {{ user_object.last_name | capfirst }}</h3>
+                            <p class="text-muted mb-0">{{ user_object.get_experience_display }}</p>
+                        </div>
+                    </div>
+                    <ul class="card-profile__info mt-5">
+                        <li class="mb-2"><strong class="text-dark mr-4">Телефон:</strong>
+                            <span>{{ user_object.phone }}</span></li>
+                        <li class="mb-2"><strong class="text-dark mr-4">Email:</strong>
+                            <span>{{ user_object.email }}</span></li>
+                        <li class="mb-2"><strong class="text-dark mr-4">Адрес:</strong>
+                            <span>{{ user_object.address|default:'Не указан' }}</span></li>
+                        <li class="mb-2"><strong class="text-dark mr-4">ИНН:</strong>
+                            <span>{{ user_object.inn_passport|default:'Не указан' }}</span></li>
+                        <li class="mb-2"><strong class="text-dark mr-4">Электронные кошельки:</strong>
+                            {% for wallet in user_object.online_wallet %}<span>{{ wallet }}</span>{% endfor %}
+                        </li>
+                        <li class="mb-2"><strong class="text-dark mr-4">График работы:</strong>
+                            {% for day in user_object.schedule.all %}
+                                <span>
                             {{ day }}{% if not forloop.last %}, {% else %}. {% endif %}
-                        {% endfor %}
-                    </div>
+                                </span>
+                            {% endfor %}
+                        </li>
+                        {% if user_object|has_group:'Manager' %}
+                            <li class="mb-2"><strong class="text-dark mr-4">Количество заказов:</strong>
+                                <span>{{ user_object|cash_order_count }}</span>
+                            </li>
+                            <li class="mb-2 mt-5"><strong class="text-dark mr-4 fs-4">Касса:</strong>
+                                <span class="fs-4">{{ user_object.cash }} сом</span>
+                            </li>
+                        {% else %}
+                            <li class="mb-2 mt-5"><strong class="text-dark mr-4 fs-4">Баланс:</strong>
+                                <span class="fs-4">{{ user_object.balance }} сом</span>
+                            </li>
+                        {% endif %}
+                    </ul>
                 </div>
-                <hr>
-                {% if is_manager == True %}
-                    <a class="btn btn-success" href="#">Касса {{ user_object.cash }} сом</a>
-                    <a class="btn btn-success">Количество заказов: {{ cash_order_count|default:0 }}</a>
-                    {% if request.user.is_staff %}
-                        <a class="btn btn-dark" href="{% url 'accounts:cash_manager_create' user_object.pk %}">Обнулить
-                            кассу</a>
-                    {% endif %}
-                {% else %}
-                    <a class="btn btn-success" href="#">Баланс {{ user_object.balance }} сом</a>
-                    {% if perms.accounts.add_payout %}
-                        <a class="btn btn-dark" href="{% url 'accounts:payout_create' user_object.pk %}">Выдать
-                            заработную
-                            плату</a>
-                    {% endif %}
-                {% endif %}
-                {% if not is_manager == True %}
-                    <a class="btn btn-dark" href="{% url 'accounts:staff_orders' user_object.pk %}">История заказов</a>
-                    <a class="btn btn-dark" href="{% url 'accounts:staff_payout' user_object.pk %}">История зарплаты</a>
-                {% endif %}
-                {% if perms.accounts.add_staff %}
-                    <a class="btn btn-dark mt-2" href="{% url "accounts:auth_tg_token" user_object.pk %}">Telegram TOKEN</a>
-                {% endif %}
-                <hr>
-            </div>
-            <div class="col-md-4">
-                {% if not user_object.avatar %}
-                    <div class="position-relative ms-4">
-                        <div class="position-absolute bottom-0">
-                            <a style="margin-left: 15px" class="btn btn-outline-dark"
-                               href="{% url 'accounts:staff-photo' user_object.pk %}">Выбрать
-                                фото</a>
-                            <a class="btn btn-outline-dark" href="{% url 'accounts:change_password' %}">Изменить
-                                пароль</a>
-                        </div>
-                        <img class="cart-img-top rounded " style="height: 300px; width: 300px"
-                             src="{% static 'img/no_pic.jpg' %}" alt="no photo">
-                    </div>
-                {% else %}
-                    <div class="position-relative ms-2">
-                        <div class="position-absolute bottom-0 m-1">
-                            <a style="margin-left: 31px;" class="btn btn-outline-secondary"
-                               href="{% url 'accounts:staff-photo' user_object.pk %}">Изменить
-                                фото</a>
-                            <a class="btn btn-outline-secondary" href="{% url 'accounts:change_password' %}">Изменить
-                                пароль</a>
-                        </div>
-                        <div class="box" style="width: 300px; height: 300px; margin-left: 32px">
-                            <img class="cart-img-top rounded" style="height:100%;width:100%;"
-                                 src="{{ user_object.avatar.url }}" alt="user avatar">
-                        </div>
-                    </div>
-                {% endif %}
-                <hr>
-                <div class="card p-2">
-                    <a class="text-dark text-center" style="text-decoration: none"
-                       href="{% url 'accounts:staff-passport' user_object.id %}">Электронная версия паспорта</a>
-                </div>
-                <hr>
-                {% if perms.accounts.add_staff_description %}
-                    {% if user_object.description %}
-                        <div class="card mb-3">
-                            <div class="card p-2">
-                                <a class="text-dark text-center" style="text-decoration: none"
-                                   href="{% url 'accounts:staff-description' user_object.pk %}">Примечания <i
-                                        class="fa-solid fa-pen-to-square"></i></a>
-                            </div>
-                            <div class="card-body">
-                                <p>{{ user_object.description }}</p>
-                            </div>
-                        </div>
-                    {% else %}
-                        <div class="card p-2">
-                            <a class="text-dark text-center" style="text-decoration: none;"
-                               href="{% url 'accounts:staff-description' user_object.pk %}">Примечания
-                                <i class="fa-solid fa-pen-to-square"></i></a>
-                        </div>
-                    {% endif %}
-                {% endif %}
             </div>
         </div>
+
+
+        {% if perms.accounts.add_staff_description %}
+            <div class="col-lg-7 col-xl-8">
+                <div class="card">
+                    <div class="card-body">
+                        {% if user_object.description %}
+                            <h4 class="text-dark">Примечание:</h4>
+                            <p class="text-muted">{{ user_object.description }}</p>
+                        {% endif %}
+                        <form action="{% url 'accounts:staff-description' user_object.pk %}" method="post"
+                              class="form-profile">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                {% for error in form_description.non_field_errors %}
+                                    <div id="val-username-error" class="invalid-feedback animated fadeInDown"
+                                         style="display: block;">{{ error }}
+                                    </div>
+                                {% endfor %}
+                                {% for field in form_description %}
+                                    <div class="form-group">
+                                        {{ field }}
+                                        {% for error in field.errors %}
+                                            <div id="val-username-error" class="invalid-feedback animated fadeInDown"
+                                                 style="display: block;">{{ error }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            <div class="text-center">
+                                <button class="btn btn-secondary px-3">Сохранить</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
     </div>
 {% endblock content %}

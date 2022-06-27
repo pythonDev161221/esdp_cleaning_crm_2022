@@ -1,20 +1,25 @@
 {% if messages %}
     {% for message in messages %}
-        <div class="alert alert-dismissible fade show  {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-            alert-danger
-        {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
-            alert-warning
-        {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-            alert-success
-        {% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
-            alert-primary
-        {% else %}
-            alert-secondary
-        {% endif %}" role="alert">
-            {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+<script type=text/javascript>
+$(document).ready(function () {
+    toastr.{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}error("{{ message }}", "Ошибка!",{% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}warning("{{ message }}", "Warning!",{% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}success("{{ message }}", "Успех!",{% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}info("{{ message }}", "Инфо", {% endif %}{
+        positionClass: "toast-top-right",
+        timeOut: 5e3,
+        closeButton: !0,
+        debug: !1,
+        newestOnTop: !0,
+        progressBar: !0,
+        preventDuplicates: !0,
+        onclick: null,
+        showDuration: "300",
+        hideDuration: "1000",
+        extendedTimeOut: "1000",
+        showEasing: "swing",
+        hideEasing: "linear",
+        showMethod: "fadeIn",
+        hideMethod: "fadeOut",
+        tapToDismiss: !1
+    })
+});</script>
     {% endfor %}
 {% endif %}

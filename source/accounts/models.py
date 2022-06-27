@@ -35,7 +35,7 @@ class Staff(AbstractUser):
                                   null=False, blank=False)
     cash = models.IntegerField(verbose_name=_('Касса менеджера'), default=0,
                                   null=False, blank=False)
-    description = models.TextField(max_length=2000, null=True, blank=True, verbose_name=_('Примечание'))
+    description = models.TextField(max_length=2000, null=False, blank=False, verbose_name=_('Примечание'))
     telegram_id = models.CharField(max_length=120, null=True, blank=True)
     telegram_auth_token = models.CharField(max_length=21, null=True, blank=True)
 

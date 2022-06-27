@@ -1,10 +1,35 @@
 {% extends 'partial/paginnated_table.html' %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
 {% block title %}
     Список сотрудников
 {% endblock title %}
 {% block table_title %}
     Список сотрудников
 {% endblock table_title %}
+{% block button %}
+    <a class="btn btn-primary mb-2" href="#" data-bs-toggle="modal"
+       data-bs-target="#staffModal"> Добавить сотрудника</a>
+    <div class="modal fade" id="staffModal" tabindex="-1" aria-labelledby="staffModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="staffleModalLabel">Добавление cотрудника</h2>
+                    <button class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+                </div>
+                <div class="modal-body">
+                    <form id="staff-form" action="{% url 'accounts:register' %}" method="post">
+                        {% csrf_token %}
+                        {{ staff_form|crispy }}
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button form="staff-form" type="submit" class="btn btn-primary">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock button %}
 {% block thead %}
     <th>ФИО Сотрудника</th>
     <th>Баланс</th>
@@ -40,4 +65,5 @@
         </tr>
     {% endfor %}
 {% endblock tbody %}
+
 

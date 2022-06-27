@@ -1,14 +1,21 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UsernameField
+from django.contrib.auth.forms import UserCreationForm, UsernameField, AuthenticationForm
 
 from accounts.models import Staff, Payout
 
 from crispy_forms.helper import FormHelper
 
 
-class LoginForm(forms.Form):
-    username = forms.CharField()
-    password = forms.CharField(widget=forms.PasswordInput)
+class LoginForm(AuthenticationForm):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update(
+                {
+                    'class': 'form-control',
+                    'placeholder': self.fields[field].label
+                }
+            )
 
 
 class StaffRegistrationForm(UserCreationForm):
@@ -94,6 +101,17 @@ class StaffDescriptionForm(forms.ModelForm):
     class Meta:
         model = Staff
         fields = ["description", ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['description'].widget.attrs.update(
+            {
+                'class': 'form-control',
+                'placeholder': 'Введите примечание',
+                'cols': 30,
+                'rows': 2
+            }
+        )
 
 
 class PasswordChangeForm(forms.ModelForm):

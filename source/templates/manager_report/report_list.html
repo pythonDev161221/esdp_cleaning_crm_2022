@@ -1,51 +1,35 @@
-{% extends 'new_base.html' %}
-{% load static %}
-{% block title %}Список отчетов{% endblock title %}
-{% block content %}
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h3 class="card-title text-center">Список отчетов
-                        </h3>
-                        <hr>
-                        <div class="table-responsive">
-                            <table class="table table-striped table-bordered zero-configuration">
-                                <thead>
-                                <tr role="row">
-                                    <th scope="col">№ Заказа</th>
-                                    <th scope="col">Клинер</th>
-                                    <th scope="col">Заработная плата</th>
-                                    <th scope="col">Бонус</th>
-                                    <th scope="col">Штраф</th>
-                                    <th scope="col">Итого</th>
-                                    <th scope="col">Дата создания</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for object_type in object_types %}
-                                    <tr>
-                                        <th>{{ manager_report.order.id }}</th>
-                                        <td>{{ manager_report.cleaner }}</td>
-                                        <td>{{ manager_report.salary }}</td>
-                                        <td>{{ manager_report.bonus }}</td>
-                                        <td>{{ manager_report.fine }}</td>
-                                        <td>{{ manager_report.get_salary }}</td>
-                                        <td>{{ manager_report.created_at }}</td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+{% extends 'partial/paginnated_table.html' %}
+{% block title %}
+    Список менеджерских отчетов
+{% endblock title %}
+{% block table_title %}
+    Список менеджерских отчетов
+{% endblock table_title %}
+{% block button %}
+    <div class="text-right">
+            <a class="mb-2 btn btn-secondary btn-sm"
+               href="{% url 'crmapp:manager-excel' %}">Экспорт в Excel</a>
         </div>
-    </div>
-{% endblock content %}
-{% block scripts %}
-    <script src="{% static 'plugins/tables/js/jquery.dataTables.min.js' %}"></script>
-    <script src="{% static 'plugins/tables/js/datatable/dataTables.bootstrap4.min.js' %}"></script>
-    <script src="{% static 'plugins/tables/js/datatable-init/datatable-basic.min.js' %}"></script>
-{% endblock scripts %}
+{% endblock button %}
+{% block thead %}
+    <th>№ Заказа</th>
+    <th>Клинер</th>
+    <th>Заработная плата</th>
+    <th>Бонус</th>
+    <th>Штраф</th>
+    <th>Итого</th>
+    <th>Дата создания</th>
+{% endblock thead %}
+{% block tbody %}
+    {% for object_type in object_types %}
+        <tr>
+            <th>{{ manager_report.order.id }}</th>
+            <td>{{ manager_report.cleaner }}</td>
+            <td>{{ manager_report.salary }}</td>
+            <td>{{ manager_report.bonus }}</td>
+            <td>{{ manager_report.fine }}</td>
+            <td>{{ manager_report.get_salary }}</td>
+            <td>{{ manager_report.created_at }}</td>
+        </tr>
+    {% endfor %}
+{% endblock tbody %}
