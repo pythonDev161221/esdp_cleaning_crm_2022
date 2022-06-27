@@ -12,5 +12,6 @@ done
 
 echo "Run python manage.py migrate..." ;
 python source/manage.py migrate ;
+python source/manage.py  collectstatic  --noinput
 
 exec $cmd
