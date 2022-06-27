@@ -14,6 +14,7 @@ COPY Pipfile /crm_cleaning
 
 RUN pip install pipenv
 RUN pipenv install --dev
+RUN pipenv shell
 
 COPY source /crm_cleaning/source
 COPY project_uwsgi/uwsgi.ini /etc/uwsgi/uwsgi.ini
