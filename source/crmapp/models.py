@@ -76,7 +76,7 @@ class ForemanPhoto(models.Model):
     foreman_report = models.ForeignKey('crmapp.StaffOrder', null=False, blank=False, on_delete=models.CASCADE,
                                        related_name='foreman_photo', verbose_name='Фото до начала работ')
     is_after = models.BooleanField(default=False, verbose_name='Фото после окончания работ')
-    image = models.ImageField(upload_to='photo_foreman/', verbose_name=_('Фото'))
+    image = models.ImageField(upload_to='photo_foreman', verbose_name=_('Фото'))
 
     class Meta:
         db_table = 'foreman_photo'
@@ -238,6 +238,7 @@ class Order(models.Model):
         else:
             return 0
 
+    @property
     def get_progres(self):
         data = 5
         fields = {
@@ -247,30 +248,31 @@ class Order(models.Model):
             'work_end': 60,
         }
         try:
-            for key, value in fields:
-                if getattr(self.get_brigadier(), key):
-                    data = value
-            if self.status == 'canceled':
-                data = 80
-            elif self.status == 'finished':
+            brigadier = self.get_brigadier()
+            for key, value in fields.items():
+                if brigadier:
+                    if getattr(brigadier, key):
+                        data = value
+            print(self.status)
+            if self.status == 'canceled' or self.status == 'finished':
                 data = 100
             return data
         except ValueError:
+            print(self.status)
             return data
 
     def save_time(self, *args, **kwargs):
         self.work_end = self.work_start + timedelta(self.cleaning_time.hour, self.cleaning_time.minute)
         super(Order, self).save(*args, **kwargs)
 
-
-class Meta:
-    db_table = 'order'
-    verbose_name = _('Заказ')
-    verbose_name_plural = _('Заказы')
-    permissions = [
-        ('сan_view_income_outcome_report', 'Может просмотреть отчет о расходах и доходах'),
-        ('can_view_order_deleted_list', 'Может просмотреть список удаленных заказов')
-    ]
+    class Meta:
+        db_table = 'order'
+        verbose_name = _('Заказ')
+        verbose_name_plural = _('Заказы')
+        permissions = [
+            ('сan_view_income_outcome_report', 'Может просмотреть отчет о расходах и доходах'),
+            ('can_view_order_deleted_list', 'Может просмотреть список удаленных заказов')
+        ]
 
 
 class Fine(models.Model):

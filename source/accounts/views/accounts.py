@@ -10,8 +10,7 @@ from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 
 from django.views.generic import DetailView, CreateView, ListView, UpdateView, DeleteView
-from accounts.forms import (LoginForm,
-                            StaffRegistrationForm,
+from accounts.forms import (StaffRegistrationForm,
                             StaffEditForm,
                             EditPhotoForm,
                             PasswordChangeForm,
