@@ -108,6 +108,10 @@
                             <li class="mb-2 mt-5"><strong class="text-dark mr-4 fs-4">Баланс:</strong>
                                 <span class="fs-4">{{ user_object.balance }} сом</span>
                             </li>
+                            <div class="text-center">
+                                <a class="btn btn-secondary mt-3"
+                                   href="{% url 'accounts:payout_create' user_object.pk %}">Выдать ЗП</a>
+                            </div>
                         {% endif %}
                     </ul>
                 </div>
@@ -117,26 +121,6 @@
 
         {% if perms.accounts.add_staff_description %}
             <div class="col-lg-7 col-xl-8">
-                <div class="card ">
-                    <div class="input-group icons ">
-                        {% if perms.accounts.add_payout %}
-                                <a class="mx-1 btn btn-secondary"
-                                   href="{% url 'accounts:payout_create' user_object.pk %}">
-                                    <i class="fa fa-money mr-2"></i>
-                                    Расчитать ЗП</a>
-                        {% endif %}
-                        {% if not user_object|has_group:'Manager' %}
-                            <a class="mx-1 btn btn-secondary btn-md"
-                               href="{% url 'accounts:staff_orders' user_object.pk %}">
-                                <i class="fa fa-file mr-2"></i>
-                                История заказов</a>
-                            <a class="mx-1 btn btn-secondary btn-md"
-                               href="{% url 'accounts:staff_payout' user_object.pk %}">
-                                <i class="fa fa-dollar mr-2"></i>
-                                История зарплаты</a>
-                        {% endif %}
-                    </div>
-                </div>
                 <div class="card">
                     <div class="card-body">
                         {% if user_object.description %}

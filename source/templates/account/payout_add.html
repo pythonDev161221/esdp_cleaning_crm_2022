@@ -10,9 +10,9 @@
                     сотставляет {{ staff.balance }} cом.</h3>
                 <h3 class="mt-4 mb-4">Выдать заработную плату? </h3>
                 {% csrf_token %}
-                <div>
+                <div class="mb-3">
                     <a href="{% url 'accounts:staff-list' %}" class="btn btn-secondary">Нет</a>
-                    <input type="submit" name="action" value="Да" class="btn btn-success"/>
+                    <input type="submit" name="action" value="Да" class="btn btn-success">
                 </div>
             </div>
         </form>
