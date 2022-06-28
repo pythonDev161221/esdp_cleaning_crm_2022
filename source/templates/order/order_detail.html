@@ -197,7 +197,8 @@
                                             {% if perms.crmapp.delete_serviceorder and order.manager == request.user or request.user.is_staff %}
                                                 <a class="ml-1" href="javascript:void()" data-modal-toggle="delete"
                                                    data-modal-target="#deleteModal"
-                                                   data-action="{% url 'api:service_order_delete' service.id %}">
+                                                   data-action="{% url 'api:service_order_delete' service.id %}"
+                                                   data-object-name="{{ service.service.name }}">
                                                     <i title="Удалить из заказа"
                                                        class="fa fa-trash text-dark hover-blue fs-5"></i>
                                                 </a>
@@ -250,7 +251,8 @@
                                         {% if perms.crmapp.delete_inventoryorder and order.manager == request.user or request.user.is_staff %}
                                             <a href="javascript:void()" data-modal-toggle="delete"
                                                data-modal-target="#deleteModal"
-                                               data-action="{% url 'api:inventory_order_delete' inventory.pk %}"><i
+                                               data-action="{% url 'api:inventory_order_delete' inventory.pk %}"
+                                               data-object-name="{{ inventory.inventory.name }}"><i
                                                     title="Удалить из заказа"
                                                     class="fa fa-trash text-dark hover-blue fs-5"></i>
                                             </a>
@@ -301,7 +303,8 @@
                                                     <a title="Удалить из заказа" class="ml-1" data-modal-toggle="delete"
                                                        data-modal-target="#deleteModal"
                                                        data-action="{% url 'crmapp:order_staff_delete' cleaner.id %}"
-                                                       href="javascript:void(0)">
+                                                       href="javascript:void(0)"
+                                                       data-object-name="{{ cleaner.staff.first_name }} {{ cleaner.staff.last_name }}">
                                                         <i class="fa fa-trash text-dark hover-blue"></i>
                                                     </a>
                                                 {% endif %}
@@ -564,6 +567,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <span id="object-text-name"></span>
                 </div>
                 <div class="text-center mb-3">
                     <button type="button" class="btn btn-light" data-modal-dismiss="#deleteModal">Отмена</button>
