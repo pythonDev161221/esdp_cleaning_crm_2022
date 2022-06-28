@@ -46,7 +46,8 @@
                                 </a>
                             {% else %}
                                 <a title="Дoбавить время на выполнение заказа" href="#" data-modal-toggle="create"
-                                   data-modal-target="#workTimeOrderCreateModal" data-action="{% url 'crmapp:order_update_work_time' order.pk %}">
+                                   data-modal-target="#workTimeOrderCreateModal"
+                                   data-action="{% url 'crmapp:order_update_work_time' order.pk %}">
                                     <i class="fa fa-plus-circle fs-6"></i>
                                 </a>
                             {% endif %}
@@ -349,7 +350,7 @@
                         <tbody>
                         <tr>
                             <td class="text-center">
-                             {% if order.manager == request.user or request.user.is_staff %}
+                                {% if order.manager == request.user or request.user.is_staff %}
                                     <a class="btn btn-secondary btn-sm"
                                        href="{% url 'crmapp:foreman_photo' order.id %}"> Просмотреть фото</a>
                                 {% endif %}
@@ -397,7 +398,7 @@
     <!-- Modal -->
 
     <!-- WORK TIME Modal -->
-     <div class="modal" id="workTimeOrderCreateModal" aria-hidden="true">
+    <div class="modal" id="workTimeOrderCreateModal" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -499,7 +500,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <b class="modal-title fs-5">Изменить услугу</b>
-                    <button type="button" class="close" data-modal-dissmit="#serviceUpdateModal"><span>×</span>
+                    <button type="button" class="close" data-modal-dismiss="#serviceUpdateModal"><span>×</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -555,7 +556,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <b class="modal-title fs-5">Подтвердите</b>
-                    <button type="button" class="close" data-modal-dissmit="#deleteModal"><span>×</span>
+                    <button type="button" class="close" data-modal-dismiss="#deleteModal"><span>×</span>
                     </button>
                 </div>
                 <div class="modal-body">
