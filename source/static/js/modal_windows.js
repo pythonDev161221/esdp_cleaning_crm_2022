@@ -98,6 +98,7 @@ async function initiModalOpenButtons() {
         e.preventDefault();
         let modal = $(this).data('modal-target');
         let path = $(this).data('action');
+        $(modal).find("span[id=object-text-name]").text($("a[data-object-name]").data("objectName"))
         modalOpen(modal)
         $(modal).find('button[type=submit]').click(function (e) {
             e.preventDefault();
