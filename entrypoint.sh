@@ -12,5 +12,9 @@ done
 
 echo "Run python manage.py migrate..." ;
 python source/manage.py migrate ;
+python source/manage.py  collectstatic  --noinput
+python source/manage.py loaddata source/fixtures/workday.json ;
+python source/manage.py loaddata source/fixtures/auth.json ;
+python source/manage.py loaddata source/fixtures/staff.json ;
 
 exec $cmd
