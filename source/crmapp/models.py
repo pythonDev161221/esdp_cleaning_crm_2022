@@ -76,7 +76,7 @@ class ForemanPhoto(models.Model):
     foreman_report = models.ForeignKey('crmapp.StaffOrder', null=False, blank=False, on_delete=models.CASCADE,
                                        related_name='foreman_photo', verbose_name='Фото до начала работ')
     is_after = models.BooleanField(default=False, verbose_name='Фото после окончания работ')
-    image = models.ImageField(upload_to='photo_foreman/', verbose_name=_('Фото'))
+    image = models.ImageField(upload_to='photo_foreman', verbose_name=_('Фото'))
 
     class Meta:
         db_table = 'foreman_photo'
@@ -238,6 +238,7 @@ class Order(models.Model):
         else:
             return 0
 
+    @property
     def get_progres(self):
         data = 5
         fields = {
@@ -264,15 +265,14 @@ class Order(models.Model):
         self.work_end = self.work_start + timedelta(self.cleaning_time.hour, self.cleaning_time.minute)
         super(Order, self).save(*args, **kwargs)
 
-
-class Meta:
-    db_table = 'order'
-    verbose_name = _('Заказ')
-    verbose_name_plural = _('Заказы')
-    permissions = [
-        ('сan_view_income_outcome_report', 'Может просмотреть отчет о расходах и доходах'),
-        ('can_view_order_deleted_list', 'Может просмотреть список удаленных заказов')
-    ]
+    class Meta:
+        db_table = 'order'
+        verbose_name = _('Заказ')
+        verbose_name_plural = _('Заказы')
+        permissions = [
+            ('сan_view_income_outcome_report', 'Может просмотреть отчет о расходах и доходах'),
+            ('can_view_order_deleted_list', 'Может просмотреть список удаленных заказов')
+        ]
 
 
 class Fine(models.Model):

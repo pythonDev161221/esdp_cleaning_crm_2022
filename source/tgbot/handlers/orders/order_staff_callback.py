@@ -181,6 +181,7 @@ def work_start_callback(update: Update, context: CallbackContext):
     staff = order.order_cleaners.get(staff=staff_id)
     if call == "work_start":
         staff.work_start = datetime.datetime.now().replace(second=0, microsecond=0)
+        print(staff.work_start)
         staff.save()
         text = f'Заказ №{order.id}\nВы начали работу в {staff.work_start.time()}'
         if staff.is_brigadier:
@@ -201,7 +202,7 @@ def work_end_callback(update: Update, context: CallbackContext):
         staff.work_end = datetime.datetime.now().replace(second=0, microsecond=0)
         staff.save()
         text = f'''
-Заказе №{order.pk}
+Заказ №{order.pk}
 ◉ Адрес: {order.address}
 ◉ Дата: {order.work_start.date()}
 Бригадир завершил работу!'''

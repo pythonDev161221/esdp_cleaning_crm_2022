@@ -20,7 +20,7 @@
         "experience": "trainee",
         "black_list": false,
         "balance": 1280,
-        "groups": [],
+        "groups": [1],
         "user_permissions": [],
         "schedule": [
             1,

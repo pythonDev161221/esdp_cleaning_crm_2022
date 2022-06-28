@@ -1,0 +1,60 @@
+version: '3.9'
+
+services:
+
+  postgres_db:
+    restart: always
+    image: postgres:14
+    container_name: postgres
+    environment:
+      - POSTGRES_DB=test
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      crm_network:
+
+  web:
+    image: registry.gitlab.com/python317/crm_cleaning:573860132
+    depends_on:
+      - postgres_db
+    volumes:
+      - static:/crm_cleaning/source/static
+      - media:/crm_cleaning/source/uploads
+    ports:
+      - "127.0.0.1:8000:8000"
+    networks:
+      crm_network:
+    environment:
+      - SECRET_KEY=servedsfbhdsvvfsjfrhsbjsdfdsfjhsdf
+      - DEBUG=on
+      - DB_NAME=test
+      - DB_USER=admin
+      - DB_PASSWORD=admin
+      - DB_HOST=postgres_db
+      - DB_PORT=5432
+      - TELEGRAM_TOKEN=5288615569:AAGiNeQ_rfpjEVJrkaDKVt-B0d22LiPvKoA
+      - TELEGRAM_BOT_USERNAME=OkeyMYBot
+
+  nginx:
+    container_name: crm_nginx
+    volumes:
+      - static:/crm_cleaning/source/static
+      - media:/crm_cleaning/source/uploads
+    build: ./nginx
+    depends_on:
+      - web
+    ports:
+      - "80:80"
+    networks:
+      crm_network:
+
+volumes:
+  postgres_data:
+  static:
+  media:
+
+networks:
+  crm_network:

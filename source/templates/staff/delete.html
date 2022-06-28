@@ -1,12 +1,19 @@
-{% extends "base.html" %}
+{% extends "new_base.html" %}
 
 {% block content %}
     <div class="container text-center">
         <form method="post">
-            <h3 class="mt-4 mb-4">Удалить сотрдника {{ staff.staff.last_name }} {{ staff.staff.first_name }}  из заказа?</h3>
-            {% csrf_token %}
-            <a href="{% url "crmapp:order_detail" staff.order.pk %}" class="btn btn-dark">Нет</a>
-            <input type="submit" name="action" value="Да" class="btn btn-danger"/>
+            <div class="card">
+                <h5 class="mt-4">Заказ № {{ staff.order.id }} Адрес: {{ staff.order.address }}
+                    Время: {{ staff.order.work_start }}</h5>
+                <h5 class="m-4">Удалить сотрдника {{ staff.staff.last_name }} {{ staff.staff.first_name }} из
+                    данного заказа?</h5>
+                {% csrf_token %}
+                <div class="mb-3">
+                    <a href="{% url "crmapp:order_detail" staff.order.pk %}" class="btn btn-success">Нет</a>
+                    <input type="submit" name="action" value="Да" class="btn btn-secondary">
+                </div>
+            </div>
         </form>
     </div>
 {% endblock %}

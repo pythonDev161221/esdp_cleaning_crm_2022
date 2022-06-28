@@ -49,7 +49,7 @@ def order_finished(order):
 def order_canceled(order):
     text = f'''
 Заказ №{order.pk} по адресу {order.address} {order.work_start.date()} БЫЛ ОТМЕНЕН!
-◉ Причина: {order.description}
+Причина: {order.description}
 Вы больше не учавствуете в данном заказе'''
     for staff in order.order_cleaners.all():
         if staff.is_accept:
@@ -58,7 +58,7 @@ def order_canceled(order):
 
 def manager_alert(order):
     text = f'''
-Заказе №{order.pk}
+Заказ №{order.pk}
 ◉ Адрес: {order.address}
 ◉ Дата: {order.work_start.date()}
 Бригадир внес изменения в заказ!'''
@@ -67,7 +67,7 @@ def manager_alert(order):
 
 def manager_expense_alert(order):
     text = f'''
-Заказе №{order.pk}
+Заказ №{order.pk}
 ◉ Адрес: {order.address}
 ◉ Дата: {order.work_start.date()}
 Бригадир добавил новый расход в заказ!'''
