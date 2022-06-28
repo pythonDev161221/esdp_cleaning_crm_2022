@@ -189,7 +189,7 @@ class OrderFinishView(PermissionRequiredMixin, UpdateView):
         order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
         if request.method == 'POST' and 'back' in request.POST:
             return redirect("crmapp:order_detail", pk=order.pk)
-        if request.method == 'POST' and 'cancel' in request.POST:
+        if request.method == 'POST' and 'canceled' in request.POST:
             order.cancel_order()
             order_canceled(order)
         return super(OrderFinishView, self).post(request, **kwargs)
@@ -198,7 +198,7 @@ class OrderFinishView(PermissionRequiredMixin, UpdateView):
         order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
         order.description = form.cleaned_data.get('description')
         order.save()
-        if self.request.method == 'POST' and 'finish' in self.request.POST:
+        if self.request.method == 'POST' and 'finished' in self.request.POST:
             messages.success(self.request, f'Описание заказа добавлено, следуйте далее для завершение')
             return redirect("crmapp:manager_report_add_cost", pk=self.get_object().pk)
         else:

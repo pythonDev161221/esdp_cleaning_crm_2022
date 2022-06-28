@@ -30,6 +30,12 @@ class PayoutCreateView(PermissionRequiredMixin, CreateView):
     context_object_name = 'staff_payout'
     permission_required = "accounts.add_payout"
 
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        staff = get_object_or_404(Staff, pk=self.kwargs['pk'])
+        context['staff'] = staff
+        return context
+
     def post(self, request, *args, **kwargs):
         staff = get_object_or_404(Staff, pk=self.kwargs['pk'])
         if staff.balance > 0:

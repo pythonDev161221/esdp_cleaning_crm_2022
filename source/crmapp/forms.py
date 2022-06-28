@@ -213,4 +213,4 @@ class OrderWorkTimeForm(forms.ModelForm):
     class Meta:
         model = Order
         fields = ('cleaning_time',)
-        widgets = {'cleaning_time': forms.TimeInput(attrs={'type': 'time'})}
+        widgets = {'cleaning_time': forms.TimeInput(attrs={'type': 'time', 'value': '00:00'})}

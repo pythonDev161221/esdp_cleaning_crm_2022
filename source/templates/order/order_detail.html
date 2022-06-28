@@ -43,7 +43,8 @@
                                     <i class="fa fa-pencil text-dark hover-blue fs-6"></i>
                                 </a>
                             {% else %}
-                                <a title="Дoбавить время на выполнение заказа" href="#" data-bs-toggle="modal"
+                                <a class="text-primary" title="Дoбавить время на выполнение заказа" href="#"
+                                   data-bs-toggle="modal"
                                    data-bs-target="#worktimeModal">
                                     <i class="fa fa-plus-circle fs-6"></i>
                                 </a>
@@ -95,7 +96,7 @@
                         <label for="expences" class="nav-link">Расходы</label>
                     </li>
                     {% if order.status != 'finished' and order.status != 'canceled' %}
-                        {% if order.get_brigadier.staff == request.user %}
+                        {% if order.get_brigadier.staff == request.user  or request.user == order.manager %}
                             {% if order.get_brigadier.in_place %}
                                 {% if not brigadir.work_start %}
                                     <li class="nav-item">
@@ -139,7 +140,7 @@
                         {% endif %}
                     {% endif %}
                     {% if perms.crmapp.add_stafforder and order.manager == request.user or request.user.is_staff %}
-                        {% if order.status == 'new' %}
+                        {% if order.status == 'new' and order.cleaning_time %}
                             <li id="cleaner-add" class="action-button">
                                 <a href="{% url 'crmapp:order_staff_add' order.pk %}"
                                    class="btn mb-1 btn-secondary btn-sm">Добавить клинера
@@ -249,16 +250,16 @@
                                         {% endif %}
                                     </td>
                                 </tr>
-                                {% if perms.crmapp.add_inventoryorder and order.manager == request.user or request.user.is_staff %}
-                                    {% if order.status == 'new' %}
-                                        <div class="mx-4 text-center">
-                                            <button type="button" class="btn mb-1 btn-secondary btn-sm"
-                                                    data-bs-toggle="modal" data-bs-target="#InventoryModal">Добавить
-                                                инвентарь
-                                            </button>
-                                        </div>
-                                    {% endif %}
-                                {% endif %}
+                                {#                                {% if perms.crmapp.add_inventoryorder and order.manager == request.user or request.user.is_staff %}#}
+                                {#                                    {% if order.status == 'new' %}#}
+                                {#                                        <div class="mx-4 text-center">#}
+                                {#                                            <button type="button" class="btn mb-1 btn-secondary btn-sm"#}
+                                {#                                                    data-bs-toggle="modal" data-bs-target="#InventoryModal">Добавить#}
+                                {#                                                инвентарь#}
+                                {#                                            </button>#}
+                                {#                                        </div>#}
+                                {#                                    {% endif %}#}
+                                {#                                {% endif %}#}
                             {% endfor %}
                             {% if not inventories %}
                                 <tr>
@@ -350,6 +351,10 @@
                         <tbody>
                         <tr>
                             <td class="text-center">
+                             {% if order.manager == request.user or request.user.is_staff %}
+                                    <a class="btn btn-secondary btn-sm"
+                                       href="{% url 'crmapp:foreman_photo' order.id %}"> Просмотреть фото</a>
+                                {% endif %}
                                 {% if order.status != 'finished' and order.status != 'canceled' %}
                                     {% if order.get_brigadier.staff == request.user %}
                                         {% if order.get_brigadier.in_place %}
@@ -382,7 +387,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="text-center">
+                <div class="text-center mt-3">
                     {% if order.manager == request.user or request.user.is_staff %}
                         <button class="btn mb-1 btn-success btn-md">Завершить</button>
                     {% endif %}
@@ -416,8 +421,8 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2 class="modal-title" id="worktimeModalLabel">Укажите время работы</h2>
                     <button class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+                    <h2 class="modal-title" id="worktimeModalLabel">Укажите время работы</h2>
                 </div>
                 <div class="modal-body">
                     <form id="worktime-form" action="{% url 'crmapp:order_add_work_time' order.id %}" method="post">
@@ -438,8 +443,8 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2 class="modal-title" id="worktimeModalLabel">Укажите время работы</h2>
                     <button class="btn btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+                    <h2 class="modal-title" id="worktimeModalLabel">Укажите время работы</h2>
                 </div>
                 <div class="modal-body">
                     <form id="update-worktime-form" action="{% url 'crmapp:order_update_work_time' order.id %}"

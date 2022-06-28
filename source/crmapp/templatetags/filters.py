@@ -10,4 +10,4 @@ def has_group(user, group_name):
 
 @register.filter(name='cash_order_count')
 def cash_order_count(user):
-    return user.object.manager_cash.filter(is_nullify=False).count()
+    return user.manager_cash.filter(is_nullify=False).count()

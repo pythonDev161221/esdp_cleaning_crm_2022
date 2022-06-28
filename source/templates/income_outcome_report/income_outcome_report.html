@@ -1,9 +1,9 @@
 {% extends 'partial/paginnated_table.html' %}
 {% block title %}
-    История заказов
+   Доходы и расходы
 {% endblock title %}
 {% block table_title %}
-    История заказов
+    Доходы и расходы
 {% endblock table_title %}
 {% block button %}
     <div class="text-right">
@@ -40,14 +40,3 @@
         </tr>
     {% endfor %}
 {% endblock tbody %}
-{#{% block tfoot %}#}
-{#    <tfoot>#}
-{#        <tr>#}
-{#            <td colspan="3"><b>Итого:</b></td>#}
-{#            <td><b>{{ order_sum }}</b></td>#}
-{#            <td><b>{{ cleaner_outcome }}</b></td>#}
-{#            <td><b>{{ other_outcome }}</b></td>#}
-{#            <td><b>{{ total }}</b></td>#}
-{#        </tr>#}
-{#    </tfoot>#}
-{#{% endblock tfoot %}#}
