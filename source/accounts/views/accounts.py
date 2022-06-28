@@ -147,7 +147,7 @@ class StaffEditView(PermissionRequiredMixin, UpdateView):
         return reverse('accounts:staff-list')
 
     def form_valid(self, form):
-        user = form.save
+        user = form.save()
         return redirect(self.get_success_url())
 
 

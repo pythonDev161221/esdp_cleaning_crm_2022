@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "new_base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
 
@@ -8,13 +8,38 @@
                 Доля клинеров
             </div>
             <div class="card-body">
+                <p><span>Общая сумма заказа:</span> <b id="totalCost">{{ total }}</b></p>
                 <form method="post">
                     {% csrf_token %}
                     {{ form|crispy }}
-                    <input type="submit" value="Далее" class="btn btn-success">
+                    <button type="submit" value="Далее" class="btn btn-success">Далее</button>
                 </form>
+                <hr>
+                <p><span><output id="result"></output></span></p>
             </div>
         </div>
     </div>
+
+    <script>
+        let totalCost = document.getElementById("totalCost").textContent
+        let result = document.getElementById('result')
+        document.getElementById('id_cleaners_part').addEventListener('input', function (e) {
+            if (document.querySelector("select").value === "percent") {
+                result.textContent = "Доля клинеров: " + totalCost / 100 * e.currentTarget.value
+                if ((totalCost / 100 * e.currentTarget.value) > (totalCost / 2)) {
+                    result.style.color = "red"
+                } else {
+                    result.style.color = "black"
+                }
+            } else {
+                if (e.currentTarget.value > (totalCost / 2)) {
+                    result.textContent = "Сумма превышает общую сумму на 50%"
+                    result.style.color = "red"
+                } else {
+                    result.textContent = ""
+                }
+            }
+        })
+    </script>
 
 {% endblock %}

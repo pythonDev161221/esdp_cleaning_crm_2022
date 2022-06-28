@@ -149,6 +149,11 @@ class GetManagerReportCost(PermissionRequiredMixin, UpdateView):
     form_class = CleanersPartForm
     permission_required = "crmapp.add_managerreport"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["total"] = get_object_or_404(Order, pk=self.kwargs.get("pk")).get_total()
+        return context
+
     def get_success_url(self):
         return reverse("crmapp:manager_report_create", kwargs={"pk": self.kwargs.get("pk")})
 

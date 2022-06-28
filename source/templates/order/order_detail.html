@@ -351,7 +351,7 @@
                         <tbody>
                         <tr>
                             <td class="text-center">
-                             {% if order.manager == request.user or request.user.is_staff %}
+                                {% if order.manager == request.user or request.user.is_staff %}
                                     <a class="btn btn-secondary btn-sm"
                                        href="{% url 'crmapp:foreman_photo' order.id %}"> Просмотреть фото</a>
                                 {% endif %}
@@ -389,7 +389,11 @@
                 </div>
                 <div class="text-center mt-3">
                     {% if order.manager == request.user or request.user.is_staff %}
-                        <button class="btn mb-1 btn-success btn-md">Завершить</button>
+                        {% if order.status == "new" %}
+                            <form action="{% url "crmapp:order_finish" order.pk %}" method="get">
+                                <button class="btn mb-1 btn-success btn-md">Завершить</button>
+                            </form>
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>
