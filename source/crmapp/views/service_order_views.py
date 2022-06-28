@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView, DeleteView
 
 from crmapp.forms import ServiceOrderForm
@@ -11,6 +11,7 @@ from crmapp.models import ServiceOrder, Order
 class ServiceOrderCreateView(PermissionRequiredMixin, CreateView):
     model = ServiceOrder
     template_name = 'service_order/service_order_create.html'
+    success_url = reverse_lazy('crmapp:service_order_create')
     form_class = ServiceOrderForm
     permission_required = "crmapp.add_serviceorder"
 

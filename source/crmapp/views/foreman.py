@@ -50,7 +50,7 @@ class ForemanOrderUpdateCreateView(PermissionRequiredMixin, FormView):
         order = get_object_or_404(Order, pk=self.kwargs.get("pk"))
         if order.status == 'finished' or order.status == "canceled":
             return super().has_permission()
-        return self.request.user == order.order_cleaners.get(is_brigadier=True).staff and not order.order_cleaners.get(is_brigadier=True).work_start
+        return self.request.user == order.get_brigadier() and not order.get_brigadier().work_start
 
 
 class ServiceForemanOrderCreateView(PermissionRequiredMixin, CreateView):
@@ -101,7 +101,7 @@ class ForemanExpenseView(PermissionRequiredMixin, CreateView):
         order = get_object_or_404(Order, pk=self.kwargs.get("pk"))
         if order.status == 'finished' or order.status == "canceled":
             return super().has_permission()
-        return self.request.user == order.order_cleaners.get(is_brigadier=True).staff
+        return self.request.user == order.get_brigadier()
 
 
 class PhotoBeforeView(PermissionRequiredMixin, View):
@@ -142,7 +142,7 @@ class PhotoDetailView(PermissionRequiredMixin, DetailView):
     permission_required = "crmapp.view_foremanphoto"
 
     def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+        context = super().get_context_data(**kwargs)
         order = StaffOrder.objects.get(order_id=self.object.pk, is_brigadier=True)
         foreman_photo = ForemanPhoto.objects.filter(foreman_report=order)
         photos_before = [i for i in foreman_photo.filter(is_after=False)]

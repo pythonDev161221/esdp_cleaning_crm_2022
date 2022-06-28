@@ -20,6 +20,7 @@ class ObjectTypeCreateView(PermissionRequiredMixin, CreateView):
     model = ObjectType
     form_class = ObjectTypeForm
     template_name = 'object_type/create.html'
+    success_url = reverse_lazy('crmapp:object_type_list')
     permission_required = "crmapp.add_objecttype"
 
 

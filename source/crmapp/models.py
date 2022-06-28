@@ -247,15 +247,17 @@ class Order(models.Model):
             'work_end': 60,
         }
         try:
-            for key, value in fields:
-                if getattr(self.get_brigadier(), key):
-                    data = value
-            if self.status == 'canceled':
-                data = 80
-            elif self.status == 'finished':
+            brigadier = self.get_brigadier()
+            for key, value in fields.items():
+                if brigadier:
+                    if getattr(brigadier, key):
+                        data = value
+            print(self.status)
+            if self.status == 'canceled' or self.status == 'finished':
                 data = 100
             return data
         except ValueError:
+            print(self.status)
             return data
 
     def save_time(self, *args, **kwargs):

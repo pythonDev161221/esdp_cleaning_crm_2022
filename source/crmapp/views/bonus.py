@@ -22,6 +22,7 @@ class BonusCreateView(PermissionRequiredMixin, CreateView):
     model = Bonus
     form_class = BonusForm
     template_name = 'bonus/create.html'
+    success_url = reverse_lazy('crmapp:bonus_list')
     permission_required = "crmapp.add_bonus"
 
 

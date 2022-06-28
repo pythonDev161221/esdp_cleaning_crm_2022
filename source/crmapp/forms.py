@@ -117,6 +117,13 @@ class ServiceOrderForm(forms.ModelForm):
         super(ServiceOrderForm, self).__init__(*args, **kwargs)
         self.fields['amount'].widget.attrs['min'] = 1
         self.fields['rate'].widget.attrs['max'] = 3
+        for field in self.fields:
+            self.fields[field].widget.attrs.update(
+                {
+                    'class': 'form-control input-default',
+                    'placeholder': self.fields[field].label
+                }
+            )
 
     def save(self, commit=True):
         service = super().save(commit=False)
@@ -164,6 +171,13 @@ class InventoryOrderForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(InventoryOrderForm, self).__init__(*args, **kwargs)
         self.fields['amount'].widget.attrs['min'] = 1
+        for field in self.fields:
+            self.fields[field].widget.attrs.update(
+                {
+                    'class': 'form-control input-default',
+                    'placeholder': self.fields[field].label
+                }
+            )
 
 
 InventoryOrderFormSet = modelformset_factory(InventoryOrder, form=InventoryOrderForm,
