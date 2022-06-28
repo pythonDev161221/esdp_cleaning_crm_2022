@@ -13,7 +13,7 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function copy_token(event) {
+function copy_token() {
     const copyBtn = document.getElementById('copy-btn');
     window.addEventListener('click', () => {
         const token = copyBtn.getAttribute('data-token');
@@ -22,20 +22,18 @@ function copy_token(event) {
     })
 }
 
-async function requestOnCreate(path, formSelector) {
-    let baseUri = window.location.origin;
+async function modalSubmit(path, method, modal) {
+    let uri = window.location.origin;
     let formData = new FormData();
-    $(formSelector).find('input, textarea, select').each(function () {
-        formData.append(this.name, $(this).val())
-    });
-
     let csrftoken = getCookie('csrftoken');
     let headers = new Headers();
+    let url = uri + path
     headers.append("X-CSRFToken", csrftoken);
-
-    let url = baseUri + path
+    $(modal).find('input, textarea, select').each(function () {
+        formData.append(this.name, $(this).val())
+    });
     let response = await fetch(url, {
-        method: "POST",
+        method: method,
         body: formData,
         headers: headers,
         redirect: 'follow'
@@ -45,170 +43,89 @@ async function requestOnCreate(path, formSelector) {
     }
 }
 
-function createService() {
-    let path = '/api/service/create/'
-    requestOnCreate(path, '#serviceForm').then()
-}
-
-function createBonus() {
-    let path = '/api/bonus/create/'
-    requestOnCreate(path, '#bonusForm')
-}
-
-function createClient() {
-    let path = '/api/client/create/'
-    requestOnCreate(path, '#clientForm')
-}
-
-function createFine() {
-    let path = '/api/fine/create/'
-    requestOnCreate(path, '#fineForm')
-}
-
-function createInventory() {
-    let path = '/api/inventory/create/'
-    requestOnCreate(path, '#inventoryForm')
-}
-
-function createObjectType() {
-    let path = '/api/object_type/create/'
-    requestOnCreate(path, '#objectTypeForm')
-}
-
-async function modalServiceOrderUpdateOpen(event) {
-    let pk = event.currentTarget.dataset.pk
-    let pathname = window.location.pathname
-    let btn = document.getElementById('unique')
-    btn.setAttribute('data-pk', pk)
-    let option = document.createElement('option')
-    let select = document.getElementById('service')
-    let amount = document.getElementById("amount")
-    let rate = document.getElementById("rate")
-    let csrftokens = getCookie('csrftoken');
-    let url = `/api/update/service/${pk}`.replace(pathname, '')
-    let response = await fetch(url, {
-        method: "GET",
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftokens
-        }
-    })
-    let answer = await response.json()
-    option.value = answer["service"]['id']
-    option.selected = true
-    option.innerHTML = answer['service']['name']
-    amount.value = answer['amount']
-    rate.value = answer['rate']
-    select.appendChild(option)
-    let modal = document.getElementById('ServiceOrderUpdate');
-    modal.style.display = "block"
-    modal.style.background = 'rgba(0, 0 , 0, 0.2)'
-    modal.focus()
-}
-
-async function modalServiceOrderUpdateClose() {
-    let modal = document.getElementById('ServiceOrderUpdate');
-    modal.style.display = "none"
-}
-
-async function updateServiceOrder(event) {
-    let new_pk = event.currentTarget.dataset.pk
-    let pathname = window.location.pathname
-    let amount = document.getElementById("amount").value
-    let rate = document.getElementById("rate").value
-    let csrftokens = getCookie('csrftoken');
-    let url = `/api/update/service/${new_pk}`.replace(pathname, '')
-    let data = {"amount": amount, 'rate': rate};
-    let response = await fetch(url, {
-        method: "PUT",
-        body: JSON.stringify(data),
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftokens
-        }
-
-    })
-    if (response.ok) {
-        modalServiceOrderUpdateClose()
+function makeSettings(path, method, data) {
+    let csrftoken = getCookie('csrftoken')
+    let uri = $(location).attr('origin');
+    return {
+        'url': uri + path,
+        'method': method,
+        'timeout': 0,
+        'headers': {
+            'X-CSRFToken': csrftoken
+        },
+        'processData': false,
+        'Content-Type': 'application/json',
+        'data': data
     }
 }
 
-async function modalServiceOrderDeleteOpen(event) {
-    let modal = document.getElementById('ServiceOrderDelete');
-    let pk = event.currentTarget.dataset.pk
-    let info_div = document.getElementById('service-info')
-    let text = event.currentTarget.dataset.nameText
-    let p = document.createElement('p')
-    p.innerText = text
-    p.classList = ['text-center m-3']
-    info_div.appendChild(p)
-    let btn = document.getElementById('unique-delete')
-    btn.setAttribute('data-pk', pk)
-    modal.style.display = "block"
-    modal.style.background = 'rgba(0, 0 , 0, 0.2)'
-    modal.focus()
+function setFormData(path, modal) {
+    $.ajax(makeSettings(path, 'GET')).done(function (response) {
+        $(modal).find('input, textarea, select').each(function () {
+            if (this.tagName === 'SELECT') {
+                $(this).prepend(`<option value=${response[this.name].id} selected>${response[this.name].name}</option>`)
+            } else {
+                $(this).attr('value', response[this.name])
+            }
+        });
+    }).fail(function (response, status) {
+        console.log(response);
+        console.log(status.text);
+    });
 }
 
-async function modalServiceOrderDeleteClose() {
-    let modal = document.getElementById('ServiceOrderDelete');
-    let info_div = document.getElementById('service-info')
-    info_div.removeChild(info_div.children[0])
-    modal.style.display = "none"
+function modalOpen(modal) {
+    $('#mask').css({
+        'width': $(window).width(),
+        'height': $(window).height()
+    }).fadeIn(5).fadeTo(200, 0.5);
+    $(modal).fadeIn(200);
 }
 
-async function deleteServiceOrder(event) {
-    let pk = event.target.dataset.pk
-    let pathname = window.location.pathname
-    let csrftokens = getCookie('csrftoken');
-    let url = `/api/delete/service/${pk}`.replace(pathname, '')
-    let response = await fetch(url, {
-        method: "DELETE",
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftokens
-        }
-    })
-    if (response.ok) {
-        modalServiceOrderDeleteClose();
-    }
+async function initiModalOpenButtons() {
+    $('a[data-modal-toggle=update]').click(function (e) {
+        e.preventDefault();
+        let modal = $(this).data('modal-target');
+        let path = $(this).data('action');
+        modalOpen(modal)
+        setFormData(path, modal)
+        $(modal).find('button[type=submit]').click(function (e) {
+            e.preventDefault();
+            modalSubmit(path, 'PUT', modal)
+        });
+    });
+    $('a[data-modal-toggle=delete]').click(function (e) {
+        e.preventDefault();
+        let modal = $(this).data('modal-target');
+        let path = $(this).data('action');
+        modalOpen(modal)
+        $(modal).find('button[type=submit]').click(function (e) {
+            e.preventDefault();
+            modalSubmit(path, 'DELETE', modal);
+        });
+    });
+    $('a[data-modal-toggle=create]').click(function (e) {
+        e.preventDefault();
+        let modal = $(this).data('modal-target');
+        let action = $(this).data('action');
+        modalOpen(modal)
+        $(modal).find('button[type=submit]').click(function (e) {
+            e.preventDefault();
+            modalSubmit(action, 'POST', modal);
+        });
+    });
 }
 
-async function modalInventoryOrderDeleteOpen(event) {
-    let modal = document.getElementById('InventoryOrderDelete');
-    let pk = event.currentTarget.dataset.pk
-    let info_div = document.getElementById('inventory-info')
-    let text = event.currentTarget.dataset.nameText
-    let p = document.createElement('p')
-    p.innerText = text
-    p.classList = ['text-center m-3']
-    info_div.appendChild(p)
-    let btn = document.getElementById('inventory-delete')
-    btn.setAttribute('data-pk', pk)
-    modal.style.display = "block"
-    modal.style.background = 'rgba(0, 0 , 0, 0.2)'
-    modal.focus()
+function initButtonModalDissmit () {
+    $('[data-modal-dismiss]').click(function (e) {
+        e.preventDefault();
+        let dismiss = $(this).data('modal-dismiss');
+        $('#mask').hide();
+        $(dismiss).hide();
+    });
 }
 
-async function modalInventoryOrderDeleteClose() {
-    let modal = document.getElementById('InventoryOrderDelete');
-    let info_div = document.getElementById('inventory-info')
-    info_div.removeChild(info_div.children[0])
-    modal.style.display = "none"
-}
-
-async function deleteInventoryOrder(event) {
-    let pk = event.currentTarget.dataset.pk
-    let pathname = window.location.pathname
-    let csrftokens = getCookie('csrftoken');
-    let url = `/api/delete/inventory/${pk}`.replace(pathname, '')
-    let response = await fetch(url, {
-        method: "DELETE",
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftokens
-        }
-    })
-    if (response.ok) {
-        modalInventoryOrderDeleteClose();
-    }
-}
+$(document).ready(function () {
+    initiModalOpenButtons();
+    initButtonModalDissmit();
+})

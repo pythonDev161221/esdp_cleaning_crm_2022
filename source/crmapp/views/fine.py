@@ -22,6 +22,7 @@ class FineCreateView(PermissionRequiredMixin, CreateView):
     model = Fine
     form_class = FineForm
     template_name = 'fine/fine_create.html'
+    success_url = reverse_lazy('crmapp:fine_list')
     permission_required = "crmapp.add_fine"
 
 

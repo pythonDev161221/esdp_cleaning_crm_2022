@@ -1,4 +1,5 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
 
 from crmapp.forms import ClientForm
@@ -11,6 +12,7 @@ class ClientCreateView(PermissionRequiredMixin, CreateView):
     model = Client
     form_class = ClientForm
     template_name = 'client/client_create.html'
+    success_url = reverse_lazy('crmapp:client_index')
     permission_required = "crmapp.add_client"
 
 
