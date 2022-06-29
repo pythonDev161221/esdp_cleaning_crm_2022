@@ -80,20 +80,10 @@ class OrderDetailView(PermissionRequiredMixin, DetailView):
         context['inventory_form'] = InventoryOrderForm
         context['work_time_form'] = OrderWorkTimeForm
         order = get_object_or_404(Order, pk=self.kwargs.get("pk"))
-        staff = User.objects.filter(
-            is_staff=False, is_active=True, black_list=False, schedule=order.work_start.isoweekday()
-        ).exclude(
-            Q(cleaner_orders__order=order) |
-            Q(
-                Q(cleaner_orders__order__work_start__gte=order.work_end) |
-                Q(cleaner_orders__order__work_end__gte=order.work_start) &
-                Q(cleaner_orders__order__work_end__gte=order.work_end)
-            )
-        )
-        context['staff_form'] = self.get_staff_filtered_formset(OrderStaffForm())
+        context['staff_form'] = self.get_staff_filtered_form(OrderStaffForm())
         return context
 
-    def get_staff_filtered_formset(self, form):
+    def get_staff_filtered_form(self, form):
         order = get_object_or_404(Order, pk=self.kwargs.get("pk"))
         staff_filter = User.objects.filter(
             is_staff=False, is_active=True, black_list=False, schedule=order.work_start.isoweekday()
@@ -112,6 +102,8 @@ class OrderDetailView(PermissionRequiredMixin, DetailView):
     def has_permission(self):
         if self.request.user == self.get_object().manager:
             return super().has_permission()
+        if self.request.user.is_staff:
+            return True
         try:
             if self.get_object().get_brigadier().staff != self.request.user:
                 return False
