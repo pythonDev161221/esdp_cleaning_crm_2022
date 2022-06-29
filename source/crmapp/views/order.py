@@ -81,6 +81,13 @@ class OrderDetailView(PermissionRequiredMixin, DetailView):
         return context
 
     def has_permission(self):
+        if self.request.user == self.get_object().manager:
+            return super().has_permission()
+        try:
+            if self.get_object().get_brigadier.staff != self.request.user:
+                return False
+        except:
+            return
         return super().has_permission() or self.get_object().order_cleaners.get(
             is_brigadier=True).staff == self.request.user or self.request.user.is_staff
 
@@ -111,7 +118,6 @@ class OrderCreateView(PermissionRequiredMixin, FormView):
         form.instance.manager = self.request.user
         self.kwargs['pk'] = form.save().pk
         messages.success(self.request, f'Заказ успешно создан!')
-        print(self.request)
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
@@ -189,7 +195,7 @@ class OrderFinishView(PermissionRequiredMixin, UpdateView):
         order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
         if request.method == 'POST' and 'back' in request.POST:
             return redirect("crmapp:order_detail", pk=order.pk)
-        if request.method == 'POST' and 'canceled' in request.POST:
+        if request.method == 'POST' and 'cancel' in request.POST:
             order.cancel_order()
             order_canceled(order)
         return super(OrderFinishView, self).post(request, **kwargs)
@@ -198,7 +204,7 @@ class OrderFinishView(PermissionRequiredMixin, UpdateView):
         order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
         order.description = form.cleaned_data.get('description')
         order.save()
-        if self.request.method == 'POST' and 'finished' in self.request.POST:
+        if self.request.method == 'POST' and 'finish' in self.request.POST:
             messages.success(self.request, f'Описание заказа добавлено, следуйте далее для завершение')
             return redirect("crmapp:manager_report_add_cost", pk=self.get_object().pk)
         else:
@@ -206,6 +212,8 @@ class OrderFinishView(PermissionRequiredMixin, UpdateView):
         return HttpResponseRedirect(self.get_success_url())
 
     def has_permission(self):
+        if self.get_object().status in ["finished", "canceled"]:
+            return False
         return self.request.user == self.get_object().manager or self.request.user.is_staff
 
 
@@ -237,9 +245,10 @@ class InventoryAddModalView(ModalFormView):
         return reverse('crmapp:order_detail', kwargs={'pk': self.kwargs.get('pk')})
 
 
-class WorkTimeModalView(UpdateView):
+class WorkTimeModalView(PermissionRequiredMixin, UpdateView):
     model = Order
     form_class = OrderWorkTimeForm
+    permission_required = "crmapp.change_order"
 
     def form_valid(self, form, formset=None):
         form.save()
@@ -250,10 +259,14 @@ class WorkTimeModalView(UpdateView):
     def get_success_url(self):
         return reverse('crmapp:order_detail', kwargs={'pk': self.kwargs.get('pk')})
 
+    def has_permission(self):
+        return self.get_object().manager == self.request.user
 
-class UpdateWorkTimeModalView(UpdateView):
+
+class UpdateWorkTimeModalView(PermissionRequiredMixin, UpdateView):
     model = Order
     form_class = OrderWorkTimeForm
+    permission_required = "crmapp.change_order"
 
     def form_valid(self, form, formset=None):
         form.save()
@@ -263,3 +276,6 @@ class UpdateWorkTimeModalView(UpdateView):
 
     def get_success_url(self):
         return reverse('crmapp:order_detail', kwargs={'pk': self.kwargs.get('pk')})
+
+    def has_permission(self):
+        return self.get_object().manager == self.request.user

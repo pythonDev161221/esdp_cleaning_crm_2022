@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView
 
 from crmapp.models import CashManager
 

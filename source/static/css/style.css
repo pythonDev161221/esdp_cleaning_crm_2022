@@ -5669,6 +5669,7 @@ button.close {
     top: 0;
     right: 0;
     bottom: 0;
+    display: none;
     left: 0;
     z-index: 1040;
     background-color: #000;

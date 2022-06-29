@@ -11,6 +11,7 @@
     <!-- Fonts -->
     <link rel="stylesheet" href="{% static 'icons/font-awesome/css/font-awesome.min.css' %}">
     <!-- Favicon icon -->
+    <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon.png' %}">
     <!-- Custom Stylesheet -->
     {% block style %}{% endblock style %}
@@ -54,10 +55,12 @@
             <div class="header-left">
                 <div class="input-group icons">
                     <div class="text-left ml-4">
-                        <a class="mx-1 btn btn-secondary btn-md" href="{% url 'crmapp:order_create' %}">Создать
-                            заказ</a>
-                        <a class="mx-1 btn btn-secondary btn-md" href="{% url 'crmapp:order_index' %}">Список
-                            заказов</a>
+                        {% if request.user.is_staff or request.user|has_group:'Manager' %}
+                            <a class="mx-1 btn btn-secondary btn-md" href="{% url 'crmapp:order_create' %}">Создать
+                                заказ</a>
+                            <a class="mx-1 btn btn-secondary btn-md" href="{% url 'crmapp:order_index' %}">Список
+                                заказов</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -65,7 +68,8 @@
                 <ul class="clearfix">
                     <li class="icons dropdown d-none d-md-flex">
                         <a href="javascript:void(0)" class="log-user" data-toggle="dropdown" aria-expanded="false">
-                            <span>{{ user.first_name }} {{ user.last_name }}</span> <i class="icon-user f-s-20" aria-hidden="true"></i>
+                            <span>{{ user.first_name }} {{ user.last_name }}</span> <i class="icon-user f-s-20"
+                                                                                       aria-hidden="true"></i>
                         </a>
                         <div class="drop-down dropdown-profile animated fadeIn dropdown-menu">
                             <div class="dropdown-content-body">
@@ -124,8 +128,9 @@
                                         <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Услуги</a>
                                         <ul aria-expanded="false" class="collapse">
                                             <li>
-                                                <a href="javascript:void(0)" data-toggle="modal"
-                                                   data-target="#serviceModal">Добавить услугу</a>
+                                                <a href="javascript:void(0)" data-modal-toggle="create"
+                                                   data-modal-target="#serviceModal"
+                                                   data-action="{% url 'crmapp:service_create' %}">Добавить услугу</a>
                                             </li>
                                             <li>
                                                 <a href="{% url 'crmapp:service_list' %}">Список услуг</a>
@@ -138,8 +143,10 @@
                                         <ul aria-expanded="false" class="collapse">
                                             <li>
 
-                                                <a href="javascript:void(0)" data-toggle="modal"
-                                                   data-target="#inventoryModal">Добавить инвентарь</a>
+                                                <a href="javascript:void(0)" data-modal-toggle="create"
+                                                   data-modal-target="#inventoryModal"
+                                                   data-action="{% url 'crmapp:inventory_create' %}">Добавить
+                                                    инвентарь</a>
                                             </li>
                                             <li>
 
@@ -152,8 +159,10 @@
                                         <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Объекты</a>
                                         <ul aria-expanded="false" class="collapse">
                                             <li>
-                                                <a href="javascript:void(0)" data-toggle="modal"
-                                                   data-target="#objectTypeModal">Добавить тип объекта</a>
+                                                <a href="javascript:void(0)" data-modal-toggle="create"
+                                                   data-modal-target="#objectTypeModal"
+                                                   data-action="{% url 'crmapp:object_type_create' %}">Добавить тип
+                                                    объекта</a>
                                             </li>
                                             <li>
                                                 <a href="{% url 'crmapp:object_type_list' %}">Список объектов</a>
@@ -167,8 +176,9 @@
                                         <ul aria-expanded="false" class="collapse">
                                             {% if perms.crmapp.add_fine %}
                                                 <li>
-                                                    <a href="javascript:void(0)" data-toggle="modal"
-                                                       data-target="#fineModal">Добавить штраф</a>
+                                                    <a href="javascript:void(0)" data-modal-toggle="create"
+                                                       data-modal-target="#fineModal"
+                                                       data-action="{% url 'crmapp:fine_create' %}">Добавить штраф</a>
                                                 </li>
                                             {% endif %}
                                             <li>
@@ -180,8 +190,9 @@
                                         <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Бонусы</a>
                                         <ul aria-expanded="false" class="collapse">
                                             <li>
-                                                <a href="javascript:void(0)" data-toggle="modal"
-                                                   data-target="#bonusModal">Добавить бонус</a>
+                                                <a href="javascript:void(0)" data-modal-toggle="create"
+                                                   data-modal-target="#bonusModal"
+                                                   data-action="{% url 'crmapp:bonus_create' %}">Добавить бонус</a>
                                             </li>
                                             <li>
                                                 <a href="{% url 'crmapp:bonus_list' %}">Список бонусов</a>
@@ -192,8 +203,9 @@
                                         <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">Клиенты</a>
                                         <ul aria-expanded="false" class="collapse">
                                             <li>
-                                                <a href="javascript:void(0)" data-toggle="modal"
-                                                   data-target="#clientModal">Добавить клиента</a>
+                                                <a href="javascript:void(0)" data-modal-toggle="create"
+                                                   data-modal-target="#clientModal"
+                                                   data-action="{% url 'crmapp:client_create' %}">Добавить клиента</a>
                                             </li>
                                             <li>
                                                 <a href="{% url 'crmapp:client_index' %}">Список клиентов</a>
@@ -208,13 +220,15 @@
                                     <span class="nav-text">Отчеты</span>
                                 </a>
                                 <ul aria-expanded="false" class="collapse">
-                                    <li>
-                                        <a href="{% url 'crmapp:manager_cash_list' %}">Отчет по кассе</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'crmapp:income_outcome_report' %}">Отчет о расходах и
-                                            доходах</a>
-                                    </li>
+                                    {% if request.user.is_staff %}
+                                        <li>
+                                            <a href="{% url 'crmapp:manager_cash_list' %}">Отчет по кассе</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'crmapp:income_outcome_report' %}">Отчет о расходах и
+                                                доходах</a>
+                                        </li>
+                                    {% endif %}
                                     <li>
                                         <a href="{% url 'crmapp:manager_report_list' %}">Отчет менеджера</a>
                                     </li>
@@ -258,12 +272,12 @@
     </div>
 </div>
 <!--********************************** Modal Bonus ***********************************-->
-<div class="modal fade" id="bonusModal" aria-hidden="true">
+<div class="modal" id="bonusModal" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <b class="modal-title fs-5">Добавить бонус</b>
-                <button type="button" class="close" data-dismiss="modal"><span>×</span>
+                <button type="button" class="close" data-modal-dismiss="#bonusModal"><span>×</span>
                 </button>
             </div>
             <div class="modal-body">
@@ -274,30 +288,30 @@
                     </div>
                     <div class="form-group">
                         <input placeholder="Сумма бонуса" class="form-control input-default" maxlength="10"
-                               type="number" name="value">
+                               type="number" name="value" required>
                     </div>
                 </form>
             </div>
             <div class="text-center mb-3">
-                <button type="button" class="btn btn-secondary" onclick="createBonus()">Сохранить</button>
+                <button type="submit" class="btn btn-secondary">Сохранить</button>
             </div>
         </div>
     </div>
 </div>
 <!--********************************** Modal Fine ***********************************-->
-<div class="modal fade" id="fineModal" aria-hidden="true">
+<div class="modal" id="fineModal" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <b class="modal-title fs-5">Добавить штраф</b>
-                <button type="button" class="close" data-dismiss="modal"><span>×</span>
+                <button type="button" class="close" data-modal-dismiss="#fineModal"><span>×</span>
                 </button>
             </div>
             <div class="modal-body">
                 <form id="fineForm">
                     <div class="form-group">
                         <input placeholder="Категория" class="form-control input-default" maxlength="255"
-                               type="text" name="category">
+                               type="text" name="category" required>
                     </div>
                     <div class="form-group">
                         <input placeholder="Название штрафа" class="form-control input-default" maxlength="300"
@@ -305,12 +319,12 @@
                     </div>
                     <div class="form-group">
                         <input placeholder="Критерий" class="form-control input-default"
-                               maxlength="255" type="tel"
-                               name="criteria">
+                               maxlength="255" type="text"
+                               name="criteria" required>
                     </div>
                     <div class="form-group">
                         <input placeholder="Сумма штрафа" class="form-control input-default" maxlength="10"
-                               type="number" name="value">
+                               type="number" name="value" required>
                     </div>
                     <div class="form-group">
                                 <textarea placeholder="Пояснение" class="form-control input-default" maxlength="500"
@@ -319,18 +333,18 @@
                 </form>
             </div>
             <div class="text-center mb-3">
-                <button type="button" class="btn btn-secondary" onclick="createFine()">Сохранить</button>
+                <button type="submit" class="btn btn-secondary">Сохранить</button>
             </div>
         </div>
     </div>
 </div>
 <!--********************************** Modal Inventory ***********************************-->
-<div class="modal fade" id="inventoryModal" aria-hidden="true">
+<div class="modal" id="inventoryModal" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <b class="modal-title fs-5">Добавить инвентарь</b>
-                <button type="button" class="close" data-dismiss="modal"><span>×</span>
+                <button type="button" class="close" data-modal-dismiss="#inventoryModal"><span>×</span>
                 </button>
             </div>
             <div class="modal-body">
@@ -346,18 +360,18 @@
                 </form>
             </div>
             <div class="text-center mb-3">
-                <button type="button" class="btn btn-secondary" onclick="createInventory()">Сохранить</button>
+                <button type="submit" class="btn btn-secondary">Сохранить</button>
             </div>
         </div>
     </div>
 </div>
 <!--********************************** Modal ObjectType ***********************************-->
-<div class="modal fade" id="objectTypeModal" aria-hidden="true">
+<div class="modal" id="objectTypeModal" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <b class="modal-title fs-5">Добавить тип объекта</b>
-                <button type="button" class="close" data-dismiss="modal"><span>×</span>
+                <button type="button" class="close" data-modal-dismiss="#objectTypeModal"><span>×</span>
                 </button>
             </div>
             <div class="modal-body">
@@ -369,18 +383,18 @@
                 </form>
             </div>
             <div class="text-center mb-3">
-                <button type="button" class="btn btn-secondary" onclick="createObjectType()">Сохранить</button>
+                <button type="submit" class="btn btn-secondary">Сохранить</button>
             </div>
         </div>
     </div>
 </div>
 <!--********************************** Service Modal ***********************************-->
-<div class="modal fade" id="serviceModal" aria-hidden="true">
+<div class="modal" id="serviceModal" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <b class="modal-title fs-5">Добавить сервис</b>
-                <button type="button" class="close" data-dismiss="modal"><span>×</span>
+                <button type="button" class="close" data-modal-dismiss="#serviceModal"><span>×</span>
                 </button>
             </div>
             <div class="modal-body">
@@ -410,18 +424,18 @@
                 </form>
             </div>
             <div class="text-center mb-3">
-                <button type="button" class="btn btn-secondary" onclick="createService()">Сохранить</button>
+                <button type="submit" class="btn btn-secondary">Сохранить</button>
             </div>
         </div>
     </div>
 </div>
 <!--********************************** Clien Modal ***********************************-->
-<div class="modal fade" id="clientModal" aria-hidden="true">
+<div class="modal" id="clientModal" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <b class="modal-title fs-5">Добавить клиента</b>
-                <button type="button" class="close" data-dismiss="modal"><span>×</span>
+                <button type="button" class="close" data-modal-dismiss="#clientModal"><span>×</span>
                 </button>
             </div>
             <div class="modal-body">
@@ -445,11 +459,12 @@
                 </form>
             </div>
             <div class="text-center mb-3">
-                <button type="button" class="btn btn-secondary" onclick="createClient()">Сохранить</button>
+                <button type="submit" class="btn btn-secondary">Сохранить</button>
             </div>
         </div>
     </div>
 </div>
+<div class="modal-backdrop fade" id="mask"></div>
 
 <!--********************************** Скрипты ***********************************-->
 <script src="{% static 'plugins/common/common.min.js' %}"></script>

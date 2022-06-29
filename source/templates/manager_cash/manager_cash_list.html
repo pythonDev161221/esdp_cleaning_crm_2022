@@ -22,7 +22,9 @@
         {% for object_type in object_types %}
             {% for cash in manager_cash %}
                 <tr>
-                    <td>{{ cash.staff.first_name }} {{ cash.staff.last_name }}</td>
+                    <td><a style="text-decoration: none"
+                           href="{% url 'accounts:profile' cash.staff.id %}">{{ cash.staff.first_name }} {{ cash.staff.last_name }}</a>
+                    </td>
                     <td>{{ cash.date }}</td>
                     <td><a class="btn mb-1 btn-primary btn-sm"
                            href="{% url 'crmapp:order_detail' cash.order.pk %}"> {{ cash.order.pk }}</a>

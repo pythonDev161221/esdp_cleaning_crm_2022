@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth import update_session_auth_hash, authenticate, login
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import Group
 from django.contrib.auth.views import LoginView
@@ -33,13 +33,6 @@ class Login(LoginView):
             return reverse("index")
         if not self.request.user.groups.filter(name=group):
             return reverse("accounts:profile", kwargs={"pk": self.request.user.pk})
-
-    def post(self, request, *args, **kwargs):
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        login(request, user)
-        return HttpResponseRedirect(self.get_success_url())
 
 
 class StaffProfileView(PermissionRequiredMixin, DetailView):

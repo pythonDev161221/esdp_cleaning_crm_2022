@@ -1,6 +1,6 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DeleteView, FormView
 
 from crmapp.forms import InventoryForm, InventoryOrderForm, InventoryOrderFormSet
@@ -21,6 +21,7 @@ class InventoryCreateView(PermissionRequiredMixin, CreateView):
     model = Inventory
     form_class = InventoryForm
     template_name = 'inventories/create.html'
+    success_url = reverse_lazy('crmapp:inventory_index')
     permission_required = "crmapp.add_inventory"
 
     def has_permission(self):
@@ -53,6 +54,7 @@ class InventoryOrderCreateView(PermissionRequiredMixin, FormView):
     model = InventoryOrder
     form_class = InventoryOrderForm
     template_name = "inventories/inventory_order_create.html"
+    success_url = reverse_lazy('crmapp:order_index')
     permission_required = "crmapp.add_inventoryorder"
 
     def get_context_data(self, **kwargs):

@@ -15,7 +15,9 @@
     {% for payout in payouts %}
         <tr>
             <td>{{ payout.id }}</td>
-            <td>{{ payout.staff.last_name }} {{ payout.staff.first_name }}</td>
+            <td><a style="text-decoration:none"
+                   href="{% url 'accounts:profile' payout.staff.id %}">{{ payout.staff.last_name }} {{ payout.staff.first_name }}</a>
+            </td>
             <td>{{ payout.salary }}</td>
             <td>{{ payout.date_payout }}</td>
         </tr>
