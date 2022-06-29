@@ -148,7 +148,9 @@
                     {% if perms.crmapp.add_stafforder and order.manager == request.user or request.user.is_staff %}
                         {% if order.status == 'new' and order.cleaning_time %}
                             <li id="cleaner-add" class="action-button">
-                                <a href="#"
+                                <a href="#" data-modal-toggle="create"
+                                   data-modal-target="#staffOrderCreateModal"
+                                   data-action="{% url 'crmapp:staff_order_create' order.pk %}"
                                    class="btn mb-1 btn-secondary btn-sm">Добавить клинера
                                 </a>
                             </li>
@@ -300,9 +302,9 @@
                                                     {% endif %}
                                                 {% endif %}
                                                 {% if perms.crmapp.delete_stafforder and order.manager == request.user or request.user.is_staff %}
-                                                    <a title="Удалить из заказа" class="ml-1" data-modal-toggle="delete"
+                                                    <a title="Удалить из заказа" class="ml-1" data-modal-toggle="create"
                                                        data-modal-target="#deleteModal"
-                                                       data-action="{% url 'crmapp:order_staff_delete' cleaner.id %}"
+                                                       data-action="{% url 'crmapp:staff_order_delete' cleaner.id %}"
                                                        href="javascript:void(0)"
                                                        data-object-name="{{ cleaner.staff.first_name }} {{ cleaner.staff.last_name }}">
                                                         <i class="fa fa-trash text-dark hover-blue"></i>
@@ -429,17 +431,17 @@
         </div>
     </div>
     <!-- Modal Cleaners Order Create -->
-    <div class="modal" id="cleanersOrderCreateModal" aria-hidden="true">
+    <div class="modal" id="staffOrderCreateModal" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <b class="modal-title fs-5">Добавить клинера</b>
-                    <button type="button" class="close" data-modal-dismiss="#cleanersOrderCreateModal"><span>×</span>
+                    <button type="button" class="close" data-modal-dismiss="#staffOrderCreateModal"><span>×</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <form>
-                        {% for field in inventory_form %}
+                        {% for field in staff_form %}
                             <div class="form-group">
                                 {{ field }}
                             </div>

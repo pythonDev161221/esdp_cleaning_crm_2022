@@ -27,9 +27,11 @@
                             {% if field.name == 'client_info' %}
                                 <div class="input-group">
                                     <div class="input-group-prepend">
-                                        <button class="btn btn-outline-dark" onclick="modalClientOpen()">
+                                        <a type="button" class="btn btn-outline-secondary" data-modal-toggle="create"
+                                                data-modal-target="#clientModal"
+                                                data-action="{% url 'crmapp:client_create' %}">
                                             Добавить клиента
-                                        </button>
+                                        </a>
                                     </div>
                                     {{ field }}
                                 </div>
@@ -44,7 +46,7 @@
                             </div>
                             {% endfor %}
                             </div>
-                            <button type="submit" class="btn btn-dark">Сохранить</button>
+                            <button type="submit" class="btn btn-secondary">Сохранить</button>
                         </div>
                     </form>
                 </div>
