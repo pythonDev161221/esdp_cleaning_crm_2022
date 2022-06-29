@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import Group
 from django.db import transaction
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView
@@ -61,6 +61,12 @@ class CashManagerCreateView(PermissionRequiredMixin, CreateView):
     template_name = 'account/cash_add.html'
     success_url = reverse_lazy('crmapp:manager_cash_list')
     permission_required = "crmapp.add_cashmanager"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        manager = get_object_or_404(Staff, pk=self.kwargs['pk'])
+        context['manager'] = manager
+        return context
 
     def post(self, request, *args, **kwargs):
         staff = get_object_or_404(Staff, pk=self.kwargs['pk'])

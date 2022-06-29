@@ -24,7 +24,8 @@
     {% for manager_report in manager_reports %}
         <tr>
             <th>{{ manager_report.order.id }}</th>
-            <td>{{ manager_report.cleaner }}</td>
+            <td><a style="text-decoration: none"
+                   href="{% url 'accounts:profile' manager_report.cleaner.id %}">{{ manager_report.cleaner }}</a></td>
             <td>{{ manager_report.salary }}</td>
             <td>{{ manager_report.bonus }}</td>
             <td>{{ manager_report.fine }}</td>

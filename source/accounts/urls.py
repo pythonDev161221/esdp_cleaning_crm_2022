@@ -17,7 +17,7 @@ from accounts.views.accounts import (StaffProfileView,
                                      StaffPassportPhotoView,
                                      GetAuthTokenTelegram,
                                      StaffPayoutDetailView,
-                                     StaffOrderDetailView,
+                                     StaffOrderDetailView, Login,
                                      )
 from accounts.views.payout import PayoutListView, PayoutCreateView, CashManagerCreateView
 
@@ -27,7 +27,7 @@ app_name = 'accounts'
 
 urlpatterns = [
     path('login/',
-         LoginView.as_view(template_name="../templates/account/login.html", form_class=LoginForm,),
+         Login.as_view(),
          name='login',
          ),
     path('logout/', LogoutView.as_view(), name="logout"),

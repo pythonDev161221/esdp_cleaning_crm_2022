@@ -28,7 +28,8 @@ class ServiceOrderCreateView(PermissionRequiredMixin, CreateView):
 
     def has_permission(self):
         order = get_object_or_404(Order, pk=self.kwargs["pk"])
-        return self.request.user == order.manager and super().has_permission() or self.request.user.is_staff
+        return self.request.user == order.manager and super().has_permission() or self.request.user.is_staff or self.request.user == order.order_cleaners.get(
+            is_brigadier=True).staff
 
 
 class ServiceOrderUpdateView(PermissionRequiredMixin, UpdateView):
@@ -47,7 +48,9 @@ class ServiceOrderUpdateView(PermissionRequiredMixin, UpdateView):
         return reverse('crmapp:order_detail', kwargs={'pk': self.object.order.pk})
 
     def has_permission(self):
-        return self.request.user == self.get_object().order.manager and super().has_permission() or self.request.user == self.get_object().order.order_cleaners.filter(is_brigadier=True).staff or self.request.user.is_staff
+        order = get_object_or_404(Order, pk=self.kwargs.get("pk"))
+        return self.request.user == order.manager and super().has_permission() or self.request.user == order.order_cleaners.filter(
+            is_brigadier=True).staff or self.request.user.is_staff
 
 
 class ServiceOrderDeleteView(PermissionRequiredMixin, DeleteView):
@@ -61,4 +64,3 @@ class ServiceOrderDeleteView(PermissionRequiredMixin, DeleteView):
 
     def has_permission(self):
         return self.request.user == self.get_object().order.manager and super().has_permission() or self.request.user.is_staff
-

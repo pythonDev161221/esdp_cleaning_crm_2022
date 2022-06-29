@@ -30,11 +30,13 @@ class OrderStaffCreateView(PermissionRequiredMixin, FormView):
         staff = []
         for obj in orders:
             staff += obj.cleaners.all()
+
         exclude_by_time = StaffOrder.objects.filter(staff__in=staff)
         exclude_by_order = StaffOrder.objects.filter(order=order)
         staff_filter = User.objects.filter(is_staff=False, is_active=True, black_list=False,
-                                           schedule=order.work_start.weekday() + 1).exclude(
+                                           schedule=order.work_start.isoweekday()).exclude(
             Q(cleaner_orders__in=exclude_by_time or exclude_by_order))
+
         StaffOrderFormset = modelformset_factory(StaffOrder, form=self.form_class, formset=self.formset, extra=5)
         formset = StaffOrderFormset(prefix="staff")
         for forms in formset:

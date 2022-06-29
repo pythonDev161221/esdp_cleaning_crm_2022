@@ -5,7 +5,7 @@
     <div class="container">
         <div class="card mt-3">
             <div class="card-header">
-                Доля клинеров
+                <h4>Доля клинеров</h4>
             </div>
             <div class="card-body">
                 <p><span>Общая сумма заказа:</span> <b id="totalCost">{{ total }}</b></p>
@@ -25,14 +25,14 @@
         let result = document.getElementById('result')
         document.getElementById('id_cleaners_part').addEventListener('input', function (e) {
             if (document.querySelector("select").value === "percent") {
-                result.textContent = "Доля клинеров: " + totalCost / 100 * e.currentTarget.value
-                if ((totalCost / 100 * e.currentTarget.value) > (totalCost / 2)) {
+                result.textContent = "Доля клинеров: " + parseInt(totalCost) / 100 * e.currentTarget.value
+                if ((parseInt(totalCost) / 100 * e.currentTarget.value) > (parseInt(totalCost) / 2)) {
                     result.style.color = "red"
                 } else {
                     result.style.color = "black"
                 }
             } else {
-                if (e.currentTarget.value > (totalCost / 2)) {
+                if (e.currentTarget.value > (parseInt(totalCost) / 2)) {
                     result.textContent = "Сумма превышает общую сумму на 50%"
                     result.style.color = "red"
                 } else {

@@ -40,14 +40,6 @@ class TestCreateInventory(TestCase):
         self.assertTrue(Inventory.objects.get(name="inventory_35",
                                               description="description inventory 35"))
 
-    def test_success_change_inventory(self):
-        data = {"name": "inventory_name_23", "description": "inventory description"}
-        response = self.client.post(reverse("crmapp:inventory_update", args=[self.inventory.pk]), data=data)
-        self.assertEqual(response.status_code, 302)
-        change_inventory = Inventory.objects.get(pk=self.inventory.pk)
-        self.assertEqual(change_inventory.name, "inventory_name_23")
-        self.assertEqual(change_inventory.description, "inventory description")
-
     def test_success_delete_inventory(self):
         inventory = Inventory.objects.create(
             name="test_inventory_3",

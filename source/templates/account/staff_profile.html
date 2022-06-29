@@ -108,10 +108,12 @@
                             <li class="mb-2 mt-5"><strong class="text-dark mr-4 fs-4">Баланс:</strong>
                                 <span class="fs-4">{{ user_object.balance }} сом</span>
                             </li>
-                            <div class="text-center">
-                                <a class="btn btn-secondary mt-3"
-                                   href="{% url 'accounts:payout_create' user_object.pk %}">Выдать ЗП</a>
-                            </div>
+                            {% if request.user.is_staff or request.user|has_group:'Manager' %}
+                                <div class="text-center">
+                                    <a class="btn btn-secondary mt-3"
+                                       href="{% url 'accounts:payout_create' user_object.pk %}">Выдать ЗП</a>
+                                </div>
+                            {% endif %}
                         {% endif %}
                     </ul>
                 </div>

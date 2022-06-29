@@ -11,7 +11,7 @@ from crmapp.forms import ServiceOrderForm, ForemanExpenseForm
 from crmapp.models import ForemanOrderUpdate, Order, ServiceOrder, ForemanPhoto, ForemanExpenses, \
     StaffOrder
 
-from tgbot.handlers.orders.tg_order_staff import staff_accept_order, order_finished, manager_alert, manager_expense_alert
+from tgbot.handlers.orders.tg_order_staff import manager_alert, manager_expense_alert
 
 
 class ForemanOrderUpdateCreateView(PermissionRequiredMixin, FormView):
@@ -101,7 +101,7 @@ class ForemanExpenseView(PermissionRequiredMixin, CreateView):
         order = get_object_or_404(Order, pk=self.kwargs.get("pk"))
         if order.status == 'finished' or order.status == "canceled":
             return super().has_permission()
-        return self.request.user == order.get_brigadier()
+        return self.request.user == order.get_brigadier().staff
 
 
 class PhotoBeforeView(PermissionRequiredMixin, View):
@@ -136,15 +136,15 @@ class PhotoBeforeView(PermissionRequiredMixin, View):
 
 
 class PhotoDetailView(PermissionRequiredMixin, DetailView):
-    model = ForemanPhoto
+    model = Order
     template_name = 'foreman/photo_report.html'
     context_object_name = 'foreman_report'
     permission_required = "crmapp.view_foremanphoto"
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        order = StaffOrder.objects.get(order_id=self.object.pk, is_brigadier=True)
-        foreman_photo = ForemanPhoto.objects.filter(foreman_report=order)
+        order = StaffOrder.objects.get(order=self.get_object().pk, is_brigadier=True)
+        foreman_photo = ForemanPhoto.objects.filter(foreman_report=order.pk)
         photos_before = [i for i in foreman_photo.filter(is_after=False)]
         photos_after = [i for i in foreman_photo.filter(is_after=True)]
         context['photos_before'] = photos_before

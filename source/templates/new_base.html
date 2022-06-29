@@ -55,10 +55,12 @@
             <div class="header-left">
                 <div class="input-group icons">
                     <div class="text-left ml-4">
-                        <a class="mx-1 btn btn-secondary btn-md" href="{% url 'crmapp:order_create' %}">Создать
-                            заказ</a>
-                        <a class="mx-1 btn btn-secondary btn-md" href="{% url 'crmapp:order_index' %}">Список
-                            заказов</a>
+                        {% if request.user.is_staff or request.user|has_group:'Manager' %}
+                            <a class="mx-1 btn btn-secondary btn-md" href="{% url 'crmapp:order_create' %}">Создать
+                                заказ</a>
+                            <a class="mx-1 btn btn-secondary btn-md" href="{% url 'crmapp:order_index' %}">Список
+                                заказов</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -127,7 +129,8 @@
                                         <ul aria-expanded="false" class="collapse">
                                             <li>
                                                 <a href="javascript:void(0)" data-modal-toggle="create"
-                                                   data-modal-target="#serviceModal" data-action="{% url 'crmapp:service_create' %}">Добавить услугу</a>
+                                                   data-modal-target="#serviceModal"
+                                                   data-action="{% url 'crmapp:service_create' %}">Добавить услугу</a>
                                             </li>
                                             <li>
                                                 <a href="{% url 'crmapp:service_list' %}">Список услуг</a>
@@ -141,7 +144,9 @@
                                             <li>
 
                                                 <a href="javascript:void(0)" data-modal-toggle="create"
-                                                   data-modal-target="#inventoryModal" data-action="{% url 'crmapp:inventory_create' %}">Добавить инвентарь</a>
+                                                   data-modal-target="#inventoryModal"
+                                                   data-action="{% url 'crmapp:inventory_create' %}">Добавить
+                                                    инвентарь</a>
                                             </li>
                                             <li>
 
@@ -155,7 +160,9 @@
                                         <ul aria-expanded="false" class="collapse">
                                             <li>
                                                 <a href="javascript:void(0)" data-modal-toggle="create"
-                                                   data-modal-target="#objectTypeModal" data-action="{% url 'crmapp:object_type_create' %}">Добавить тип объекта</a>
+                                                   data-modal-target="#objectTypeModal"
+                                                   data-action="{% url 'crmapp:object_type_create' %}">Добавить тип
+                                                    объекта</a>
                                             </li>
                                             <li>
                                                 <a href="{% url 'crmapp:object_type_list' %}">Список объектов</a>
@@ -170,7 +177,8 @@
                                             {% if perms.crmapp.add_fine %}
                                                 <li>
                                                     <a href="javascript:void(0)" data-modal-toggle="create"
-                                                   data-modal-target="#fineModal" data-action="{% url 'crmapp:fine_create' %}">Добавить штраф</a>
+                                                       data-modal-target="#fineModal"
+                                                       data-action="{% url 'crmapp:fine_create' %}">Добавить штраф</a>
                                                 </li>
                                             {% endif %}
                                             <li>
@@ -183,7 +191,8 @@
                                         <ul aria-expanded="false" class="collapse">
                                             <li>
                                                 <a href="javascript:void(0)" data-modal-toggle="create"
-                                                   data-modal-target="#bonusModal" data-action="{% url 'crmapp:bonus_create' %}">Добавить бонус</a>
+                                                   data-modal-target="#bonusModal"
+                                                   data-action="{% url 'crmapp:bonus_create' %}">Добавить бонус</a>
                                             </li>
                                             <li>
                                                 <a href="{% url 'crmapp:bonus_list' %}">Список бонусов</a>
@@ -195,7 +204,8 @@
                                         <ul aria-expanded="false" class="collapse">
                                             <li>
                                                 <a href="javascript:void(0)" data-modal-toggle="create"
-                                                   data-modal-target="#clientModal" data-action="{% url 'crmapp:client_create' %}">Добавить клиента</a>
+                                                   data-modal-target="#clientModal"
+                                                   data-action="{% url 'crmapp:client_create' %}">Добавить клиента</a>
                                             </li>
                                             <li>
                                                 <a href="{% url 'crmapp:client_index' %}">Список клиентов</a>
@@ -210,13 +220,15 @@
                                     <span class="nav-text">Отчеты</span>
                                 </a>
                                 <ul aria-expanded="false" class="collapse">
-                                    <li>
-                                        <a href="{% url 'crmapp:manager_cash_list' %}">Отчет по кассе</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'crmapp:income_outcome_report' %}">Отчет о расходах и
-                                            доходах</a>
-                                    </li>
+                                    {% if request.user.is_staff %}
+                                        <li>
+                                            <a href="{% url 'crmapp:manager_cash_list' %}">Отчет по кассе</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'crmapp:income_outcome_report' %}">Отчет о расходах и
+                                                доходах</a>
+                                        </li>
+                                    {% endif %}
                                     <li>
                                         <a href="{% url 'crmapp:manager_report_list' %}">Отчет менеджера</a>
                                     </li>
@@ -225,11 +237,14 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li>
-                                <a href="{% url 'crmapp:order_deleted_list' %}" aria-expanded="false">
-                                    <i class="icon-trash menu-icon"></i><span class="nav-text">Удаленные заказы</span>
-                                </a>
-                            </li>
+                            {% if request.user.is_staff %}
+                                <li>
+                                    <a href="{% url 'crmapp:order_deleted_list' %}" aria-expanded="false">
+                                        <i class="icon-trash menu-icon"></i><span
+                                            class="nav-text">Удаленные заказы</span>
+                                    </a>
+                                </li>
+                            {% endif %}
                             <li class="hidden">
                                 <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
                                 </a>
