@@ -294,7 +294,8 @@
                                                         <i class="fa fa-star text-warning ml-1"></i>
                                                     {% else %}
                                                         {% if not order.get_brigadier %}
-                                                            <a class="ml-1" href="#">
+                                                            <a class="ml-1" href="#" data-modal-toggle="create" data-modal-target="#addBrigadierModal"
+                                                       data-action="{% url 'crmapp:staff_order_add' cleaner.id %}">
                                                                 <i title="Назначить бригадиром"
                                                                    class="fa fa-star text-dark hover-blue"></i>
                                                             </a>
@@ -599,6 +600,26 @@
                 <div class="text-center mb-3">
                     <button type="button" class="btn btn-light" data-modal-dismiss="#deleteModal">Отмена</button>
                     <button type="submit" class="btn btn-danger">Удалить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal" id="addBrigadierModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <b class="modal-title fs-5">Назначить бригадиром?</b>
+                    <button type="button" class="close" data-modal-dismiss="#addBrigadierModal"><span>×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <span id="object-text-name"></span>
+                </div>
+                <div class="text-center mb-3">
+                    <button type="button" class="btn btn-light" data-modal-dismiss="#addBrigadierModal">Отмена</button>
+                    <button type="submit" class="btn btn-danger">Подтвердить</button>
                 </div>
             </div>
         </div>

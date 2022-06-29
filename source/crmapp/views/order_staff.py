@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponseRedirect
-from django.views.generic.edit import FormView, CreateView
+from django.views.generic.edit import FormView, CreateView, UpdateView
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth import get_user_model
 from django.urls import reverse, reverse_lazy
@@ -96,6 +96,27 @@ class StaffOrderCreateView(PermissionRequiredMixin, CreateView):
             self.object.is_brigadier = False
         self.object.save()
         once_staff_add_order(self.object)
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('crmapp:order_detail', kwargs={'pk': self.object.order.pk})
+
+    def has_permission(self):
+        order = get_object_or_404(Order, pk=self.kwargs["pk"])
+        return self.request.user == order.manager and super().has_permission() or self.request.user.is_staff
+
+
+class StaffOrderAddBrigadierView(PermissionRequiredMixin, UpdateView):
+    model = StaffOrder
+    template_name = 'service_order/service_order_create.html'
+    success_url = reverse_lazy('crmapp:service_order_create')
+    form_class = OrderStaffForm
+    permission_required = "crmapp.add_stafforder"
+
+    def post(self, *args, **kwargs):
+        staff = get_object_or_404(StaffOrder, pk=self.kwargs.get('pk'))
+        staff.is_brigadier = True
+        staff.save()
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
