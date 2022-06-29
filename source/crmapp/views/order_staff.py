@@ -90,12 +90,12 @@ class StaffOrderCreateView(PermissionRequiredMixin, CreateView):
 
     def form_valid(self, form):
         order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
-        print(form.cleaned_data)
         self.object = form.save(commit=False)
         self.object.order = order
         if order.get_brigadier():
             self.object.is_brigadier = False
         self.object.save()
+        once_staff_add_order(self.object)
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):

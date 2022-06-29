@@ -166,9 +166,10 @@ def in_place_callback(update: Update, context: CallbackContext):
          ◉ Время: {order.work_start.time()}
          ◉ Адрес: {order.address}
             '''
-        keyboard = get_brigadier_start_keyboard(order_id, staff_id)
-        context.bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text,
-                                      reply_markup=keyboard)
+        if staff.is_brigadier:
+            keyboard = get_brigadier_start_keyboard(order_id, staff_id)
+            context.bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text,
+                                          reply_markup=keyboard)
 
 
 @is_staff_in_order
