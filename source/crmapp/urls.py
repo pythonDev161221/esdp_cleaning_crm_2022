@@ -26,7 +26,8 @@ from crmapp.views.service_views import ServiceListView, ServiceCreateView, Servi
 
 from crmapp.views.manager_report import ManagerReportCreateView, ManagerReportListView, GetManagerReportCost
 
-from crmapp.views.order_staff import OrderStaffCreateView, OrderStaffDeleteView
+from crmapp.views.order_staff import OrderStaffCreateView, OrderStaffDeleteView, StaffOrderCreateView, \
+    StaffOrderDeleteView
 
 from crmapp.views.order import OrderListView, OrderDetailView, OrderFinishView, OrderDeleteView, OrderDeletedListView, \
     OrderUpdateView, ServiceAddModalView, OrderCreateView, InventoryAddModalView, WorkTimeModalView, \
@@ -64,7 +65,9 @@ order_urlpatterns = [
     path('<int:pk>/order/update/', OrderUpdateView.as_view(), name='order_update'),
     path('<int:pk>/service/create/', ServiceOrderCreateView.as_view(), name="service_order_create"),
     path('<int:pk>/service/update/', ServiceOrderUpdateView.as_view(), name="service_order_update"),
+    path('<int:pk>/staff/create/', StaffOrderCreateView.as_view(), name="staff_order_create"),
     path('delete/<int:pk>/', ServiceOrderDeleteView.as_view(), name="service_order_delete"),
+    path('staff/delete/<int:pk>/', StaffOrderDeleteView.as_view(), name="staff_order_delete"),
     path('<int:pk>/staff/add/', OrderStaffCreateView.as_view(), name='order_staff_add'),
     path('staff/delete/<int:pk>', OrderStaffDeleteView.as_view(), name='order_staff_delete'),
     path("<int:pk>/inventory/add/", InventoryOrderCreateView.as_view(), name="inventory_order_add"),

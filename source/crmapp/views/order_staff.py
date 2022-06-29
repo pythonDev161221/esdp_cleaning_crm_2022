@@ -1,10 +1,10 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponseRedirect
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, CreateView
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth import get_user_model
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.forms.models import modelformset_factory
 from django.views.generic import DeleteView
 
@@ -79,3 +79,35 @@ class OrderStaffDeleteView(PermissionRequiredMixin, DeleteView):
 
     def has_permission(self):
         return self.request.user == self.get_object().order.manager or self.request.user.is_staff
+
+
+class StaffOrderCreateView(PermissionRequiredMixin, CreateView):
+    model = StaffOrder
+    template_name = 'service_order/service_order_create.html'
+    success_url = reverse_lazy('crmapp:service_order_create')
+    form_class = OrderStaffForm
+    permission_required = "crmapp.add_stafforder"
+
+    def form_valid(self, form):
+        order = get_object_or_404(Order, pk=self.kwargs.get('pk'))
+        print(form.cleaned_data)
+        self.object = form.save(commit=False)
+        self.object.order = order
+        if order.get_brigadier():
+            self.object.is_brigadier = False
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse('crmapp:order_detail', kwargs={'pk': self.object.order.pk})
+
+    def has_permission(self):
+        order = get_object_or_404(Order, pk=self.kwargs["pk"])
+        return self.request.user == order.manager and super().has_permission() or self.request.user.is_staff
+
+
+class StaffOrderDeleteView(PermissionRequiredMixin, DeleteView):
+    model = StaffOrder
+    template_name = 'service/service_delete.html'
+    success_url = reverse_lazy('crmapp:service_list')
+    permission_required = "crmapp.delete_service"
