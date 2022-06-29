@@ -1,10 +1,12 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.db.models import Q
 
 from django.forms import modelformset_factory
 
 from django.contrib.auth import get_user_model
 from django.forms import BaseModelFormSet
+from django.shortcuts import get_object_or_404
 
 from crmapp.models import Inventory, Client, ServiceOrder, \
     Service, ManagerReport, StaffOrder, Order, InventoryOrder, ForemanExpenses, ObjectType, Fine, Bonus, CashManager
@@ -154,7 +156,17 @@ class BaseManagerReportFormSet(BaseModelFormSet):
 class OrderStaffForm(forms.ModelForm):
     class Meta:
         model = StaffOrder
-        fields = ("staff", "is_brigadier")
+        fields = ("staff",)
+
+    def __init__(self, *args, **kwargs):
+        super(OrderStaffForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update(
+                {
+                    'class': 'form-control input-default',
+                    'placeholder': self.fields[field].label
+                }
+            )
 
 
 class BaseStaffAddFormSet(BaseModelFormSet):

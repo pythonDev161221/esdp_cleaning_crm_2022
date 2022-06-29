@@ -22,12 +22,13 @@ function copy_token() {
     })
 }
 
-async function modalSubmit(path, method, modal) {
+async function modalSubmit(modal, method) {
     let uri = window.location.origin;
+    let path = $(modal).find('button[type=submit]').data('action')
     let formData = new FormData();
     let csrftoken = getCookie('csrftoken');
-    let headers = new Headers();
     let url = uri + path
+    let headers = new Headers();
     headers.append("X-CSRFToken", csrftoken);
     $(modal).find('input, textarea, select').each(function () {
         formData.append(this.name, $(this).val())
@@ -74,7 +75,12 @@ function setFormData(path, modal) {
     });
 }
 
-function modalOpen(modal) {
+function modalOpen(modal, path, method) {
+    initButtonModalDismiss(modal);
+    $(modal).find('button[type=submit]').attr('data-action', `${path}`).click(function (e) {
+        e.preventDefault();
+        modalSubmit(modal, method);
+    });
     $('#mask').css({
         'width': $(window).width(),
         'height': $(window).height()
@@ -82,51 +88,34 @@ function modalOpen(modal) {
     $(modal).fadeIn(200);
 }
 
-async function initiModalOpenButtons() {
-    $('a[data-modal-toggle=update]').click(function (e) {
+function initButtonModalDismiss(modal) {
+    $(modal).find('[data-modal-dismiss]').click(function (e) {
         e.preventDefault();
-        let modal = $(this).data('modal-target');
-        let path = $(this).data('action');
-        modalOpen(modal)
-        setFormData(path, modal)
-        $(modal).find('button[type=submit]').click(function (e) {
-            e.preventDefault();
-            modalSubmit(path, 'PUT', modal)
-        });
-    });
-    $('a[data-modal-toggle=delete]').click(function (e) {
-        e.preventDefault();
-        let modal = $(this).data('modal-target');
-        let path = $(this).data('action');
-        $(modal).find("span[id=object-text-name]").text($("a[data-object-name]").data("objectName"))
-        modalOpen(modal)
-        $(modal).find('button[type=submit]').click(function (e) {
-            e.preventDefault();
-            modalSubmit(path, 'DELETE', modal);
-        });
-    });
-    $('a[data-modal-toggle=create]').click(function (e) {
-        e.preventDefault();
-        let modal = $(this).data('modal-target');
-        let action = $(this).data('action');
-        modalOpen(modal)
-        $(modal).find('button[type=submit]').click(function (e) {
-            e.preventDefault();
-            modalSubmit(action, 'POST', modal);
-        });
+        $(modal).find('button[type=submit]').off('click');
+        $('#mask').hide();
+        $(modal).hide();
     });
 }
 
-function initButtonModalDissmit () {
-    $('[data-modal-dismiss]').click(function (e) {
+async function initiModalOpenButtons() {
+    $('a[data-modal-toggle=update], a[data-modal-toggle=create], a[data-modal-toggle=delete]').click(function (e) {
         e.preventDefault();
-        let dismiss = $(this).data('modal-dismiss');
-        $('#mask').hide();
-        $(dismiss).hide();
+        let modal, path, method;
+        modal = $(this).data('modal-target');
+        path = $(this).data('action');
+        if ($(this).data('modal-toggle') === 'update') {
+            setFormData(path, modal)
+            method = 'PUT'
+        } else if ($(this).data('modal-toggle') === 'create') {
+            method = 'POST'
+        } else if ($(this).data('modal-toggle') === 'delete') {
+            $(modal).find("span[id=object-text-name]").text($("a[data-object-name]").data("objectName"))
+            method = 'DELETE'
+        }
+        modalOpen(modal, path, method);
     });
 }
 
 $(document).ready(function () {
     initiModalOpenButtons();
-    initButtonModalDissmit();
 })
