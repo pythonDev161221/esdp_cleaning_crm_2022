@@ -1,18 +1,34 @@
 [
 {
-    "model": "crmapp.bonus",
-    "pk": 2,
-    "fields": {
-        "bonus": "наличие фото до",
-        "value": "100.00"
-    }
+  "model": "crmapp.bonus",
+  "pk": 1,
+  "fields": {
+    "bonus": "за бригадирство",
+    "value": null
+  }
 },
 {
-    "model": "crmapp.bonus",
-    "pk": 3,
-    "fields": {
-        "bonus": "Наличие фото после",
-        "value": "50.00"
-    }
+  "model": "crmapp.bonus",
+  "pk": 2,
+  "fields": {
+    "bonus": "наличие фото до",
+    "value": "100.00"
+  }
+},
+{
+  "model": "crmapp.bonus",
+  "pk": 3,
+  "fields": {
+    "bonus": "Наличие фото после",
+    "value": "50.00"
+  }
+},
+{
+  "model": "crmapp.bonus",
+  "pk": 4,
+  "fields": {
+    "bonus": "положительный отзыв",
+    "value": null
+  }
 }
 ]

@@ -1,9 +1,72 @@
 [
 {
-    "model": "crmapp.objecttype",
-    "pk": 1,
-    "fields": {
-        "name": "квартира 104 серии"
-    }
+  "model": "crmapp.objecttype",
+  "pk": 1,
+  "fields": {
+    "name": "квартира 104 серии"
+  }
+},
+{
+  "model": "crmapp.objecttype",
+  "pk": 3,
+  "fields": {
+    "name": "квартира 103 серии"
+  }
+},
+{
+  "model": "crmapp.objecttype",
+  "pk": 4,
+  "fields": {
+    "name": "квартира 105 серии"
+  }
+},
+{
+  "model": "crmapp.objecttype",
+  "pk": 5,
+  "fields": {
+    "name": "квартира 106 серии"
+  }
+},
+{
+  "model": "crmapp.objecttype",
+  "pk": 6,
+  "fields": {
+    "name": "квартира индивидуалка"
+  }
+},
+{
+  "model": "crmapp.objecttype",
+  "pk": 7,
+  "fields": {
+    "name": "квартира хрущевка"
+  }
+},
+{
+  "model": "crmapp.objecttype",
+  "pk": 8,
+  "fields": {
+    "name": "квартира сталинка"
+  }
+},
+{
+  "model": "crmapp.objecttype",
+  "pk": 9,
+  "fields": {
+    "name": "Дом"
+  }
+},
+{
+  "model": "crmapp.objecttype",
+  "pk": 10,
+  "fields": {
+    "name": "офис"
+  }
+},
+{
+  "model": "crmapp.objecttype",
+  "pk": 11,
+  "fields": {
+    "name": "коммерческая недвижимость"
+  }
 }
 ]
