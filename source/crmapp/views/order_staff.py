@@ -95,6 +95,7 @@ class StaffOrderCreateView(PermissionRequiredMixin, CreateView):
         if order.get_brigadier():
             self.object.is_brigadier = False
         self.object.save()
+        once_staff_add_order(self.object)
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):

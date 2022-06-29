@@ -73,7 +73,7 @@ def set_up_commands(bot_instance: Bot) -> None:
 
 bot = telegram.Bot(TELEGRAM_TOKEN)
 set_up_commands(bot)
-bot.setWebhook(url='https://f0b6-92-62-73-100.in.ngrok.io/telegram-bot/cleaning-serice-bot/update/')  # вставить в url https:// Ngrok или путь с протоколом https + telegram-bot/cleaning-serice-bot/update/
+bot.setWebhook(url='https://5ac1-92-245-116-36.in.ngrok.io/telegram-bot/cleaning-serice-bot/update/')  # вставить в url https:// Ngrok или путь с протоколом https + telegram-bot/cleaning-serice-bot/update/
 # n_workers = 0 if DEBUG else 4
 dispatcher = setup_dispatcher(Dispatcher(bot, None, workers=1, use_context=True))
 TELEGRAM_BOT_USERNAME = bot.get_me()["username"]
