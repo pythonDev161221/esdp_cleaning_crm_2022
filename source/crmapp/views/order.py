@@ -83,6 +83,8 @@ class OrderDetailView(PermissionRequiredMixin, DetailView):
     def has_permission(self):
         if self.request.user == self.get_object().manager:
             return super().has_permission()
+        elif self.request.user.is_staff:
+            return True
         try:
             if self.get_object().get_brigadier.staff != self.request.user:
                 return False
