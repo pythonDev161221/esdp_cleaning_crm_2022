@@ -4,7 +4,7 @@ from accounts.models import Staff, WorkDay, Payout
 
 User = get_user_model()
 
-# admin.site.register(User)
+
 admin.site.register(WorkDay)
 admin.site.register(Payout)
 
