@@ -9,7 +9,7 @@ from django.views.generic import DetailView, UpdateView, DeleteView, ListView, F
 
 from crmapp.helpers.crispy_form_helpers import OrderFormHelper, CleanersPartHelper, StaffFormHelper
 from crmapp.forms import CleanersPartForm, OrderForm, OrderCommentForm, ServiceOrderForm, InventoryOrderForm, \
-    OrderWorkTimeForm
+    OrderWorkTimeForm, ForemanExpenseForm
 from crmapp.helpers.order_helpers import BaseOrderCreateView, StaffFormset, ModalFormView
 
 from crmapp.models import Order, InventoryOrder
@@ -76,6 +76,7 @@ class OrderDetailView(PermissionRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['service_form'] = ServiceOrderForm
+        context['expense_form'] = ForemanExpenseForm
         context['inventory_form'] = InventoryOrderForm
         context['work_time_form'] = OrderWorkTimeForm
         return context
@@ -83,13 +84,11 @@ class OrderDetailView(PermissionRequiredMixin, DetailView):
     def has_permission(self):
         if self.request.user == self.get_object().manager:
             return super().has_permission()
-        elif self.request.user.is_staff:
-            return True
         try:
-            if self.get_object().get_brigadier.staff != self.request.user:
+            if self.get_object().get_brigadier().staff != self.request.user:
                 return False
         except:
-            return
+            return False
         return super().has_permission() or self.get_object().order_cleaners.get(
             is_brigadier=True).staff == self.request.user or self.request.user.is_staff
 

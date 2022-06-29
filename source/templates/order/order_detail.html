@@ -158,7 +158,7 @@
                         <li id="expence-add" class="action-button">
                             <a href="{% url 'crmapp:foreman_create_expense' order.pk %}" data-modal-toggle="create"
                                data-action="{% url 'crmapp:foreman_create_expense' order.pk %}"
-                               data-modal-target="#serviceOrderCreateModal"
+                               data-modal-target="#expenseModal"
                                class="btn mb-1 btn-secondary btn-sm">Добавить расход
                             </a>
                         </li>
@@ -488,6 +488,31 @@
                 <div class="modal-body">
                     <form>
                         {% for field in service_form %}
+                            <div class="form-group">
+                                {{ field }}
+                            </div>
+                        {% endfor %}
+                    </form>
+                </div>
+                <div class="text-center mb-3">
+                    <button type="submit" class="btn btn-secondary">Сохранить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Expense Create -->
+    <div class="modal" id="expenseModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <b class="modal-title fs-5">Добавить расход</b>
+                    <button type="button" class="close" data-modal-dismiss="#expenseModal"><span>×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        {% for field in expense_form %}
                             <div class="form-group">
                                 {{ field }}
                             </div>
