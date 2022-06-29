@@ -156,7 +156,7 @@ class BaseManagerReportFormSet(BaseModelFormSet):
 class OrderStaffForm(forms.ModelForm):
     class Meta:
         model = StaffOrder
-        fields = ("staff",)
+        fields = ("staff", 'is_brigadier')
 
     def __init__(self, *args, **kwargs):
         super(OrderStaffForm, self).__init__(*args, **kwargs)
