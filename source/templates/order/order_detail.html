@@ -38,18 +38,22 @@
                             <strong class="mr-3">Время выполнения:</strong>
                             {% if order.cleaning_time %}
                                 <span>{{ order.cleaning_time }} ч.</span>
-                                <a title="Дoбавить время на выполнение заказа" href="#"
-                                   data-modal-toggle="create"
-                                   data-modal-target="#workTimeOrderCreateModal"
-                                   data-action="{% url 'crmapp:order_add_work_time' order.pk %}">
-                                    <i class="fa fa-pencil text-dark hover-blue fs-6"></i>
-                                </a>
+                                {% if request.user == order.manager %}
+                                    <a title="Дoбавить время на выполнение заказа" href="#"
+                                       data-modal-toggle="create"
+                                       data-modal-target="#workTimeOrderCreateModal"
+                                       data-action="{% url 'crmapp:order_add_work_time' order.pk %}">
+                                        <i class="fa fa-pencil text-dark hover-blue fs-6"></i>
+                                    </a>
+                                {% endif %}
                             {% else %}
-                                <a title="Дoбавить время на выполнение заказа" href="#" data-modal-toggle="create"
-                                   data-modal-target="#workTimeOrderCreateModal"
-                                   data-action="{% url 'crmapp:order_update_work_time' order.pk %}">
-                                    <i class="fa fa-plus-circle fs-6"></i>
-                                </a>
+                                {% if request.user == order.manager %}
+                                    <a title="Дoбавить время на выполнение заказа" href="#" data-modal-toggle="create"
+                                       data-modal-target="#workTimeOrderCreateModal"
+                                       data-action="{% url 'crmapp:order_update_work_time' order.pk %}">
+                                        <i class="fa fa-plus-circle fs-6"></i>
+                                    </a>
+                                {% endif %}
                             {% endif %}
                         </p>
                     </div>
@@ -126,13 +130,9 @@
                                 {% if not brigadir.work_start %}
                                     <li id="service-add" class="action-button">
                                         <a href="javascript:void(0)" data-modal-toggle="create"
-                                           data-action="{% url 'crmapp:foreman_create_service' order.id %}"
+                                           data-action="{% url 'crmapp:service_order_create' order.id %}"
                                            data-modal-target="#serviceOrderCreateModal"
                                            class="btn mb-1 btn-secondary btn-sm">Добавить услугу</a>
-                                    </li>
-                                    <li id="service-add" class="action-button">
-                                        <a href="{% url 'crmapp:foremanorder_create' order.id %}"
-                                           class="btn mb-1 btn-secondary btn-sm">Редактировать</a>
                                     </li>
                                 {% endif %}
                             {% endif %}
@@ -184,9 +184,9 @@
                                         <th>{{ service.service.name }}</th>
                                         <td>{{ service.amount }} {{ service.service.get_unit_display }}</td>
                                         <td>{{ service.rate }}</td>
-                                        <td>{{ service.total }}</td>
+                                        <td>{{ service.get_total }}</td>
                                         <td>
-                                            {% if perms.crmapp.change_serviceorder and order.manager == request.user or request.user.is_staff %}
+                                            {% if perms.crmapp.change_serviceorder and order.manager == request.user or request.user.is_staff or request.user == order.get_brigadier.staff %}
                                                 <a class="ml-1" data-modal-toggle="update" href="javascript:void(0)"
                                                    data-modal-target="#serviceUpdateModal"
                                                    data-action="/api/order/update/service/{{ service.id }}/">

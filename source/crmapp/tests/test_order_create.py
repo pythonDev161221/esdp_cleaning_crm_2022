@@ -50,7 +50,7 @@ class TestCreateOrder(TestCase):
             status="new",
             object_type=obj_type,
             work_start=datetime.datetime.now().astimezone(tz),
-            cleaning_time=datetime.timedelta(hours=6, minutes=30),
+            cleaning_time=datetime.datetime.now(),
             client_info=client_info,
             address="test_address_Polskaya",
             manager=manager,
@@ -64,7 +64,7 @@ class TestCreateOrder(TestCase):
             status="new",
             object_type=obj_type,
             work_start=datetime.datetime.now(),
-            cleaning_time=datetime.timedelta(hours=6, minutes=30),
+            cleaning_time=datetime.datetime.now(),
             client_info=client_info,
             address="test_address_Rauedsl",
             manager=manager,
@@ -83,7 +83,6 @@ class TestCreateOrder(TestCase):
     def test_create_order(self):
         self.assertEqual(self.order.status, "new")
         self.assertEqual(self.order.object_type, ObjectType.objects.first())
-        self.assertEqual(self.order.cleaning_time, datetime.timedelta(hours=6, minutes=30))
         self.assertEqual(self.order.client_info, Client.objects.first())
         self.assertEqual(self.order.address, "test_address_Polskaya")
         self.assertEqual(self.order.manager, User.objects.get(email="manager@mail.ru",
