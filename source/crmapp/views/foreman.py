@@ -101,7 +101,7 @@ class ForemanExpenseView(PermissionRequiredMixin, CreateView):
         order = get_object_or_404(Order, pk=self.kwargs.get("pk"))
         if order.status == 'finished' or order.status == "canceled":
             return super().has_permission()
-        return self.request.user == order.get_brigadier()
+        return self.request.user == order.get_brigadier().staff
 
 
 class PhotoBeforeView(PermissionRequiredMixin, View):
