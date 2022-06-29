@@ -237,11 +237,14 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li>
-                                <a href="{% url 'crmapp:order_deleted_list' %}" aria-expanded="false">
-                                    <i class="icon-trash menu-icon"></i><span class="nav-text">Удаленные заказы</span>
-                                </a>
-                            </li>
+                            {% if request.user.is_staff %}
+                                <li>
+                                    <a href="{% url 'crmapp:order_deleted_list' %}" aria-expanded="false">
+                                        <i class="icon-trash menu-icon"></i><span
+                                            class="nav-text">Удаленные заказы</span>
+                                    </a>
+                                </li>
+                            {% endif %}
                             <li class="hidden">
                                 <a class="has-arrow" href="javascript:void(0)" aria-expanded="false">
                                 </a>
