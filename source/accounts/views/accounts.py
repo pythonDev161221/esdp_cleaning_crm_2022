@@ -1,9 +1,8 @@
-import uuid
-
 from django.contrib import messages
-from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import update_session_auth_hash, authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import Group
+from django.contrib.auth.views import LoginView
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
@@ -15,10 +14,32 @@ from accounts.forms import (StaffRegistrationForm,
                             EditPhotoForm,
                             PasswordChangeForm,
                             StaffDescriptionForm,
-                            StaffPassportForm)
+                            StaffPassportForm, LoginForm)
 from accounts.models import Staff
 
 from crmapp.forms import SearchForm
+
+
+class Login(LoginView):
+    template_name = 'account/login.html'
+    form_class = LoginForm
+
+    def get_success_url(self):
+        user = self.request.user
+        group = Group(name="Manager")
+        if user is not None and user.is_staff:
+            return reverse("index")
+        if self.request.user.groups.filter(name=group):
+            return reverse("index")
+        if not self.request.user.groups.filter(name=group):
+            return reverse("accounts:profile", kwargs={"pk": self.request.user.pk})
+
+    def post(self, request, *args, **kwargs):
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        login(request, user)
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class StaffProfileView(PermissionRequiredMixin, DetailView):
@@ -147,7 +168,7 @@ class StaffEditView(PermissionRequiredMixin, UpdateView):
         return reverse('accounts:staff-list')
 
     def form_valid(self, form):
-        user = form.save
+        user = form.save()
         return redirect(self.get_success_url())
 
 

@@ -2,12 +2,17 @@
 {% block title %}Удаление сотрудника{% endblock title %}
 
 {% block content %}
-      <div class="container text-center">
+    <div class="container text-center">
         <form method="post">
-            <h3 class="mt-4 mb-4">Вы хотите удалить сотрудника: {{ user_object.last_name | capfirst }} {{ user_object.first_name | capfirst}}?</h3>
-            {% csrf_token %}
-            <a href="{% url 'accounts:staff-list' %}" class="btn btn-dark">Нет</a>
-            <input type="submit" name="action" value="Да" class="btn btn-danger"/>
+            <div class="card p-3">
+                <h3 class="mt-4 mb-4">Вы хотите удалить
+                    сотрудника: {{ user_object.last_name | capfirst }} {{ user_object.first_name | capfirst }}?</h3>
+                {% csrf_token %}
+                <div class="mb-3">
+                    <a href="{% url 'accounts:staff-list' %}" class="btn btn-primary">Нет</a>
+                    <input type="submit" name="action" value="Да" class="btn btn-danger">
+                </div>
+            </div>
         </form>
     </div>
 {% endblock %}
