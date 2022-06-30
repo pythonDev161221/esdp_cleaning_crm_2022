@@ -17,7 +17,7 @@ services:
       crm_network:
 
   web:
-    image: registry.gitlab.com/python317/crm_cleaning:573860132
+    image: registry.gitlab.com/python317/crm_cleaning:latest
     depends_on:
       - postgres_db
     volumes:
@@ -39,11 +39,11 @@ services:
       - TELEGRAM_BOT_USERNAME=OkeyMYBot
 
   nginx:
+    image: registry.gitlab.com/python317/crm_cleaning/nginx:latest
     container_name: crm_nginx
     volumes:
       - static:/crm_cleaning/source/static
       - media:/crm_cleaning/source/uploads
-    build: ./nginx
     depends_on:
       - web
     ports:
