@@ -79,19 +79,7 @@ class OrderDetailView(PermissionRequiredMixin, DetailView):
         context['expense_form'] = ForemanExpenseForm
         context['inventory_form'] = InventoryOrderForm
         context['work_time_form'] = OrderWorkTimeForm
-        order = get_object_or_404(Order, pk=self.kwargs.get("pk"))
-        if order.work_end:
-            staff = User.objects.filter(
-                is_staff=False, is_active=True, black_list=False, schedule=order.work_start.isoweekday()
-            ).exclude(
-                Q(cleaner_orders__order=order) |
-                Q(
-                    Q(cleaner_orders__order__work_start__gte=order.work_end) |
-                    Q(cleaner_orders__order__work_end__gte=order.work_start) &
-                    Q(cleaner_orders__order__work_end__gte=order.work_end)
-                )
-            )
-            context['staff_form'] = self.get_staff_filtered_formset(OrderStaffForm())
+        context['staff_form'] = self.get_staff_filtered_form(OrderStaffForm())
         return context
 
     def get_staff_filtered_form(self, form):

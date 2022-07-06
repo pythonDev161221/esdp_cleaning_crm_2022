@@ -17,9 +17,7 @@ class TelegramBotWebhookView(View):
     # Can be fixed with async celery task execution
     def post(self, request, *args, **kwargs):
         thr = threading.Thread(target=process_telegram_event, args=(json.loads(request.body),))
-        print(thr)
         thr.start()
-        print(thr)
         return JsonResponse({"ok": "POST request processed"})
 
     def get(self, request, *args, **kwargs):  # for debug
